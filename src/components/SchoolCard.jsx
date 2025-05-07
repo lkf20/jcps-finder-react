@@ -1,12 +1,38 @@
+// src/components/SchoolCard.jsx
 import React from 'react';
 import { formatDisplayValue } from '../utils/formatters';
-
-// Assume formatDisplayValue helper is imported or defined here
-
+import DiversityChart from './DiversityChart';   // Adjust path if necessary
+import DiversityLegend from './DiversityLegend'; // Adjust path if necessary
 
 export const SchoolCard = ({ school, columns }) => {
-  // Find the config for display_name
   const nameColConfig = columns.find(c => c.key === 'display_name');
+  const diversityColConfig = columns.find(c => c.key === 'diversity_chart');
+
+  // Generate a unique ID for the chart canvas in this card
+  const chartId = `diversity-chart-${school.school_code_adjusted || Math.random().toString(36).substring(7)}`;
+
+  // Helper to check if there's any actual diversity data to display
+  const hasActualDiversityData = () => {
+    if (!school) return false;
+    const keysToCheck = ['white_percent', 'african_american_percent', 'hispanic_percent', 'asian_percent', 'two_or_more_races_percent'];
+    let hasData = keysToCheck.some(key => school[key] != null && parseFloat(school[key]) > 0);
+
+    if (!hasData) { // Check 'other_percent' calculation if primary keys are all zero
+        let knownTotalPercent = 0;
+        const processedData = {}; // Use a local object for calculation
+        keysToCheck.forEach(key => {
+            const pct = school[key];
+            const numPct = (pct != null && !isNaN(parseFloat(pct))) ? Number(parseFloat(pct).toFixed(2)) : 0;
+            processedData[key] = numPct; // Store in local object
+        });
+        const calculatedKnownTotal = keysToCheck.reduce((sum, key) => sum + (processedData[key] || 0), 0);
+        const otherPercent = Math.max(0, 100 - parseFloat(calculatedKnownTotal.toFixed(2)));
+        if (otherPercent > 0.01) hasData = true; // Check if 'other' contributes
+    }
+    return hasData;
+  };
+
+  const shouldShowDiversitySection = diversityColConfig && hasActualDiversityData();
 
   return (
     <div className="card mb-3 shadow-sm">
@@ -14,42 +40,58 @@ export const SchoolCard = ({ school, columns }) => {
       {nameColConfig && (
         <div className="card-body pb-2">
           <h5 className="card-title mb-0">
+            {/* Assuming formatDisplayValue handles display_name correctly */}
             {formatDisplayValue(nameColConfig, school)}
           </h5>
         </div>
       )}
-      {/* Card List Group */}
+
+      {/* Card List Group for other data points */}
       <ul className="list-group list-group-flush">
         {columns
-          .filter(col => col.key !== 'display_name') // Exclude name row
+          .filter(col => col.key !== 'display_name' && col.key !== 'diversity_chart') // Exclude name and diversity_chart (handled separately)
           .map(col => (
             <li
               key={col.key}
-              className={`list-group-item d-flex justify-content-between align-items-center py-2 ${col.key === 'diversity_chart' ? 'diversity-list-item-new' : ''}`} // Add special class for diversity
+              className="list-group-item d-flex justify-content-between align-items-center py-2"
             >
-              {/* Conditional rendering for diversity layout */}
-              {col.key === 'diversity_chart' ? (
-                 <div className='w-100'> {/* Wrapper for special layout */}
-                     <div className="row g-1 mb-1 align-items-center">
-                         <div className="col-7 d-flex align-items-center">
-                             <h6 className="diversity-title mb-0">{col.header || 'Student Diversity'}</h6>
-                         </div>
-                         <div className="col-5 diversity-chart-right d-flex justify-content-center align-items-center">
-                             {/* Format function returns canvas+legend div */}
-                             {formatDisplayValue(col, school)}
-                         </div>
-                     </div>
-                     {/* Legend gets populated later targeting the #diversityLegend-ID */}
-                 </div>
-              ) : (
-                 <> {/* Standard Layout */}
-                     <span>{col.header || col.key}</span>
-                     <span className="text-end">{formatDisplayValue(col, school)}</span>
-                 </>
-              )}
+              <span className="me-2 fw-bold small">{col.header || col.key}:</span>
+              <span className="text-end small">{formatDisplayValue(col, school)}</span>
             </li>
-         ))}
+          ))}
+
+        {/* --- New Dedicated Diversity Section --- */}
+        {diversityColConfig && ( // Render this list item if diversity_chart is a selected column
+          <li className="list-group-item py-2">
+            {shouldShowDiversitySection ? (
+              <div className="container-fluid px-0"> {/* Ensures Bootstrap grid behaves */}
+                {/* Top Row: Title and Chart */}
+                <div className="row g-1 align-items-center mb-1"> {/* Smaller gutter and margin */}
+                  <div className="col">
+                    <h6 className="mb-0 fw-bold small">{diversityColConfig.header || 'Student Diversity'}</h6>
+                  </div>
+                  <div className="col-auto" style={{ width: '60px', height: '60px' }}> {/* Adjust chart size here */}
+                    <DiversityChart school={school} chartId={chartId} />
+                  </div>
+                </div>
+
+                {/* Bottom Row: Legend */}
+                <div className="row">
+                  <div className="col-12">
+                    <DiversityLegend school={school} />
+                  </div>
+                </div>
+              </div>
+            ) : (
+              // Display if diversity_chart is selected but no data
+              <div>
+                <h6 className="mb-1 fw-bold small">{diversityColConfig.header || 'Student Diversity'}</h6>
+                <p className="text-muted small mb-0">No diversity data available.</p>
+              </div>
+            )}
+          </li>
+        )}
       </ul>
     </div>
   );
-}
+};

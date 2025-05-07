@@ -215,74 +215,47 @@ body {
   background-color: #e0e0e0 !important; }
 
 
-/* --- Card View Diversity Chart/Legend Layout --- */
-/* Container holding canvas (from format function - should be block inside flex parent now) */
-#results-output-cards .list-group-item span:last-child .diversity-container {
-  display: block; /* Keep block */
-  width: auto; /* Let content size it */
-  /* text-align: center; /* Not needed if parent is flex centering */
-  margin-bottom: 0.25rem; /* Space between container and legend */
+/* --- Card View SPECIAL Diversity Row Styles --- */
+#results-output-cards li.diversity-list-item-new {
+  display: block; padding: 0.75rem 1rem; border-bottom: 1px solid #f0f0f0;
 }
-/* Canvas within Card */
-#results-output-cards .list-group-item span:last-child .diversity-chart-canvas {
-  width: 60px !important;
-  height: 60px !important;
-  margin: 0 auto; /* Still use auto margins for block centering */
-  display: block !important;
+#results-output-cards li.diversity-list-item-new:last-of-type { border-bottom: none; }
+
+/* Title Styling */
+#results-output-cards li.diversity-list-item-new .diversity-title {
+  font-weight: 500; color: #555; font-size: 0.9rem; text-align: left; margin: 0; /* Removed mb */
 }
-/* Legend UL within Card (appended to span:last-child) */
-#results-output-cards .list-group-item span:last-child ul.diversity-legend-list {
-  display: block; /* Let it be block, parent flex centers it */
-  text-align: left;   /* Keep list item text left-aligned */
-  list-style: none;
-  padding: 0;
-  margin: 0; /* Remove top margin, parent flex handles spacing */
-  font-size: 0.75rem;
-  color: #6c757d;
-  max-width: 150px; /* Optional: Limit legend width */
-  width: auto;      /* Adjust width based on content */
+
+/* Right Column (Chart) */
+#results-output-cards li.diversity-list-item-new .diversity-chart-right {
+  min-height: 60px; /* Ensure space */
 }
-/* Legend LI within Card UL */
-#results-output-cards .list-group-item span:last-child ul.diversity-legend-list li {
-  display: flex !important;
-  align-items: center !important;
-  margin-bottom: 0px !important; /* <<< REDUCE or REMOVE bottom margin for tighter spacing */
-  line-height: 1.2 !important; /* <<< REDUCE line-height */
-  padding-top: 1px; /* Minimal padding */
-  padding-bottom: 1px;
-  /* Remove temporary styles if present */
-  /* border: none !important;
-  background-color: transparent !important; */
+/* Canvas inside the RIGHT column */
+#results-output-cards li.diversity-list-item-new .diversity-chart-right canvas.diversity-chart-canvas {
+  width: 60px !important; height: 60px !important; display: block !important; margin: 0 !important;
 }
-/* Legend Color Box */
-#results-output-cards .list-group-item span:last-child ul.diversity-legend-list li span.legend-color-box {
-  width: 10px !important;
-  height: 10px !important;
-  display: inline-block !important;
-  border: 1px solid #ccc !important; /* Keep subtle border */
-  flex-shrink: 0;
-  margin-right: 0.4rem;
-  vertical-align: middle;
+
+/* Legend Div (Rendered by DiversityLegend component, placed below row) */
+#results-output-cards li.diversity-list-item-new .diversity-legend {
+  width: 100%; text-align: left; margin-top: 0.5rem; /* Space above legend */
+  font-size: 0.75rem; color: #6c757d; min-height: 10px;
 }
-/* Legend SPANs within Card LI */
-#results-output-cards .list-group-item span:last-child ul.diversity-legend-list li span {
-  /* Keep basic styles, remove borders/backgrounds */
-  display: inline-block !important;
-  color: inherit !important; /* Inherit grey legend color */
-  font-size: inherit !important; /* Inherit small legend font size */
-  vertical-align: middle;
-  /* Remove temporary styles if present */
-   /* border: none !important;
-   background-color: transparent !important; */
+/* Legend UL */
+#results-output-cards li.diversity-list-item-new .diversity-legend ul.diversity-legend-list {
+  list-style: none; padding: 0; margin: 0; line-height: 1.2;
+  /* Allow wrapping if needed */
+  /* display: flex; flex-wrap: wrap; */
 }
-/* Legend Value Span */
-#results-output-cards .list-group-item span:last-child ul.diversity-legend-list li span.legend-value {
-  font-weight: 500;
-  white-space: nowrap;
-  flex-shrink: 0;
-  margin-left: 0.25rem;
+/* Legend LI */
+#results-output-cards li.diversity-list-item-new .diversity-legend li {
+   display: flex !important; align-items: center !important; margin-bottom: 1px !important; padding: 1px 0 !important;
+   /* Maybe add some right margin for wrap spacing */
+   /* margin-right: 0.5rem; */
 }
-/* --- End Card View Styles --- */
+/* Legend Color Box, Label, Value */
+#results-output-cards li.diversity-list-item-new .diversity-legend li span.legend-color-box { width: 10px; height: 10px; display: inline-block; border: 1px solid #ccc; flex-shrink: 0; margin-right: 0.4rem; }
+#results-output-cards li.diversity-list-item-new .diversity-legend li span.legend-label { flex-grow: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 0.25rem; }
+#results-output-cards li.diversity-list-item-new .diversity-legend li span.legend-value { font-weight: 500; white-space: nowrap; flex-shrink: 0; margin-left: 0.25rem; }
 
 
 /* --- Rating Circle Styles (Base) --- */

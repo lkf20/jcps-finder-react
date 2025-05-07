@@ -1,0 +1,405 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+/* --- Global Body Style --- */
+body {
+  background-color: #f8f9fa; /* Light background */
+}
+
+
+/* --- Table View Styles (#results-output) --- */
+
+/* Table Column Width & Scrolling */
+/* Target the TH for the diversity chart based on its content */
+/* This :contains selector might not work in all browsers - consider adding class via JS */
+#results-output table th:contains("Student Diversity") {
+  min-width: 220px; /* Ensure header cell is wide enough */
+}
+/* Ensure the main table container allows horizontal scrolling */
+#results-output.table-responsive {
+  overflow-x: auto; /* Make sure horizontal scroll is enabled */
+}
+
+/* General Table Alignment */
+#results-output table th {
+  text-align: center;
+  vertical-align: bottom;
+  padding-bottom: 0.75rem;
+}
+#results-output table td {
+  text-align: center;
+  vertical-align: middle;
+  padding-top: 0.85rem;    /* Increased padding for row height */
+  padding-bottom: 0.85rem; /* Increased padding for row height */
+  overflow: visible !important; /* <<< FORCE VISIBLE OVERFLOW on the cell */
+  position: relative; /* Add position context */
+}
+#results-output table td:first-child { /* School Name Cell Alignment */
+  text-align: left;
+  /* Inherits padding from general td rule */
+}
+
+/* School Name Link (Table) */
+#results-output table td:first-child a {
+  color: #004D40; /* Dark Teal */
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
+}
+#results-output table td:first-child a:hover {
+  color: #00796B; /* Lighter teal for hover */
+  text-decoration: underline;
+}
+
+/* School Details/Map Div (Below Name in Table) */
+#results-output table td:first-child .d-flex {
+ line-height: 1.1; /* Adjust line height slightly */
+}
+#results-output table td:first-child .bi-geo-alt-fill { /* Map Icon Style */
+  font-size: 0.9rem;
+  vertical-align: middle;
+  color: #6c757d; /* Default secondary color for icon */
+  transition: color 0.2s ease-in-out; /* Add transition */
+}
+#results-output table td:first-child a:hover .bi-geo-alt-fill { /* Map Icon Hover */
+  color: #00796B; /* Lighter teal on hover */
+}
+
+/* KY Report Card Button (Table) */
+#results-output table td .btn-outline-primary {
+  color: #004D40;        /* Dark Teal text */
+  border-color: #004D40; /* Dark Teal border */
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out; /* Add transitions */
+}
+#results-output table td .btn-outline-primary:hover {
+  color: #ffffff;        /* White text on hover */
+  background-color: #004D40; /* Dark Teal background fill */
+  border-color: #004D40;
+}
+#results-output table td .btn-outline-primary:hover i {
+  color: #ffffff; /* Icon white on hover */
+}
+
+/* General Link Style (Ensure it doesn't override specifics) */
+#results-output table td a:not(.btn) { /* Target links that are NOT buttons */
+   text-decoration: none;
+}
+
+/* Table Row Hover */
+#results-output tbody tr:hover {
+  background-color: #e9ecef;
+}
+
+
+/* --- Card View Styles (#results-output-cards) --- */
+
+#results-output-cards .card {
+  border: 1px solid #e0e0e0;
+}
+
+/* Style the list group items within cards */
+#results-output-cards .list-group-item {
+  background-color: transparent;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.9rem;
+  display: flex;
+  justify-content: space-between;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  /* Align items in the middle for this flex container */
+  align-items: center;
+}
+#results-output-cards .list-group-item:last-child { border-bottom: none; }
+
+/* Style the label part (first span) */
+#results-output-cards .list-group-item span:first-child {
+  font-weight: 500;
+  color: #555;
+  padding-right: 1rem;
+  flex-shrink: 0;
+  /* No align-self needed if parent align-items: center works */
+}
+
+/* Style the value part (the second span) of the list item */
+#results-output-cards .list-group-item span:last-child {
+  flex-grow: 1;
+  align-self: center;
+  min-height: 30px;
+  /* --- NEW: Use Flexbox for centering its children (chart container, legend ul) --- */
+  display: flex;
+  flex-direction: column; /* Stack chart container and legend */
+  align-items: center;    /* Center items horizontally */
+  justify-content: center;/* Center items vertically (if span has extra height) */
+  /* Remove text-align if using flex for centering */
+  /* text-align: center; */
+}
+
+/* School Name Link (Card) */
+#results-output-cards .card-title a {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #004D40; /* Dark Teal */
+  text-decoration: none;
+  transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out;
+}
+#results-output-cards .card-title a:hover {
+  color: #00796B; /* Lighter teal hover */
+  text-decoration: underline;
+}
+/* School Details/Map Div (Card) */
+#results-output-cards .card-title .d-flex {
+  font-size: 0.85rem;
+}
+#results-output-cards .card-title .bi-geo-alt-fill { /* Map Icon */
+   font-size: 0.85rem;
+   color: #6c757d; /* Default secondary color */
+   transition: color 0.2s ease-in-out;
+   vertical-align: middle; /* Align icon if needed */
+}
+#results-output-cards .card-title a:hover .bi-geo-alt-fill { /* Map Icon Hover */
+  color: #00796B; /* Lighter teal on hover */
+}
+
+
+/* KY Report Card Button (Card) */
+#results-output-cards .list-group-item .btn {
+  padding: 0.1rem 0.4rem; /* Smaller padding */
+  font-size: 0.75rem; /* Smaller text */
+  /* Inherit base button outline colors from table rule or define explicitly */
+   color: #004D40;
+   border-color: #004D40;
+   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+#results-output-cards .list-group-item .btn:hover {
+   color: #ffffff;
+   background-color: #004D40;
+   border-color: #004D40;
+}
+#results-output-cards .list-group-item .btn i { /* Icon inside button */
+  font-size: 0.7rem; /* Smaller icon */
+  vertical-align: baseline;
+   /* Color should inherit from button text color */
+   /* transition: color 0.15s ease-in-out; */ /* Already covered by button transition */
+}
+/* Ensure icon color changes on button hover */
+#results-output-cards .list-group-item .btn:hover i {
+    color: #ffffff; /* Match button text hover color */
+}
+
+/* --- Rating Circle Styles specific to CARD VIEW --- */
+/* Select the list item, then the last span (value wrapper), then the circle */
+#results-output-cards .list-group-item span:last-child .rating-circle,
+#results-output-cards .list-group-item span:last-child .rating-circle-na {
+  /* Size */
+  width: 30px !important; height: 30px !important;
+  /* Display & Alignment */
+  display: inline-flex !important; align-items: center !important; justify-content: center !important;
+  /* Appearance */
+  border-radius: 50% !important; line-height: 1 !important; text-align: center !important;
+  font-size: 0.85rem !important; padding: 0 !important; flex-shrink: 0; vertical-align: middle;
+}
+#results-output-cards .list-group-item span:last-child .rating-circle { 
+  color: white !important; 
+  font-weight: bold !important; 
+  background-color: #9CCC65 !important; 
+}
+#results-output-cards .list-group-item span:last-child .rating-circle-na { 
+  color: #757575 !important; 
+  font-weight: normal !important; 
+  font-size: 0.75rem !important; 
+  background-color: #e0e0e0 !important; }
+
+
+/* --- Card View Diversity Chart/Legend Layout --- */
+/* Container holding canvas (from format function - should be block inside flex parent now) */
+#results-output-cards .list-group-item span:last-child .diversity-container {
+  display: block; /* Keep block */
+  width: auto; /* Let content size it */
+  /* text-align: center; /* Not needed if parent is flex centering */
+  margin-bottom: 0.25rem; /* Space between container and legend */
+}
+/* Canvas within Card */
+#results-output-cards .list-group-item span:last-child .diversity-chart-canvas {
+  width: 60px !important;
+  height: 60px !important;
+  margin: 0 auto; /* Still use auto margins for block centering */
+  display: block !important;
+}
+/* Legend UL within Card (appended to span:last-child) */
+#results-output-cards .list-group-item span:last-child ul.diversity-legend-list {
+  display: block; /* Let it be block, parent flex centers it */
+  text-align: left;   /* Keep list item text left-aligned */
+  list-style: none;
+  padding: 0;
+  margin: 0; /* Remove top margin, parent flex handles spacing */
+  font-size: 0.75rem;
+  color: #6c757d;
+  max-width: 150px; /* Optional: Limit legend width */
+  width: auto;      /* Adjust width based on content */
+}
+/* Legend LI within Card UL */
+#results-output-cards .list-group-item span:last-child ul.diversity-legend-list li {
+  display: flex !important;
+  align-items: center !important;
+  margin-bottom: 0px !important; /* <<< REDUCE or REMOVE bottom margin for tighter spacing */
+  line-height: 1.2 !important; /* <<< REDUCE line-height */
+  padding-top: 1px; /* Minimal padding */
+  padding-bottom: 1px;
+  /* Remove temporary styles if present */
+  /* border: none !important;
+  background-color: transparent !important; */
+}
+/* Legend Color Box */
+#results-output-cards .list-group-item span:last-child ul.diversity-legend-list li span.legend-color-box {
+  width: 10px !important;
+  height: 10px !important;
+  display: inline-block !important;
+  border: 1px solid #ccc !important; /* Keep subtle border */
+  flex-shrink: 0;
+  margin-right: 0.4rem;
+  vertical-align: middle;
+}
+/* Legend SPANs within Card LI */
+#results-output-cards .list-group-item span:last-child ul.diversity-legend-list li span {
+  /* Keep basic styles, remove borders/backgrounds */
+  display: inline-block !important;
+  color: inherit !important; /* Inherit grey legend color */
+  font-size: inherit !important; /* Inherit small legend font size */
+  vertical-align: middle;
+  /* Remove temporary styles if present */
+   /* border: none !important;
+   background-color: transparent !important; */
+}
+/* Legend Value Span */
+#results-output-cards .list-group-item span:last-child ul.diversity-legend-list li span.legend-value {
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: 0.25rem;
+}
+/* --- End Card View Styles --- */
+
+
+/* --- Rating Circle Styles (Base) --- */
+.rating-circle, .rating-circle-na {
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 50%; line-height: 1; text-align: center; font-weight: bold;
+}
+.rating-circle {
+  width: 40px; height: 40px; background-color: #9CCC65; color: white; font-size: 1rem;
+}
+.rating-circle-na {
+  width: 40px; height: 40px; background-color: #e0e0e0; color: #757575; font-size: 0.9rem; font-weight: normal;
+}
+
+
+
+
+/* --- Diversity Chart/Legend Styles --- */
+
+/* Container in Table Cell */
+/* Ensure the TD containing the chart allows overflow and has position context if needed */
+#results-output table td .diversity-container {
+  /* Make sure the container within the TD is behaving */
+  display: block; /* Override d-flex from format function for table */
+  width: 100%; /* Allow it to fill cell for centering */
+  min-width: 300px; /* Keep min-width */
+  min-height: 85px; /* Keep min-height */
+  text-align: center; /* Center canvas block within */
+  overflow: visible !important; /* <<< FORCE VISIBLE OVERFLOW */
+  position: relative; /* <<< Add position context */
+  z-index: 1; /* <<< Try bringing it forward */
+}
+
+/* Re-target the canvas specifically within the table's container */
+#results-output table td .diversity-chart-canvas {
+  width: 80px !important;  /* Ensure correct size */
+  height: 80px !important; /* Ensure correct size */
+  display: block !important;
+  margin: auto !important; /* Center within the container */
+  overflow: visible !important; /* <<< FORCE VISIBLE OVERFLOW */
+  position: relative; /* <<< Add position context */
+  z-index: 2; /* <<< Try bringing it forward */
+  opacity: 1 !important; /* Force opacity */
+  visibility: visible !important; /* Force visibility */
+}
+
+
+/* Canvas Styling (shared, with card override) */
+.diversity-chart-canvas {
+  max-width: 80px; 
+  max-height: 80px;
+  width: 80px !important; 
+  height: 80px !important;
+  margin: 0; 
+  display: block; 
+  aspect-ratio: 1 / 1; 
+  flex-shrink: 0;
+}
+
+/* Custom Legend Styling (shared, with card override) */
+.diversity-legend {
+  font-size: 0.75rem; 
+  text-align: left; 
+  padding-left: 0.5rem; 
+  flex-grow: 1; 
+  color: #6c757d;
+}
+.diversity-legend ul { 
+  line-height: 1.3; 
+  list-style: none; 
+  padding-left: 0; 
+  margin-bottom: 0; 
+}
+.diversity-legend .legend-color-box { 
+  display: inline-block; 
+  width: 10px; 
+  height: 10px; 
+  border: 1px solid #ccc; 
+  flex-shrink: 0; 
+  margin-right: 0.5rem; 
+  vertical-align: middle;
+}
+.diversity-legend .legend-label { 
+  display: inline-block; 
+  vertical-align: middle; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  flex-grow: 1; 
+}
+.diversity-legend .legend-value { 
+  font-weight: 500; 
+  white-space: nowrap; 
+  flex-shrink: 0; 
+  display: inline-block; 
+  vertical-align: middle; 
+  margin-left: 0.25rem;
+}
+.diversity-legend li { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  margin-bottom: 0.15rem;
+}
+
+
+/* --- Loader Styles --- */
+.loader {
+  border: 5px solid #f3f3f3; border-top: 5px solid #3498db; border-radius: 50%;
+  width: 40px; height: 40px; animation: spin 1s linear infinite;
+  margin: 20px auto; display: none;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+/* --- Offcanvas Styles --- */
+#column-selection-form h6 {
+  font-size: 0.85rem; border-bottom: 1px solid #dee2e6; padding-bottom: 0.25rem; margin-bottom: 0.75rem !important;
+}
+
+

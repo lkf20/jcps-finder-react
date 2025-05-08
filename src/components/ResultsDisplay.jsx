@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react'; // Added useMemo
+import styles from './ResultsDisplay.module.css';
 
 // Import child components we will create next
 import { TableView } from './TableView';
@@ -134,7 +135,7 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => { // Receive p
   return (
     <>
       {/* --- Display Controls --- */}
-      <div className="d-flex justify-content-end align-items-center mb-2 gap-2" id="display-controls-container">
+      <div className={styles.displayControlsContainer} id="display-controls-container">
         <div>
           <label htmlFor="displaySortBy" className="form-label visually-hidden">Sort results by:</label>
           {/* Controlled select dropdown for sorting */}
@@ -157,20 +158,20 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => { // Receive p
       </div>
 
       {/* --- Render Table or No Results --- */}
-      <div id="results-output" className="table-responsive d-none d-md-block">
+      <div id="results-output" className={`table-responsive d-none d-md-block ${styles.tableWrapper}`}>
         {schoolsToDisplay.length > 0 ? (
           <TableView schools={schoolsToDisplay} columns={columnsToDisplay} />
         ) : (
-          <p className="text-center mt-3 text-muted">No schools found matching your criteria.</p>
+          <p className={`${styles.noResultsText} text-muted`}>No schools found matching your criteria.</p>
         )}
       </div>
 
       {/* --- Render Cards or No Results --- */}
-      <div id="results-output-cards" className="d-md-none">
+      <div id="results-output-cards" className={`d-md-none ${styles.cardWrapper}`}>
         {schoolsToDisplay.length > 0 ? (
           <CardView schools={schoolsToDisplay} columns={columnsToDisplay} />
         ) : (
-          <p className="text-center mt-3 text-muted">No schools found matching your criteria.</p>
+          <p className={`${styles.noResultsText} text-muted`}>No schools found matching your criteria.</p>
         )}
       </div>
       {/* --- Use the ColumnSelector Component --- */}

@@ -1,0 +1,17 @@
+.tableCustom {
+  margin-top: 1.5rem;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: #fff;
+}
+
+.tableHeaderCustom {
+  background: #f8f9fa;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.tableCellCustom {
+  vertical-align: middle;
+  font-size: 1rem;
+} 

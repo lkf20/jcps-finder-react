@@ -1,5 +1,5 @@
 import React from 'react'; // Need React to return JSX
-import { DiversityChart } from '../components/DiversityChart'; // Import the chart component
+
 
 export function formatDisplayValue(colConfig, school) {
     // Get the raw value for the current column key
@@ -49,9 +49,7 @@ export function formatDisplayValue(colConfig, school) {
              }
             // --- <<< MODIFIED diversity_chart case >>> ---
             case 'diversity_chart': {
-                // Render the dedicated component, passing the *entire* school object
-                // The component itself will extract percentages and handle 'No data' state
-                return <DiversityChart school={school} />;
+                return null;
             }
             // --- <<< END MODIFICATION >>> ---
 

@@ -9,8 +9,6 @@ export const SchoolCard = ({ school, columns }) => {
   const nameColConfig = columns.find(c => c.key === 'display_name');
   const diversityColConfig = columns.find(c => c.key === 'diversity_chart');
 
-  // Generate a unique ID for the chart canvas in this card
-  const chartId = `diversity-chart-${school.school_code_adjusted || Math.random().toString(36).substring(7)}`;
 
   // Helper to check if there's any actual diversity data to display
   const hasActualDiversityData = () => {
@@ -71,7 +69,7 @@ export const SchoolCard = ({ school, columns }) => {
                     <span className={`${styles.diversityTitle} mb-0 fw-bold small`}>{diversityColConfig.header || 'Student Diversity'}</span>
                   </div>
                   <div className={`${styles.diversityChartContainer} col-auto`}> 
-                    <DiversityChart school={school} chartId={chartId} />
+                    <DiversityChart school={school} />
                   </div>
                 </div>
 

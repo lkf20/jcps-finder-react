@@ -4,14 +4,17 @@ import Chart from 'chart.js/auto';
 import styles from './DiversityChart.module.css';
 import { DIVERSITY_LABELS, DIVERSITY_COLORS, DIVERSITY_KNOWN_KEYS } from '../utils/diversityConfig'; 
 
-export const DiversityChart = ({ school, chartId }) => { // Added chartId prop
+export const DiversityChart = ({ school, chartId, variant }) => { // chartId is optional, variant is 'card' or 'table'
   const canvasRef = useRef(null);
   const chartInstanceRef = useRef(null);
+
+  // Generate chartId if not provided
+  const resolvedChartId = chartId || `diversity-chart-${school?.school_code_adjusted || Math.random().toString(36).substring(7)}`;
 
   useEffect(() => {
     const canvasElement = canvasRef.current;
 
-    if (!canvasElement || !school || !chartId) { // Added chartId check
+    if (!canvasElement || !school || !resolvedChartId) { // Added chartId check
       // console.log("DiversityChart: Canvas, School prop, or chartId missing.");
       return;
     }
@@ -89,7 +92,7 @@ export const DiversityChart = ({ school, chartId }) => { // Added chartId prop
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false, // CRITICAL: Allows chart to fill constrained container
+        maintainAspectRatio: true, // Ensure chart stays circular
         cutout: '65%', // Adjust for doughnut thickness
         plugins: {
           legend: { display: false }, // We use our custom DiversityLegend component
@@ -130,12 +133,18 @@ export const DiversityChart = ({ school, chartId }) => { // Added chartId prop
       }
     };
 
-  }, [school, chartId]); // Re-run effect if school data or chartId changes
+  }, [school, resolvedChartId]); // Re-run effect if school data or chartId changes
 
   // Render only the canvas. The ID is now passed as a prop.
   // Style ensures it tries to fill parent.
   return (
-    <canvas ref={canvasRef} id={chartId} className={styles.diversityChartCanvas}></canvas>
+    <canvas
+      ref={canvasRef}
+      id={resolvedChartId}
+      width={80}
+      height={80}
+      className={variant === 'table' ? styles.diversityChartCanvasTable : styles.diversityChartCanvas}
+    ></canvas>
   );
 };
 

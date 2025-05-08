@@ -4,7 +4,7 @@ import styles from './DiversityLegend.module.css';
 import { DIVERSITY_LABELS, DIVERSITY_COLORS, DIVERSITY_KNOWN_KEYS } from '../utils/diversityConfig';  
 
 
-export const DiversityLegend = ({ school }) => {
+export const DiversityLegend = ({ school, legendItemClass }) => {
     if (!school) {
         return <p className="text-muted small mb-0">Diversity data not available.</p>;
     }
@@ -58,7 +58,7 @@ export const DiversityLegend = ({ school }) => {
     return (
         <ul className={`d-flex flex-wrap justify-content-end ${styles.diversityLegendList}`}>
             {legendItems.map(item => (
-                <li key={item.label} className={`d-flex align-items-baseline ${styles.legendItem}`}>
+                <li key={item.label} className={`d-flex align-items-baseline ${styles.legendItem}${legendItemClass ? ` ${legendItemClass}` : ''}`}>
                     <span
                         className={styles.legendColorBox}
                         style={{ backgroundColor: item.color }}

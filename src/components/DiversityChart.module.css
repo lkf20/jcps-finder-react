@@ -12,4 +12,29 @@
   flex-shrink: 0;
   width: 80px !important;
   height: 80px !important;
+}
+
+.diversityChartCanvasTable {
+  display: block;
+  width: 80px !important;
+  height: 80px !important;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+}
+
+.diversityChartContainerTable {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: 320px;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.diversityChartTableCell {
+  min-width: 320px;
+  width: 320px;
+  max-width: 400px;
+  text-align: left;
+  vertical-align: middle;
 } 

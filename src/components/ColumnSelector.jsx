@@ -1,5 +1,6 @@
 // src/components/ColumnSelector.jsx
 import React, { useState, useEffect } from 'react';
+import styles from './ColumnSelector.module.css';
 
 export const ColumnSelector = ({
   id = "customizeColumnsOffcanvas", // Default ID
@@ -47,15 +48,15 @@ export const ColumnSelector = ({
   );
 
   return (
-    <div className="offcanvas offcanvas-end" tabIndex="-1" id={id} aria-labelledby={`${id}Label`}>
-      <div className="offcanvas-header border-bottom">
-        <h5 className="offcanvas-title" id={`${id}Label`}>{title}</h5>
+    <div className={`offcanvas offcanvas-end ${styles.offcanvasCustom}`} tabIndex="-1" id={id} aria-labelledby={`${id}Label`}>
+      <div className={`offcanvas-header ${styles.headerCustom} border-bottom`}>
+        <h5 className={`offcanvas-title ${styles.titleCustom}`} id={`${id}Label`}>{title}</h5>
         <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
-      <div className="offcanvas-body">
+      <div className={`offcanvas-body ${styles.bodyCustom}`}>
         {columnsToShowInSelector.length > 0 ? (
           columnsToShowInSelector.map(col => (
-            <div className="form-check mb-2" key={col.key}>
+            <div className={`form-check ${styles.formCheckCustom}`} key={col.key}>
               <input
                 className="form-check-input"
                 type="checkbox"
@@ -64,7 +65,7 @@ export const ColumnSelector = ({
                 checked={currentSelection.has(col.key)}
                 onChange={handleCheckboxChange}
               />
-              <label className="form-check-label" htmlFor={`col-select-${col.key}-${id}`}>
+              <label className={`form-check-label ${styles.formCheckLabelCustom}`} htmlFor={`col-select-${col.key}-${id}`}>
                 {col.header || col.key}
               </label>
             </div>
@@ -73,7 +74,7 @@ export const ColumnSelector = ({
           <p>No columns available for selection.</p>
         )}
       </div>
-      <div className="offcanvas-footer p-3 border-top bg-light">
+      <div className={`offcanvas-footer ${styles.footerCustom} p-3 border-top bg-light`}>
         <button
           type="button"
           className="btn btn-primary w-100"

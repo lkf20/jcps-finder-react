@@ -1,0 +1,38 @@
+.offcanvasCustom {
+  background: #fff;
+  border-left: 1px solid #e0e0e0;
+  box-shadow: -2px 0 8px rgba(0,0,0,0.04);
+  width: 350px;
+  max-width: 100vw;
+}
+
+.headerCustom {
+  border-bottom: 1px solid #dee2e6;
+  padding: 1rem 1.5rem;
+}
+
+.titleCustom {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0;
+}
+
+.bodyCustom {
+  padding: 1.5rem;
+}
+
+.footerCustom {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid #f0f0f0;
+  background: #f8f9fa;
+}
+
+.formCheckCustom {
+  margin-bottom: 0.75rem;
+}
+
+.formCheckLabelCustom {
+  font-size: 1rem;
+  font-weight: 400;
+  margin-left: 0.5rem;
+} 

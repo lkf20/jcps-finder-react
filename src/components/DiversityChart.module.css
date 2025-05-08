@@ -1,0 +1,15 @@
+.diversityChartContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 250px;
+  vertical-align: middle;
+}
+
+.diversityChartCanvas {
+  display: block;
+  aspect-ratio: 1 / 1;
+  flex-shrink: 0;
+  width: 80px !important;
+  height: 80px !important;
+} 

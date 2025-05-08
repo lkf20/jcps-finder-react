@@ -1,5 +1,6 @@
 // src/components/SchoolCard.jsx
 import React from 'react';
+import styles from './SchoolCard.module.css';
 import { formatDisplayValue } from '../utils/formatters';
 import DiversityChart from './DiversityChart';   // Adjust path if necessary
 import DiversityLegend from './DiversityLegend'; // Adjust path if necessary
@@ -18,7 +19,6 @@ export const SchoolCard = ({ school, columns }) => {
     let hasData = keysToCheck.some(key => school[key] != null && parseFloat(school[key]) > 0);
 
     if (!hasData) { // Check 'other_percent' calculation if primary keys are all zero
-        let knownTotalPercent = 0;
         const processedData = {}; // Use a local object for calculation
         keysToCheck.forEach(key => {
             const pct = school[key];
@@ -35,11 +35,11 @@ export const SchoolCard = ({ school, columns }) => {
   const shouldShowDiversitySection = diversityColConfig && hasActualDiversityData();
 
   return (
-    <div className="card mb-3 shadow-sm">
+    <div className={`${styles.schoolCard} card mb-2 shadow-sm`}>
       {/* Card Header (Name Section) */}
       {nameColConfig && (
-        <div className="card-body pb-2">
-          <h5 className="card-title mb-0">
+        <div className={`${styles.cardNameBody} card-body pb-3`}>
+          <h5 className={`${styles.schoolNameTitle} card-title mb-0`}>
             {/* Assuming formatDisplayValue handles display_name correctly */}
             {formatDisplayValue(nameColConfig, school)}
           </h5>
@@ -53,30 +53,30 @@ export const SchoolCard = ({ school, columns }) => {
           .map(col => (
             <li
               key={col.key}
-              className="list-group-item d-flex justify-content-between align-items-center py-2"
+              className={`${styles.standardListItem} list-group-item d-flex justify-content-between align-items-center py-3`}
             >
-              <span className="me-2 fw-bold small">{col.header || col.key}:</span>
-              <span className="text-end small">{formatDisplayValue(col, school)}</span>
+              <span className={`${styles.standardListItemLabel} me-2 fw-bold small`}>{col.header || col.key}:</span>
+              <span className={`${styles.standardListItemValue} text-end small`}>{formatDisplayValue(col, school)}</span>
             </li>
           ))}
 
         {/* --- New Dedicated Diversity Section --- */}
         {diversityColConfig && ( // Render this list item if diversity_chart is a selected column
-          <li className="list-group-item py-2">
+          <li className={`${styles.diversityListItem} list-group-item py-4`}>
             {shouldShowDiversitySection ? (
               <div className="container-fluid px-0"> {/* Ensures Bootstrap grid behaves */}
                 {/* Top Row: Title and Chart */}
                 <div className="row g-1 align-items-center mb-1"> {/* Smaller gutter and margin */}
                   <div className="col">
-                    <h6 className="mb-0 fw-bold small">{diversityColConfig.header || 'Student Diversity'}</h6>
+                    <span className={`${styles.diversityTitle} mb-0 fw-bold small`}>{diversityColConfig.header || 'Student Diversity'}</span>
                   </div>
-                  <div className="col-auto" style={{ width: '60px', height: '60px' }}> {/* Adjust chart size here */}
+                  <div className={`${styles.diversityChartContainer} col-auto`}> 
                     <DiversityChart school={school} chartId={chartId} />
                   </div>
                 </div>
 
                 {/* Bottom Row: Legend */}
-                <div className="row">
+                <div className="row mt-3">
                   <div className="col-12">
                     <DiversityLegend school={school} />
                   </div>

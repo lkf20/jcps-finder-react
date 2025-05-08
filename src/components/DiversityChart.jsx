@@ -1,6 +1,7 @@
 // src/components/DiversityChart.jsx
 import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
+import styles from './DiversityChart.module.css';
 import { DIVERSITY_LABELS, DIVERSITY_COLORS, DIVERSITY_KNOWN_KEYS } from '../utils/diversityConfig'; 
 
 export const DiversityChart = ({ school, chartId }) => { // Added chartId prop
@@ -134,7 +135,7 @@ export const DiversityChart = ({ school, chartId }) => { // Added chartId prop
   // Render only the canvas. The ID is now passed as a prop.
   // Style ensures it tries to fill parent.
   return (
-    <canvas ref={canvasRef} id={chartId} style={{ display: 'block', width: '100%', height: '100%' }}></canvas>
+    <canvas ref={canvasRef} id={chartId} className={styles.diversityChartCanvas}></canvas>
   );
 };
 

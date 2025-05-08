@@ -1,4 +1,5 @@
 import React, { useState } from 'react'; // Keep useState for local formError
+import styles from './SearchForm.module.css';
 
 // Receive props from App
 export const SearchForm = ({
@@ -24,14 +25,14 @@ export const SearchForm = ({
   };
 
   return (
-    <section id="search-section" className="card p-4 mb-4 shadow-sm">
-      <form id="school-search-form" onSubmit={handleSubmit}>
-        {formError && <div className="alert alert-warning p-2 mb-3 small">{formError}</div>}
+    <section id="search-section" className={styles.searchSection}>
+      <form id="school-search-form" className={styles.form} onSubmit={handleSubmit}>
+        {formError && <div className={styles.formError}>{formError}</div>}
         <div className="mb-3">
-          <label htmlFor="address" className="form-label">Enter Your Full Address:</label>
+          <label htmlFor="address" className={styles.label}>Enter Your Full Address:</label>
           <input
             type="text"
-            className="form-control"
+            className={styles.input}
             id="address"
             name="address"
             placeholder="e.g., 123 Main St, Louisville, KY 40202"
@@ -43,9 +44,9 @@ export const SearchForm = ({
         </div>
         <div className="row g-3 align-items-end">
           <div className="col-md-9">
-            <label htmlFor="schoolLevel" className="form-label">Select School Level:</label>
+            <label htmlFor="schoolLevel" className={styles.label}>Select School Level:</label>
             <select
-              className="form-select"
+              className={styles.input}
               id="schoolLevel"
               name="schoolLevel"
               required

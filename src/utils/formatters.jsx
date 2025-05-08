@@ -35,16 +35,17 @@ export function formatDisplayValue(colConfig, school) {
                  let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer">{nameDisplay}</a>;
                  let detailsText = '';
                  if (school.type || school.school_level) { detailsText = `${school.type || ''}${school.type && school.school_level ? ' - ' : ''}${school.school_level || ''}`; }
+                 if (school.type) { detailsText = school.type; }
                  let mapLink = null;
                  // Check for all necessary address components
                  if (school.address && school.city && school.state && school.zipcode) {
                      const fullAddress = `${school.address}, ${school.city}, ${school.state} ${school.zipcode}`;
                      const encodedAddress = encodeURIComponent(fullAddress);
                      const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                     mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="ms-1 text-secondary" title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
+                     mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="me-1 text-secondary" title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
                  }
                  // Return JSX conditionally including the details div
-                 return <>{nameLink} {(detailsText || mapLink) && <div className="d-flex align-items-center mt-1"><small className="text-muted">{detailsText}</small>{mapLink}</div>}</>;
+                 return <>{nameLink} {(detailsText || mapLink) && <div className="mt-2 d-flex align-items-center mt-1">{mapLink}<small className="text-muted" style={{ fontSize: '1em' }}>{detailsText}</small></div>}</>;
              }
             // --- <<< MODIFIED diversity_chart case >>> ---
             case 'diversity_chart': {

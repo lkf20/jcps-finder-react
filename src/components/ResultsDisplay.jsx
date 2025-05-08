@@ -3,6 +3,7 @@ import React, { useState, useMemo } from 'react'; // Added useMemo
 // Import child components we will create next
 import { TableView } from './TableView';
 import { CardView } from './CardView';
+import { ColumnSelector } from './ColumnSelector';
 
 // Assuming allPossibleColumns is defined elsewhere (e.g., imported or passed as prop)
 // For now, let's define it here for simplicity, but ideally move it to a config file
@@ -92,17 +93,10 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => { // Receive p
      // Note: displayResults is not called directly, React re-renders due to state change
   };
 
-  const handleApplyColumns = (newSelectedKeys) => {
-      console.log("Applying new columns:", newSelectedKeys);
-      // Ensure display_name is always present
-      setSelectedColumns([...new Set(['display_name', ...newSelectedKeys])]);
-      // Close offcanvas - need reference or different approach in React
-      const offcanvasElement = document.getElementById('customizeColumnsOffcanvas');
-      if (offcanvasElement) {
-           const instance = bootstrap.Offcanvas.getInstance(offcanvasElement);
-           if (instance) instance.hide();
-           else (new bootstrap.Offcanvas(offcanvasElement)).hide(); // Less reliable
-      }
+  // This function will be passed to ColumnSelector
+  const handleApplySelectedColumns = (newlySelectedKeys) => {
+    console.log("Applying new columns from ColumnSelector:", newlySelectedKeys);
+    setSelectedColumns(newlySelectedKeys); // Update the state
   };
 
   // --- Generate Sort Options Dynamically ---
@@ -179,46 +173,15 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => { // Receive p
           <p className="text-center mt-3 text-muted">No schools found matching your criteria.</p>
         )}
       </div>
-
-       {/* --- Offcanvas Definition (Pass props for column selection) --- */}
-       {/* We'll create a ColumnSelector component later */}
-       <div className="offcanvas offcanvas-end" tabIndex="-1" id="customizeColumnsOffcanvas" aria-labelledby="customizeColumnsOffcanvasLabel">
-         <div className="offcanvas-header border-bottom">
-           <h5 className="offcanvas-title" id="customizeColumnsOffcanvasLabel">Select Columns</h5>
-           <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-         </div>
-         <div className="offcanvas-body">
-           {/* Placeholder - Replace with ColumnSelector component later */}
-           <p>Column checkboxes go here...</p>
-           {/* Example of how to pass data for checkboxes */}
-           {allPossibleColumns.filter(c => c.key !== 'display_name').map(col => (
-               <div className="form-check" key={col.key}>
-                   <input
-                       className="form-check-input"
-                       type="checkbox"
-                       value={col.key}
-                       id={`col-select-${col.key}`}
-                       checked={selectedColumns.includes(col.key)}
-                       onChange={(e) => {
-                           const { value, checked } = e.target;
-                           setSelectedColumns(prev =>
-                               checked
-                                   ? [...new Set([...prev, value])] // Add key
-                                   : prev.filter(key => key !== value) // Remove key
-                           );
-                       }}
-                    />
-                   <label className="form-check-label" htmlFor={`col-select-${col.key}`}>
-                       {col.header || col.key}
-                   </label>
-               </div>
-           ))}
-         </div>
-         {/* Keep Apply Button - onClick can call handleApplyColumns (though direct state update works too) */}
-          <div className="offcanvas-footer p-3 border-top bg-light">
-            <button type="button" className="btn btn-primary w-100" id="apply-column-changes" data-bs-dismiss="offcanvas">Apply Changes</button>
-          </div>
-       </div>
+      {/* --- Use the ColumnSelector Component --- */}
+      <ColumnSelector
+        id="customizeColumnsOffcanvas" // Matches the data-bs-target on the button
+        title="Customize Displayed Columns"
+        allPossibleColumns={allPossibleColumns}
+        initialSelectedColumns={selectedColumns}
+        onApplyColumns={handleApplySelectedColumns}
+        alwaysIncludedKey="display_name" // 'display_name' won't be a checkbox, but always included
+      />
     </>
   );
 }

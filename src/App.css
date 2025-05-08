@@ -64,6 +64,7 @@ ul.diversity-legend-list li {
   display: flex; align-items: center;
   /* margin-bottom: 1px; -- Default, can be overridden by Bootstrap utilities like mb-0 */
   white-space: nowrap; /* Prevents wrapping of the whole li content */
+}
 
 /* Base styles for the color swatch span */
 ul.diversity-legend-list li .legend-color-box {
@@ -102,8 +103,8 @@ ul.diversity-legend-list li .legend-value {
 #results-output tbody tr:hover { background-color: #e9ecef; }
 
 /* School Name & Link (Table) */
-#results-output table td:first-child a { color: #004D40; font-size: 1.1rem; font-weight: 600; text-decoration: none; transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out; }
-#results-output table td:first-child a:hover { color: #00796B; text-decoration: underline; }
+#results-output table td:first-child a { color: #00796B; font-size: 1.1rem; font-weight: 600; text-decoration: none; transition: color 0.2s ease-in-out, text-decoration 0.2s ease-in-out; }
+#results-output table td:first-child a:hover { color: #004D40; text-decoration: underline; }
 #results-output table td:first-child .d-flex { line-height: 1.1; }
 #results-output table td:first-child .bi-geo-alt-fill { font-size: 0.9rem; vertical-align: middle; color: #6c757d; transition: color 0.2s ease-in-out; }
 #results-output table td:first-child a:hover .bi-geo-alt-fill { color: #00796B; }
@@ -195,10 +196,10 @@ ul.diversity-legend-list li .legend-value {
 
 
 /* Title for diversity in the card (the h6 inside .school-card-diversity-item) */
-#results-output-cards .school-card-diversity-item h6 {
+#results-output-cards .school-card-diversity-item span {
   /* font-weight: 600; -- from .fw-bold in component */
   /* font-size: 0.875rem; -- from .small in component */
-  /* color: #555; -- or as needed */
+  color: #555 !important;
   margin-bottom: 0 !important; /* Ensure no extra margin if h6 has it by default */
 }
 
@@ -216,7 +217,7 @@ ul.diversity-legend-list li .legend-value {
 /* Legend items (li) within the card's diversity section */
 #results-output-cards .school-card-diversity-item ul.diversity-legend-list li {
   /* The li already has: d-flex align-items-center me-2 mb-0 (from DiversityLegend.jsx component) */
-  line-height: 1.2; /* Tighter line-height for card view legend */
+  line-height: 1; /* Tighter line-height for card view legend */
 }
 
 /* Color swatch (span.legend-color-box) for legend items in card */

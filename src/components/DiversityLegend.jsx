@@ -1,5 +1,6 @@
 // src/components/DiversityLegend.jsx
 import React from 'react';
+import styles from './DiversityLegend.module.css';
 import { DIVERSITY_LABELS, DIVERSITY_COLORS, DIVERSITY_KNOWN_KEYS } from '../utils/diversityConfig';  
 
 
@@ -54,29 +55,19 @@ export const DiversityLegend = ({ school }) => {
     }
 
     // --- 3. Render Legend ---
-    // Add diversity-legend-list class to UL
     return (
-        <ul className="list-unstyled mb-0 d-flex flex-wrap justify-content-start diversity-legend-list">
+        <ul className={`d-flex flex-wrap justify-content-end ${styles.diversityLegendList}`}>
             {legendItems.map(item => (
-                <li key={item.label} className="d-flex align-items-baseline me-2 mb-1">
+                <li key={item.label} className={`d-flex align-items-baseline ${styles.legendItem}`}>
                     <span
-                        className="legend-color-box me-1"
-                        style={{
-                            display: 'inline-block',
-                            width: '10px',
-                            height: '10px',
-                            backgroundColor: item.color,
-                            borderRadius: '2px',
-                            verticalAlign: 'middle',
-                            flexShrink: 0, // Good practice for flex items
-                        }}
+                        className={styles.legendColorBox}
+                        style={{ backgroundColor: item.color }}
                     ></span>
-                    {/* Split label and value for better styling via CSS if needed */}
-                    <span className="legend-label text-muted" style={{ fontSize: '0.7rem', lineHeight: '1' }}> {/* Decreased font size */}
-                          {item.label}:
-                     </span>
-                    <span className="legend-value text-muted ms-1" style={{ fontSize: '0.7rem',  fontWeight: '500', lineHeight: '1' }}> {/* Decreased font size, added class & style for value */}
-                      {item.value}%
+                    <span className={styles.legendLabel}>
+                        {item.label}:
+                    </span>
+                    <span className={styles.legendValue}>
+                        {item.value}%
                     </span>
                 </li>
             ))}

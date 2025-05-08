@@ -1,0 +1,45 @@
+.diversityLegendList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.legendItem {
+  white-space: nowrap;
+  line-height: 1;
+  margin-bottom: 0px;
+  margin-right: 0px;
+}
+
+.legendColorBox {
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 2px;
+}
+
+.legendLabel {
+  flex-grow: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 0.25rem;
+  height: auto;
+  font-size: 0.7rem;
+  line-height: 1;
+  color: #555;
+}
+
+.legendValue {
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  line-height: 1;
+  color: #555;
+  margin-left: 2px;
+  margin-right: 2px;
+}

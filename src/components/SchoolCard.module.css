@@ -38,7 +38,7 @@
   }
   
   
-  /* Styles for standard list items (e.g., Distance, Enrollment) */
+  /* Styles for standard list items (e.g., Distance, Students) */
   .standardListItem {
     /* d-flex, justify-content-between, align-items-center, py-3 are Bootstrap utilities, keep in JSX */
     /* list-group-item is a Bootstrap class, provides base padding and borders */

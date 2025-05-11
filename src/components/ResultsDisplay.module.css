@@ -19,4 +19,14 @@
   margin-top: 1.5rem;
   color: #6c757d;
   font-size: 1.1rem;
+}
+
+.resultsInfoBar {
+  font-size: 0.95rem !important;
+  padding: 0.5rem 1rem !important;
+  margin-bottom: 2rem !important;
+  background: #f4f6f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 0.5rem;
+  color: #333;
 } 

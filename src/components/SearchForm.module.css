@@ -1,7 +1,7 @@
 .searchSection {
   background: #fff;
   border-radius: 0.5rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   padding: 2rem;
   margin-bottom: 1.5rem;
 }
@@ -46,4 +46,8 @@
   background-color: #0b5ed7;
   border-color: #0a58ca;
   color: #fff;
+}
+
+.noMarginBottom {
+  margin-bottom: 0 !important;
 } 

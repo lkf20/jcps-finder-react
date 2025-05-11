@@ -35,4 +35,10 @@
   font-size: 1rem;
   font-weight: 400;
   margin-left: 0.5rem;
+}
+
+.dividerLine {
+  border: none;
+  border-top: 1px solid #bdbdbd;
+  margin: 1.2rem 0;
 } 

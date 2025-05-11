@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'; // Keep useRef for later ch
 import './App.css';
 import { SearchForm } from './components/SearchForm.jsx'; // Import the new component
 import { ResultsDisplay } from './components/ResultsDisplay';
-import { DiversityChart } from './components/DiversityChart';
+
 
 
 const API_ENDPOINT = 'https://1248-2603-6010-6202-ce13-78bb-dfe0-99f2-7526.ngrok-free.app/school-details-by-address'; // <<< UPDATE THIS
@@ -59,11 +59,11 @@ function App() {
     return (
       <> {/* React Fragment to return multiple top-level elements */}
         {/* Main container */}
-        <div className="container mt-4">
+        <div className="main-container mt-4">
   
           {/* Header Section */}
           <header className="text-center mb-4">
-            <h1>JCPS School Finder</h1>
+            <h1 className="main-heading">JCPS School Comparison</h1>
             <p className="lead">Find and compare Jefferson County Public Schools in your zone.</p>
           </header>
   
@@ -99,11 +99,6 @@ function App() {
              {/* 3. Show Results Info and the ResultsDisplay component if search completed successfully */}
              {searchResults && !error && !isLoading && (
                <>
-                 {/* Results Info Bar */}
-                 <div id="results-info" className="alert alert-secondary">
-                   {`Showing results for address: ${searchResults.query_address || 'N/A'} (Lat: ${searchResults.query_lat?.toFixed(5) || 'N/A'}, Lon: ${searchResults.query_lon?.toFixed(5) || 'N/A'})`}
-                 </div>
-  
                  {/* Render the component responsible for displaying results */}
                  <ResultsDisplay
                       searchResults={searchResults}
@@ -134,9 +129,7 @@ function App() {
   
         </div> {/* End Container */}
   
-  
         {/* --- Offcanvas Definition (Structure Only) --- */}
-        {/* Functionality will be handled by a dedicated ColumnSelector component passed into ResultsDisplay later */}
         <div className="offcanvas offcanvas-end" tabIndex="-1" id="customizeColumnsOffcanvas" aria-labelledby="customizeColumnsOffcanvasLabel">
           <div className="offcanvas-header border-bottom">
             <h5 className="offcanvas-title" id="customizeColumnsOffcanvasLabel">Select Columns to Display</h5>

@@ -11,20 +11,25 @@ import { ColumnSelector } from './ColumnSelector';
 // Make sure this includes ALL columns needed for display and sorting
 const allPossibleColumns = [
     { key: 'display_name', header: '', default: true, sortable: true, sortLabel: 'A-Z', sortDescDefault: false },
+    // General
     { key: 'distance_mi', header: 'Distance (mi)', default: true, sortable: true, sortLabel: 'Distance', sortDescDefault: false },
+    { key: 'membership', header: 'Students', default: true, sortable: true, sortLabel: 'Students', sortDescDefault: true },
+    { key: 'start_end_time', header: 'Start - End Time', default: false, sortable: true, sortLabel: 'Start Time', sortDescDefault: false },
+    // Performance
     { key: 'great_schools_rating', header: 'GreatSchools Rating', default: true, sortable: true, sortLabel: 'Rating', sortDescDefault: true },
-    { key: 'membership', header: 'Enrollment', default: true, sortable: true, sortLabel: 'Enrollment', sortDescDefault: true },
+    { key: 'reading_math_proficiency', header: 'Reading / Math Proficiency', default: false, sortable: true, sortLabel: 'Reading / Math Proficiency', sortDescDefault: false },
+    { key: 'gifted_talented_percent', header: 'Gifted & Talented', default: false, sortable: true, sortLabel: 'Gifted/Talented', sortDescDefault: false },
+    // Demographics
+    { key: 'economically_disadvantaged_percent', header: 'Economically Disadvantaged', default: false, sortable: true, sortLabel: 'Econ Disadvan', sortDescDefault: false },
+    { key: 'diversity_chart', header: 'Student Diversity', default: false, sortable: false },
+    // Teachers
+    { key: 'teacher_avg_years_experience', header: 'Avg Yrs Teacher Experience', default: false, sortable: true, sortLabel: 'Avg Teacher Experience', sortDescDefault: false },
+    { key: 'percent_teachers_3_years_or_less_experience', header: '< 3 Years Teacher Experience', default: false, sortable: true, sortLabel: '< 3 Years Teacher Experience', sortDescDefault: false },
+    // Parent/Community
     { key: 'parent_satisfaction', header: 'Parent Satisfaction', default: false, sortable: true, sortLabel: 'Parent Satisfaction', sortDescDefault: true },
-    { key: 'student_teacher_ratio_value', header: 'Student/Teacher Ratio', default: false, sortable: true, sortLabel: 'Stu/Tch Ratio', sortDescDefault: false },
-    { key: 'start_time', header: 'Start Time', default: false, sortable: true, sortLabel: 'Start Time', sortDescDefault: false },
-    { key: 'end_time', header: 'End Time', default: false, sortable: true, sortLabel: 'End Time', sortDescDefault: false },
+    { key: 'pta_membership_percent', header: 'PTA Membership', default: false, sortable: true, sortLabel: 'PTA Membership', sortDescDefault: false },
+    // Reports
     { key: 'ky_reportcard_URL', header: 'KY Report Card', default: false, sortable: false },
-    { key: 'diversity_chart', header: 'Student Diversity', default: true, sortable: false },
-    { key: 'type', header: 'Type', default: false, sortable: false },
-    { key: 'school_level', header: 'Level', default: false, sortable: false },
-    { key: 'school_website_link', header: 'Website', default: false, sortable: false },
-    { key: 'address', header: 'Addr Str', default: false, sortable: false }, { key: 'city', header: 'City', default: false, sortable: false }, { key: 'state', header: 'State', default: false, sortable: false }, { key: 'zipcode', header: 'Zip', default: false, sortable: false },
-    { key: 'white_percent', header: 'White %', default: false, sortable: false }, { key: 'african_american_percent', header: 'AA %', default: false, sortable: false }, { key: 'hispanic_percent', header: 'Hispanic %', default: false, sortable: false }, { key: 'asian_percent', header: 'Asian %', default: false, sortable: false }, { key: 'two_or_more_races_percent', header: 'Two+ %', default: false, sortable: false },
 ];
 
 
@@ -36,8 +41,9 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => { // Receive p
   // Default sort matching App's initial state or desired default
   const [sortConfig, setSortConfig] = useState({ key: 'distance_mi', descending: false });
   const [selectedColumns, setSelectedColumns] = useState(() => {
-        const initialCols = [ 'display_name', ...allPossibleColumns.filter(col => col.default).map(col => col.key) ];
-        return [...new Set(initialCols)];
+        const initialCols = ['display_name', ...allPossibleColumns.filter(col => col.default).map(col => col.key)];
+        // Remove diversity_chart if present
+        return [...new Set(initialCols.filter(key => key !== 'diversity_chart'))];
   });
 
   // --- Memoized Calculation: Filter and Sort Schools ---
@@ -78,9 +84,10 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => { // Receive p
 
   // --- Memoized Calculation: Determine Columns to Display ---
   const columnsToDisplay = useMemo(() => {
+    // Order columns according to allPossibleColumns order
     return allPossibleColumns
       .filter(col => selectedColumns.includes(col.key))
-      .sort((a,b) => { if (a.key === 'display_name') return -1; if (b.key === 'display_name') return 1; return 0; });
+      .sort((a, b) => allPossibleColumns.findIndex(c => c.key === a.key) - allPossibleColumns.findIndex(c => c.key === b.key));
   }, [selectedColumns]); // Dependency for recalculation
 
 
@@ -134,6 +141,11 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => { // Receive p
 
   return (
     <>
+        {searchResults && (
+            <div id="results-info" className={styles.resultsInfoBar}>
+            {`Showing results for address: ${searchResults.query_address || 'N/A'} (Lat: ${searchResults.query_lat?.toFixed(5) || 'N/A'}, Lon: ${searchResults.query_lon?.toFixed(5) || 'N/A'})`}
+            </div>
+        )}
       {/* --- Display Controls --- */}
       <div className={styles.displayControlsContainer} id="display-controls-container">
         <div>
@@ -183,6 +195,7 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => { // Receive p
         onApplyColumns={handleApplySelectedColumns}
         alwaysIncludedKey="display_name" // 'display_name' won't be a checkbox, but always included
       />
+
     </>
   );
 }

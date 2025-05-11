@@ -46,21 +46,21 @@ export const SearchForm = ({
           <div className="col-md-9">
             <label htmlFor="schoolLevel" className={styles.label}>Select School Level:</label>
             <select
-              className={styles.input}
-              id="schoolLevel"
-              name="schoolLevel"
-              required
-              value={currentSchoolLevel} // Use prop for value
-              onChange={(e) => onSchoolLevelChange(e.target.value)} // Call prop function on change
-              disabled={isLoading}
+            className={`${styles.input} ${styles.noMarginBottom}`}
+            id="schoolLevel"
+            name="schoolLevel"
+            required
+            value={currentSchoolLevel} // Use prop for value
+            onChange={(e) => onSchoolLevelChange(e.target.value)} // Call prop function on change
+            disabled={isLoading}
             >
-              <option value="" disabled>-- Please Select --</option>
-              <option value="Elementary">Elementary School</option>
-              <option value="Middle">Middle School</option>
-              <option value="High">High School</option>
+            <option value="" disabled>-- Please Select --</option>
+            <option value="Elementary">Elementary School</option>
+            <option value="Middle">Middle School</option>
+            <option value="High">High School</option>
             </select>
           </div>
-          <div className="col-md-3">
+          <div className="col-md-3 d-flex align-items-center">
             <button type="submit" className="btn btn-primary w-100" disabled={isLoading}>
               {isLoading ? 'Searching...' : 'Find Schools'}
             </button>

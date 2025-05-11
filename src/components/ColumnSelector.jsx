@@ -44,42 +44,79 @@ export const ColumnSelector = ({
   // Filter out the column that should always be included (e.g., 'display_name')
   // and any other columns you might want to exclude from user selection.
   const columnsToShowInSelector = allPossibleColumns.filter(
-    col => col.key !== alwaysIncludedKey && !col.fixed // Add a 'fixed' property to column config if some are non-selectable
+    col => col.key !== alwaysIncludedKey && !col.fixed
   );
+
+  // Group columns by category
+  const groupings = [
+    {
+      label: 'General',
+      keys: ['distance_mi', 'membership', 'start_end_time'],
+    },
+    {
+      label: 'Performance',
+      keys: ['great_schools_rating', 'reading_math_proficiency', 'gifted_talented_percent'],
+    },
+    {
+      label: 'Demographics',
+      keys: ['diversity_chart', 'economically_disadvantaged_percent'],
+    },
+    {
+      label: 'Teachers',
+      keys: ['teacher_avg_years_experience', 'percent_teachers_3_years_or_less_experience'],
+    },
+    {
+      label: 'Parent/Community',
+      keys: ['parent_satisfaction', 'pta_membership_percent'],
+    },
+    {
+      label: 'Reports',
+      keys: ['ky_reportcard_URL'],
+    },
+  ];
 
   return (
     <div className={`offcanvas offcanvas-end ${styles.offcanvasCustom}`} tabIndex="-1" id={id} aria-labelledby={`${id}Label`}>
       <div className={`offcanvas-header ${styles.headerCustom} border-bottom`}>
-        <h5 className={`offcanvas-title ${styles.titleCustom}`} id={`${id}Label`}>{title}</h5>
+        <h5 className={`offcanvas-title ${styles.titleCustom}`} id={`${id}Label`}>Select Display Data</h5>
         <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
       </div>
       <div className={`offcanvas-body ${styles.bodyCustom}`}>
-        {columnsToShowInSelector.length > 0 ? (
-          columnsToShowInSelector.map(col => (
-            <div className={`form-check ${styles.formCheckCustom}`} key={col.key}>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                value={col.key}
-                id={`col-select-${col.key}-${id}`} // Ensure unique ID if multiple selectors were ever used
-                checked={currentSelection.has(col.key)}
-                onChange={handleCheckboxChange}
-              />
-              <label className={`form-check-label ${styles.formCheckLabelCustom}`} htmlFor={`col-select-${col.key}-${id}`}>
-                {col.header || col.key}
-              </label>
-            </div>
-          ))
-        ) : (
-          <p>No columns available for selection.</p>
-        )}
+        {groupings.map((group, idx) => {
+          const groupColumns = columnsToShowInSelector.filter(col => group.keys.includes(col.key));
+          if (groupColumns.length === 0) return null;
+          return (
+            <React.Fragment key={group.label}>
+              {idx > 0 && <hr className={styles.dividerLine} />}
+              <div style={{ marginBottom: '1.2rem' }}>
+                <h6 style={{ fontWeight: 600, fontSize: '1rem', marginBottom: '0.5rem' }}>{group.label}</h6>
+                {groupColumns.map(col => (
+                  <div className={`form-check ${styles.formCheckCustom}`} key={col.key}>
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      value={col.key}
+                      id={`col-select-${col.key}-${id}`}
+                      checked={currentSelection.has(col.key)}
+                      onChange={handleCheckboxChange}
+                    />
+                    <label className={`form-check-label ${styles.formCheckLabelCustom}`} htmlFor={`col-select-${col.key}-${id}`}>
+                      {col.header || col.key}
+                    </label>
+                  </div>
+                ))}
+              </div>
+            </React.Fragment>
+          );
+        })}
+        {columnsToShowInSelector.length === 0 && <p>No columns available for selection.</p>}
       </div>
       <div className={`offcanvas-footer ${styles.footerCustom} p-3 border-top bg-light`}>
         <button
           type="button"
           className="btn btn-primary w-100"
           onClick={handleApply}
-          data-bs-dismiss="offcanvas" // Bootstrap will close the offcanvas
+          data-bs-dismiss="offcanvas"
         >
           Apply Changes
         </button>

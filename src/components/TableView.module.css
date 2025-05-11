@@ -5,13 +5,80 @@
   background: #fff;
 }
 
+tr {
+  min-height: 120px;
+  height: 120px;
+}
+
 .tableHeaderCustom {
   background: #f8f9fa;
-  font-size: 1.05rem;
+  font-size: 0.85rem;
   font-weight: 600;
+  text-align: center;
 }
 
 .tableCellCustom {
   vertical-align: middle;
   font-size: 1rem;
+  text-align: center;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.schoolNameTable,
+.schoolNameTable a {
+  color: #004D40 !important;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.schoolNameTable a:hover {
+  color: #00796B !important;
+  text-decoration: underline;
+}
+
+td .schoolNameTable,
+td .schoolNameTable a {
+  color: #004D40 !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+}
+
+td .schoolNameTable a:hover {
+  color: #00796B !important;
+  text-decoration: underline !important;
+}
+
+table td .schoolNameTable,
+table td a.schoolNameTable {
+  color: #004D40 !important;
+  font-weight: 600 !important;
+  text-decoration: none !important;
+  text-align: left !important;
+  display: block;
+}
+table td a.schoolNameTable:hover {
+  color: #00796B !important;
+  text-decoration: underline !important;
+}
+
+.schoolDetailsText {
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: 400;
+  margin-left: 0.25rem;
+}
+
+.startEndTimeCol {
+  min-width: 140px;
+  width: 140px;
+  max-width: 180px;
+  vertical-align: middle;
+}
+
+.readingMathCol {
+  min-width: 160px;
+  width: 160px;
+  max-width: 220px;
+  vertical-align: middle;
 } 

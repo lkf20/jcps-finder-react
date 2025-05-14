@@ -27,8 +27,7 @@ const allPossibleColumns = [
     // Parent/Community
     { key: 'parent_satisfaction', header: 'Parent Satisfaction', default: false, sortable: true, sortLabel: 'Parent Satisfaction', sortDescDefault: true },
     { key: 'pta_membership_percent', header: 'PTA Membership', default: false, sortable: true, sortLabel: 'PTA Membership', sortDescDefault: true },
-    // Reports
-    { key: 'ky_reportcard_URL', header: 'KY Report Card', default: false, sortable: false },
+
 ];
 
 // --- Define the desired order and keys for the sort dropdown ---

@@ -69,10 +69,6 @@ export const ColumnSelector = ({
       label: 'Parent/Community',
       keys: ['parent_satisfaction', 'pta_membership_percent'],
     },
-    {
-      label: 'Reports',
-      keys: ['ky_reportcard_URL'],
-    },
   ];
 
   return (

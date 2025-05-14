@@ -32,9 +32,6 @@ export function formatDisplayValue(colConfig, school) {
                 return !isNaN(value) ? `${Math.round(value)}%` : 'N/A';
             case 'student_teacher_ratio_value':
                 return !isNaN(value) ? `${Math.round(value)}:1` : 'N/A';
-            case 'ky_reportcard_URL':
-                // Ensure value is a non-empty string before rendering link
-                return value ? <a href={value} target="_blank" rel="noopener noreferrer" className='btn btn-outline-primary btn-sm py-0'>View <i className="bi bi-box-arrow-up-right ms-1"></i></a> : 'N/A';
             case 'great_schools_rating':
                 return !isNaN(value) ? <span className="rating-circle">{value}</span> : 'N/A'; // Assumes CSS handles the circle
             case 'display_name': {
@@ -92,15 +89,11 @@ export function formatDisplayValue(colConfig, school) {
                 }
                 return mainStudents !== null ? mainStudents.toLocaleString() : 'N/A';
             }
-            // START ADDED CODE
             case 'overall_indicator_rating': {
                const rating = parseInt(value, 10);
-
-               // Handle missing or invalid rating value before mapping
                if (value === null || value === undefined || isNaN(rating) || rating < 1 || rating > 5) {
-                   return 'N/A'; 
+                   return 'N/A';
                }
-
                const ratingMap = {
                    1: { color: 'red', text: 'Red (Overall Performance Rating: 1)' },
                    2: { color: 'orange', text: 'Orange (Overall Performance Rating: 2)' },
@@ -108,34 +101,41 @@ export function formatDisplayValue(colConfig, school) {
                    4: { color: 'green', text: 'Green (Overall Performance Rating: 4)' },
                    5: { color: 'blue', text: 'Blue (Overall Performance Rating: 5)' },
                };
-
                const ratingInfo = ratingMap[rating];
-               // This check is mostly redundant due to the earlier validation but good for safety
-               if (!ratingInfo) return 'N/A'; 
+               if (!ratingInfo) return 'N/A';
 
                const imagePath = `/images/indicator_${ratingInfo.color}.png`;
-               const altText = `KY School Rating: ${ratingInfo.text}`;
+               const altText = `KY School Rating: ${ratingInfo.text}. Click to view report card.`; // Updated alt text
+               const reportCardUrl = school.ky_reportcard_URL;
 
-               return (
-                    <div className={tableStyles.kyRatingCell}>
-                       <img
-                           src={imagePath}
-                           alt={altText}
-                           title={altText} // Adds a browser tooltip on hover
-                           className={tableStyles.kyRatingImage}
-                       />
-                       {/* You can optionally add the text label if it's not part of the image,
-                           or if you want it to be screen-reader friendly text alongside the image.
-                           Since your image includes the text, this might be redundant visually.
-                       <span style={{ fontSize: '0.85em', color: '#333', marginTop: '0.25rem' }}>
-                           {ratingMap[rating].text.split('(')[0].trim()} 
-                       </span>
-                       */}
-                   </div>
+               const imageElement = (
+                   <img
+                       src={imagePath}
+                       alt={altText}
+                       title={altText}
+                       className={tableStyles.kyRatingImage} // Using class from TableView.module.css
+                   />
                );
+
+               const content = (
+                <div className={tableStyles.kyRatingCell}> {/* Using class from TableView.module.css */}
+                    {reportCardUrl ? (
+                        <a
+                            href={reportCardUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ display: 'inline-block', textDecoration: 'none' }} // inline-block to wrap image tightly
+                            title={`View KY Report Card for ${school.display_name || 'this school'}`} // More specific title for the link
+                        >
+                            {imageElement}
+                        </a>
+                    ) : (
+                        imageElement // Render image without link if no URL
+                    )}
+                </div>
+               );
+               return content;
            }
-           // END ADDED CODE
-            // Default case for simple text display
             default:
                 return String(value); // Convert other values to string
        }

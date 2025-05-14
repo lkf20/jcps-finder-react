@@ -192,14 +192,43 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
     // (though changing the key via dropdown triggers handleSortChange which sets it anyway).
   }, [selectedColumns, sortConfig.key]); // <<<<< DEPENDENCIES DEFINED
 
-  //Get zone name to display
-  const displayZoneName = useMemo(() => {
-    // Directly access the 'zone' variable from searchResults if it exists
-    if (searchResults && searchResults.zone) {
-      return searchResults.zone;
-    }
-    return 'Zone information not available'; // Or 'Zone information not available' if you prefer a placeholder
-  }, [searchResults]);
+    // --- Determine the User's Reside Zone Name based on a Reside High School ---
+    const userResideZoneDisplayName = useMemo(() => {
+        if (!searchResults || !searchResults.results_by_zone || searchResults.results_by_zone.length === 0) {
+          return null;
+        }
+    
+        let resideHighSchoolObject = null;
+    
+        // Iterate through each zone object in the results_by_zone array
+        for (const currentZone of searchResults.results_by_zone) {
+          if (currentZone.schools && Array.isArray(currentZone.schools)) {
+            // Find the "Reside High School" within this zone's schools array
+            const foundSchool = currentZone.schools.find(school => 
+              school && 
+              typeof school.type === 'string' && 
+              school.type.toLowerCase() === 'reside' && // As per your data: type: "Reside"
+              typeof school.school_level === 'string' &&
+              school.school_level.toLowerCase() === 'high school' // As per your data: school_level: "High School"
+            );
+    
+            if (foundSchool) {
+              resideHighSchoolObject = foundSchool; // We found the specific school object
+              break; 
+            }
+          }
+        }
+    
+        if (resideHighSchoolObject) {
+          // Now, directly use the 'zone' property from the resideHighSchoolObject
+          // As per your data: zone: "Ballard Zone"
+          if (resideHighSchoolObject.zone && typeof resideHighSchoolObject.zone === 'string') {
+            return resideHighSchoolObject.zone; // This should be "Ballard Zone"
+          }
+        }
+        
+        return null; // Or 'Reside zone information not available'
+      }, [searchResults]);
 
   // --- JSX Rendering ---
   return (
@@ -210,7 +239,7 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
                 {`Showing results for address: ${searchResults.query_address || 'N/A'} (Lat: ${searchResults.query_lat?.toFixed(5) || 'N/A'}, Lon: ${searchResults.query_lon?.toFixed(5) || 'N/A'})`}
             </div>
             <div style={{ marginTop: '0.25rem' }}> {/* Add a little space between lines */}
-              Your zone is: <strong>{String(displayZoneName).toUpperCase()}</strong>
+              Your zone is: <strong>{String(userResideZoneDisplayName).toUpperCase()}</strong>
               {/* Using String() for safety in case 'zone' is not a string, then toUpperCase() */}
             </div>
         </div>

@@ -112,12 +112,6 @@ function App() {
                </>
              )}
   
-             {/* 4. Show Initial Placeholder Text if nothing else is shown */}
-             {!isLoading && !error && !searchResults && (
-               <p className="text-center text-muted mt-4">
-                   Please enter an address and select a school level to find schools.
-              </p>
-             )}
   
           </section>
   

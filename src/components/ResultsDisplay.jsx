@@ -23,7 +23,7 @@ const allPossibleColumns = [
     { key: 'diversity_chart', header: 'Student Diversity', default: false, sortable: false },
     // Teachers
     { key: 'teacher_avg_years_experience', header: 'Avg Yrs Teacher Experience', default: false, sortable: true, sortLabel: 'Avg Teacher Experience', sortDescDefault: true },
-    { key: 'percent_teachers_3_years_or_less_experience', header: '< 3 Years Teacher Experience', default: false, sortable: false },
+    { key: 'percent_teachers_3_years_or_less_experience', header: 'Teachers with < 3 Yrs Experience', default: false, sortable: false },
     // Parent/Community
     { key: 'parent_satisfaction', header: 'Parent Satisfaction', default: false, sortable: true, sortLabel: 'Parent Satisfaction', sortDescDefault: true },
     { key: 'pta_membership_percent', header: 'PTA Membership', default: false, sortable: true, sortLabel: 'PTA Membership', sortDescDefault: true },
@@ -192,13 +192,27 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
     // (though changing the key via dropdown triggers handleSortChange which sets it anyway).
   }, [selectedColumns, sortConfig.key]); // <<<<< DEPENDENCIES DEFINED
 
+  //Get zone name to display
+  const displayZoneName = useMemo(() => {
+    // Directly access the 'zone' variable from searchResults if it exists
+    if (searchResults && searchResults.zone) {
+      return searchResults.zone;
+    }
+    return 'Zone information not available'; // Or 'Zone information not available' if you prefer a placeholder
+  }, [searchResults]);
 
   // --- JSX Rendering ---
   return (
     <>
       {searchResults && (
         <div id="results-info" className={styles.resultsInfoBar}>
-          {`Showing results for address: ${searchResults.query_address || 'N/A'} (Lat: ${searchResults.query_lat?.toFixed(5) || 'N/A'}, Lon: ${searchResults.query_lon?.toFixed(5) || 'N/A'})`}
+            <div>
+                {`Showing results for address: ${searchResults.query_address || 'N/A'} (Lat: ${searchResults.query_lat?.toFixed(5) || 'N/A'}, Lon: ${searchResults.query_lon?.toFixed(5) || 'N/A'})`}
+            </div>
+            <div style={{ marginTop: '0.25rem' }}> {/* Add a little space between lines */}
+              Your zone is: <strong>{String(displayZoneName).toUpperCase()}</strong>
+              {/* Using String() for safety in case 'zone' is not a string, then toUpperCase() */}
+            </div>
         </div>
       )}
       <div className={styles.displayControlsContainer} id="display-controls-container">
@@ -227,7 +241,7 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
 
       {/* Results Table/Cards */}
       {/* (Keep the table/card rendering logic as is) */}
-      <div id="results-output" className={`table-responsive d-none d-md-block ${styles.tableWrapper}`}>
+      <div id="results-output" className={`d-none d-md-block ${styles.tableWrapper}`}>
         {schoolsToDisplay.length > 0 ? (
           <TableView schools={schoolsToDisplay} columns={columnsToDisplay} />
         ) : (

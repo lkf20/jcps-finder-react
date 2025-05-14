@@ -1,6 +1,7 @@
 import React from 'react'; // Need React to return JSX
 import tableStyles from '../components/TableView.module.css';
 import ProficiencyBarChart from '../components/ProficiencyBarChart';
+import SingleMetricPieChart from '../components/SingleMetricPieChart';
 
 
 export function formatDisplayValue(colConfig, school) {
@@ -17,6 +18,11 @@ export function formatDisplayValue(colConfig, school) {
             'start_end_time',
             'reading_math_proficiency',
             'overall_indicator_rating',
+            'gifted_talented_percent',            
+            'economically_disadvantaged_percent', 
+            'percent_teachers_3_years_or_less_experience',
+            'parent_satisfaction',
+            'pta_membership_percent',
         ].includes(colConfig.key)) {
             // Do nothing, let the switch handle it
         } else {
@@ -28,8 +34,6 @@ export function formatDisplayValue(colConfig, school) {
        switch (colConfig.key) {
             case 'distance_mi':
                 return !isNaN(value) ? Number(value).toFixed(1) : 'N/A';
-            case 'parent_satisfaction':
-                return !isNaN(value) ? `${Math.round(value)}%` : 'N/A';
             case 'student_teacher_ratio_value':
                 return !isNaN(value) ? `${Math.round(value)}:1` : 'N/A';
             case 'great_schools_rating':
@@ -51,7 +55,6 @@ export function formatDisplayValue(colConfig, school) {
                  // Return JSX conditionally including the details div
                  return <>{nameLink} {(detailsText || mapLink) && <div className="mt-2 d-flex align-items-center mt-1">{mapLink}<span className={tableStyles.schoolDetailsText}>{detailsText}</span></div>}</>;
              }
-            // --- <<< MODIFIED diversity_chart case >>> ---
             case 'diversity_chart': {
                 return null;
             }
@@ -62,18 +65,43 @@ export function formatDisplayValue(colConfig, school) {
                   <div style={{ textAlign: 'left', width: 'max-content' }}>{start}<br />{end}</div>
                 </div>;
             }
-            case 'pta_membership_percent':
-            case 'gifted_talented_percent':
-                return !isNaN(value) ? `${Math.round(value)}%` : 'N/A';
             case 'teacher_avg_years_experience':
                 return !isNaN(value) ? Math.round(value) : 'N/A';
-            case 'percent_teachers_3_years_or_less_experience':
-                return !isNaN(value) ? `${Number(value).toFixed(1)}%` : 'N/A';
             case 'reading_math_proficiency': {
                 return <ProficiencyBarChart school={school} variant="table" />;
             }
-            case 'economically_disadvantaged_percent':
-                return !isNaN(value) ? `${Math.round(value)}%` : 'N/A';
+            case 'gifted_talented_percent': {
+               const giftedPercent = school.gifted_talented_percent;
+               if (giftedPercent === null || giftedPercent === undefined || isNaN(parseFloat(giftedPercent))) {
+                    return 'N/A';
+               }
+               return (
+                    <SingleMetricPieChart
+                         percentage={parseFloat(giftedPercent)}
+                         metricLabel="Gifted"
+                         metricColor="#4CAF50" // Green
+                         baseColor="#E8F5E9"   // Light Green
+                         chartIdSuffix={`gifted-${school.school_code_adjusted || school.display_name}`}
+                         variant="table"
+                    />
+               );
+            }
+            case 'economically_disadvantaged_percent': {
+               const econPercent = school.economically_disadvantaged_percent;
+               if (econPercent === null || econPercent === undefined || isNaN(parseFloat(econPercent))) {
+                    return 'N/A';
+               }
+               return (
+                    <SingleMetricPieChart
+                         percentage={parseFloat(econPercent)}
+                         metricLabel="Econ. Disadv."
+                         metricColor="#673AB7" // Deep Purple
+                         baseColor="#EDE7F6"   // Light Purple
+                         chartIdSuffix={`econ-${school.school_code_adjusted || school.display_name}`}
+                         variant="table"
+                    />
+               );
+            }
             case 'membership': {
                const allStudents = school.all_grades_with_preschool_membership;
                 const mainStudents = !isNaN(value) ? Number(value) : null;
@@ -135,6 +163,54 @@ export function formatDisplayValue(colConfig, school) {
                 </div>
                );
                return content;
+           }
+           case 'percent_teachers_3_years_or_less_experience': {
+               const newTeacherPercent = school.percent_teachers_3_years_or_less_experience;
+               if (newTeacherPercent === null || newTeacherPercent === undefined || isNaN(parseFloat(newTeacherPercent))) {
+                   return 'N/A';
+               }
+               return (
+                   <SingleMetricPieChart
+                       percentage={parseFloat(newTeacherPercent)}
+                       metricLabel="<3 Yrs Exp" // Shortened label
+                       metricColor="#00BCD4" // Cyan/Teal
+                       baseColor="#B2EBF2"   // Light Cyan/Teal
+                       chartIdSuffix={`newteach-${school.school_code_adjusted || school.display_name}`}
+                       variant="table"
+                   />
+               );
+           }
+           case 'parent_satisfaction': {
+               const satisfactionPercent = school.parent_satisfaction;
+               if (satisfactionPercent === null || satisfactionPercent === undefined || isNaN(parseFloat(satisfactionPercent))) {
+                   return 'N/A';
+               }
+               return (
+                   <SingleMetricPieChart
+                       percentage={parseFloat(satisfactionPercent)}
+                       metricLabel="Parent Sat." // Shortened label
+                       metricColor="#FF9800" // Orange
+                       baseColor="#FFE0B2"   // Light Orange
+                       chartIdSuffix={`parentsat-${school.school_code_adjusted || school.display_name}`}
+                       variant="table"
+                   />
+               );
+           }
+           case 'pta_membership_percent': {
+               const ptaPercent = school.pta_membership_percent;
+               if (ptaPercent === null || ptaPercent === undefined || isNaN(parseFloat(ptaPercent))) {
+                   return 'N/A';
+               }
+               return (
+                   <SingleMetricPieChart
+                       percentage={parseFloat(ptaPercent)}
+                       metricLabel="PTA Memb." // Shortened label
+                       metricColor="#2196F3" // Blue
+                       baseColor="#BBDEFB"   // Light Blue
+                       chartIdSuffix={`pta-${school.school_code_adjusted || school.display_name}`}
+                       variant="table"
+                   />
+               );
            }
             default:
                 return String(value); // Convert other values to string

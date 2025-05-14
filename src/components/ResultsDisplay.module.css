@@ -8,6 +8,8 @@
 
 .tableWrapper {
   margin-top: 1.5rem;
+  overflow-x: auto !important; 
+  overflow-y: visible !important;
 }
 
 .cardWrapper {

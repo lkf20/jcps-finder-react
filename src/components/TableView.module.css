@@ -1,13 +1,20 @@
 .tableCustom {
   margin-top: 1.5rem;
   border-radius: 0.5rem;
-  overflow: hidden;
+  overflow: visible !important;
   background: #fff;
+  min-width: 1200px;
+  border-collapse: collapse; /* Good for sticky headers to avoid double borders */
 }
 
-tr {
+/* tr {
   min-height: 120px;
   height: 120px;
+} */
+
+.tableHeaderCustom th, .tableCellCustom { /* Or more specific selectors for tbody td */
+  padding-top: 0.75rem; /* Example padding */
+  padding-bottom: 0.75rem; /* Example padding */
 }
 
 .tableHeaderCustom {
@@ -15,6 +22,16 @@ tr {
   font-size: 0.85rem;
   font-weight: 600;
   text-align: center;
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;
+  top: 0; /* Stick to the top of the scrolling container. Adjust if you have a fixed navbar above. */
+  z-index: 2;
+}
+
+.tableHeaderCustom th {
+
+  background-color: #f8f9fa; /* Match thead background, crucial for sticky elements */
+  /* outline: 1px solid #dee2e6; /* Optional: to maintain border appearance if needed */
 }
 
 .tableCellCustom {
@@ -24,6 +41,7 @@ tr {
   padding-left: 2rem;
   padding-right: 2rem;
 }
+
 
 .schoolNameTable,
 .schoolNameTable a {
@@ -62,6 +80,8 @@ table td a.schoolNameTable:hover {
   text-decoration: underline !important;
 }
 
+
+
 .schoolDetailsText {
   font-size: 0.85rem;
   color: #888;
@@ -95,4 +115,67 @@ table td a.schoolNameTable:hover {
   height: 70px; /* Consistent with inline style */
   display: block;
   margin: 0 auto;
+}
+
+.metricChartCell {
+  vertical-align: middle;
+  text-align: center;
+  min-width: 120px; /* Adjust if needed */
+  padding: 5px; /* Reduce padding if chart + legend needs more space */
+}
+
+.pieChartCell {
+  vertical-align: middle;
+  text-align: center; /* Keep text-align center for chart alignment */
+  padding-left: 1.5rem !important;  /* << ADJUST PADDING AS NEEDED e.g., 1rem, 1.5rem, 2.5rem */
+  padding-right: 1.5rem !important; /* << ADJUST PADDING AS NEEDED */
+  padding-top: 0.75rem; /* Keep vertical padding consistent or adjust if needed */
+  padding-bottom: 0.75rem;
+  min-width: 130px; /* Ensure a minimum width to accommodate chart + padding */
+                    /* Adjust based on chart size and padding */
+}
+
+.numericCellSmall {
+  vertical-align: middle;
+  text-align: center; /* Numbers are usually centered or right-aligned */
+  font-size: 1rem;    /* Or adjust if you want smaller font for these */
+  padding-left: 0.5rem !important;  /* << REDUCED PADDING */
+  padding-right: 0.5rem !important; /* << REDUCED PADDING */
+  padding-top: 0.75rem;    /* Keep vertical padding consistent or adjust */
+  padding-bottom: 0.75rem;
+  min-width: 80px;   /* Adjust as needed, e.g., for "Avg Yrs..." header */
+  width: auto;       /* Allow it to shrink to content + padding */
+}
+
+.displayNameCell {
+  vertical-align: middle;
+  text-align: left !important; /* School names are typically left-aligned */
+  font-size: 0.95rem; /* Slightly smaller font if needed */
+  
+  padding-left: 0.75rem !important;  /* Adjust padding as desired */
+  padding-right: 0.75rem !important; /* Adjust padding as desired */
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+
+  min-width: 200px;   /* Set a reasonable minimum width */
+  max-width: 280px;   /* <<<< SET YOUR DESIRED MAX WIDTH HERE */
+  width: 25%;         /* <<<< EXAMPLE: Or use a percentage, browser will pick smaller of this and max-width */
+                      /* Using both width (as a %) and max-width gives some flexibility */
+
+  /* Optional: Handle long school names that might overflow */
+  /* white-space: nowrap; */   /* Prevent wrapping (use with overflow and text-overflow) */
+  /* overflow: hidden; */      /* Hide overflow if nowrap is used */
+  /* text-overflow: ellipsis; */ /* Show ... for hidden overflow if nowrap is used */
+  
+  /* OR allow wrapping (default behavior for block/table-cell) */
+  word-break: break-word; /* Helps break long words if they are causing overflow */
+  hyphens: auto;          /* Optional: allow hyphenation if supported by browser/language */
+}
+
+/* Ensure the link within the display name cell behaves well */
+.displayNameCell a { /* Targets the <a> tag from formatDisplayValue */
+  /* font-weight: 600; /* Already in .schoolNameTable */
+  /* color: #004D40; /* Already in .schoolNameTable */
+  display: inline-block; /* Or block, helps with width and text overflow if applied to link */
+  /* max-width: 100%; */ /* Ensure link doesn't expand cell if using ellipsis on link itself */
 }

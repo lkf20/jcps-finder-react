@@ -7,6 +7,12 @@ html, body {
   background: #f8f9fa;
 }
 
+html, body, #root {
+  height: 100%; /* Ensure they can expand */
+  margin: 0;
+  padding: 0;
+}
+
 body {
   display: block !important;
   width: 100vw !important;
@@ -19,6 +25,12 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   background: #f8f9fa;
+  overflow-y: auto;
+  min-height: 100vh;
+}
+
+#root {
+  overflow: visible; /* Ensure root doesn't trap overflow */
 }
 
 /* --- Loader Styles --- */
@@ -79,4 +91,15 @@ body {
   padding-right: 24px;
   background: #fff;
   border-radius: 16px;
+}
+
+#results-output.table-responsive {
+  overflow-y: visible !important; 
+}
+
+#results-section { /* Or .main-container, or whatever the culprit is */
+  overflow-y: visible !important;
+  /* Ensure no fixed height is causing it to scroll internally */
+  /* height: auto !important; */ /* If it has a fixed height */
+  /* max-height: none !important; */ /* If it has a max-height */
 }

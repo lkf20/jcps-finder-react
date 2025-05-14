@@ -3,9 +3,14 @@ import React, { useEffect, useRef } from 'react';
 import Chart from 'chart.js/auto';
 
 const BAR_COLORS = [
-  '#1976d2', // All students
-  '#ff9800', // Econ disadvantaged
+  '#1976d2', // All students (School)
+  '#ff9800', // Econ disadvantaged (School)
+  '#cccccc', // State Average (Example: Green) - CHOOSE A DISTINCT COLOR
 ];
+
+// State Averages
+const STATE_AVERAGE_READING = 46;
+const STATE_AVERAGE_MATH = 41;
 
 export const ProficiencyBarChart = ({ school, chartId, variant }) => {
   const canvasRef = useRef(null);
@@ -22,6 +27,9 @@ export const ProficiencyBarChart = ({ school, chartId, variant }) => {
     const mathAll = !isNaN(school.math_all_proficient_distinguished) ? Number(school.math_all_proficient_distinguished) : null;
     const mathEcon = !isNaN(school.math_econ_disadv_proficient_distinguished) ? Number(school.math_econ_disadv_proficient_distinguished) : null;
 
+    // If all school-specific data is null, we might still want to show state averages if available
+    // For now, let's keep the existing behavior: if all school data is null, clear the chart.
+    // You could adjust this to always show state averages if desired.
     if ([readingAll, readingEcon, mathAll, mathEcon].every(v => v === null)) {
       const ctx = canvasElement.getContext('2d');
       if (ctx) ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -38,69 +46,62 @@ export const ProficiencyBarChart = ({ school, chartId, variant }) => {
         labels: ['Reading', 'Math'],
         datasets: [
           {
-            label: 'All',
+            label: 'All', 
             data: [readingAll, mathAll],
             backgroundColor: BAR_COLORS[0],
             borderRadius: 4,
-            barPercentage: 0.8,
-            categoryPercentage: 0.6,
+            // Adjust barPercentage and categoryPercentage if 3 bars look too crowded
+            // barPercentage: 0.7, // Example: slightly thinner bars
+            // categoryPercentage: 0.6,
           },
           {
-            label: 'Econ Disadvan',
+            label: 'Econ Disadv.', 
             data: [readingEcon, mathEcon],
             backgroundColor: BAR_COLORS[1],
             borderRadius: 4,
-            barPercentage: 0.8,
-            categoryPercentage: 0.6,
+            // barPercentage: 0.7,
+            // categoryPercentage: 0.6,
           },
+          // --- NEW DATASET FOR STATE AVERAGES ---
+          {
+            label: 'State Avg',
+            data: [STATE_AVERAGE_READING, STATE_AVERAGE_MATH],
+            backgroundColor: BAR_COLORS[2], // Use the third color
+            borderRadius: 4,
+            // barPercentage: 0.7,
+            // categoryPercentage: 0.6,
+          }
+          // --- END NEW DATASET ---
         ],
       },
       options: {
         responsive: true,
-        maintainAspectRatio: true, // Set to false if you want it to purely fill the canvas width/height props
+        maintainAspectRatio: true,
         plugins: {
+          // No averageLine plugin needed anymore
           legend: {
             display: true,
             position: 'bottom',
-            align: 'center', // To help with single line centering
+            align: 'center',
             labels: {
-              // These will now be used by our custom generateLabels function
-              boxWidth: 10,      // Desired width for our custom square
-              boxHeight: 10,     // Desired height for our custom square
-              padding: 15,       // Space between legend items
-              font: {
-                size: 11,        // Font size for legend text
-              },
-              // Custom function to generate legend items
-              generateLabels: function(chart) {
+              boxWidth: 10,
+              boxHeight: 10,
+              padding: 10, // May need to reduce padding if more legend items
+              font: { size: 10 }, // May need smaller font
+              pointStyle: 'rect',
+              generateLabels: function(chart) { // This function should now correctly include the 3rd dataset
                 const datasets = chart.data.datasets;
-                return datasets.map((dataset, i) => {
-                  return {
+                return datasets.map((dataset, i) => ({
                     text: dataset.label,
-                    fillStyle: dataset.backgroundColor, // Or strokeStyle for line charts
-                    strokeStyle: dataset.borderColor || dataset.backgroundColor, // Fallback for border
+                    fillStyle: dataset.backgroundColor,
+                    strokeStyle: dataset.borderColor || dataset.backgroundColor,
                     lineWidth: dataset.borderWidth || 0,
                     hidden: !chart.isDatasetVisible(i),
                     datasetIndex: i,
-                    // --- Crucial for custom swatch appearance ---
-                    // We are telling it to draw a rectangle of this size
-                    // This bypasses the default pointStyle rendering issues for size.
-                    // The 'pointStyle' property here makes it render a shape,
-                    // and we use 'rect' to make it a rectangle.
                     pointStyle: 'rect',
-                    // NOTE: Chart.js might internally use these boxWidth/Height to draw the 'rect'
-                    // if pointStyle is 'rect'. So we keep them defined.
-                    // If it *still* doesn't respect the size perfectly with pointStyle 'rect',
-                    // this generateLabels function is where you could even inject an 'image'
-                    // pointStyle with a tiny pre-rendered square if absolutely needed.
-                  };
-                });
+                }));
               }
             },
-            // To encourage a single line, we can try to influence the layout.
-            // However, Chart.js legend layout is somewhat internal.
-            // If it still wraps, the canvas width might be the limiting factor.
-            // We can't directly force "no wrap" via options.
           },
           tooltip: {
             enabled: true,
@@ -126,10 +127,17 @@ export const ProficiencyBarChart = ({ school, chartId, variant }) => {
           x: {
             title: { display: false },
             grid: { display: false },
+            // If bars are grouped, Chart.js handles this by default.
+            // You might want to adjust spacing between categories if it looks too tight.
           }
         },
         animation: { duration: 0 },
+        // To ensure bars within the same category are grouped together:
+        // (Chart.js usually does this by default for multiple datasets in a bar chart)
+        // If they are stacking instead of grouping, you'd look into x-axis options:
+        // scales: { x: { stacked: false }, y: { stacked: false } } // Ensure not stacked
       },
+      // No custom plugins array needed here anymore unless you have others
     };
 
     const ctx = canvasElement.getContext('2d');
@@ -145,25 +153,18 @@ export const ProficiencyBarChart = ({ school, chartId, variant }) => {
         chartInstanceRef.current = null;
       }
     };
-  }, [school, resolvedChartId, variant]); // Added variant to dependencies
+  }, [school, resolvedChartId, variant]);
 
-  // Sizing: adjust width/height based on variant
-  // These explicitly set the canvas element size.
-  // `maintainAspectRatio: false` would make the chart drawing fill this.
-  // `maintainAspectRatio: true` (default) makes the chart drawing respect its internal aspect ratio *within* these bounds.
-  const width = variant === 'table' ? 180 : 220;
-  const height = variant === 'table' ? 120 : 160;
+  // Adjust canvas size if needed for 3 bars + legend
+  const width = variant === 'table' ? 200 : 240; // Slightly wider?
+  const height = variant === 'table' ? 130 : 170; // Slightly taller for legend space?
 
   return (
     <canvas
       ref={canvasRef}
       id={resolvedChartId}
-      width={width}  // Setting canvas width
-      height={height} // Setting canvas height
-      // Forcing the chart to use these dimensions for its drawing area rather than its internal aspect ratio:
-      // style={{ display: 'block', width: `${width}px`, height: `${height}px`, margin: '0 auto', background: 'transparent' }}
-      // Simpler, if maintainAspectRatio is true, chart will fit within these dimensions.
-      // If maintainAspectRatio is false, chart will stretch to these dimensions.
+      width={width}
+      height={height}
       style={{ display: 'block', margin: '0 auto', background: 'transparent' }}
     ></canvas>
   );

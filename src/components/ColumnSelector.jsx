@@ -55,7 +55,7 @@ export const ColumnSelector = ({
     },
     {
       label: 'Performance',
-      keys: ['great_schools_rating', 'reading_math_proficiency', 'gifted_talented_percent'],
+      keys: ['overall_indicator_rating', 'great_schools_rating', 'reading_math_proficiency', 'gifted_talented_percent'],
     },
     {
       label: 'Demographics',

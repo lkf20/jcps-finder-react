@@ -82,3 +82,17 @@ table td a.schoolNameTable:hover {
   max-width: 220px;
   vertical-align: middle;
 } 
+
+
+.kyRatingCell {
+  text-align: center;
+  vertical-align: middle;
+  min-width: 120px; /* Adjust as needed */
+}
+
+.kyRatingImage {
+  width: auto;
+  height: 70px; /* Consistent with inline style */
+  display: block;
+  margin: 0 auto;
+}

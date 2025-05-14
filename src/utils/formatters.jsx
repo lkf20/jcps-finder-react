@@ -16,6 +16,7 @@ export function formatDisplayValue(colConfig, school) {
             'diversity_chart',
             'start_end_time',
             'reading_math_proficiency',
+            'overall_indicator_rating',
         ].includes(colConfig.key)) {
             // Do nothing, let the switch handle it
         } else {
@@ -41,7 +42,6 @@ export function formatDisplayValue(colConfig, school) {
                  const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
                  let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
                  let detailsText = '';
-                 if (school.type || school.school_level) { detailsText = `${school.type || ''}${school.type && school.school_level ? ' - ' : ''}${school.school_level || ''}`; }
                  if (school.type) { detailsText = school.type; }
                  let mapLink = null;
                  // Check for all necessary address components
@@ -92,6 +92,49 @@ export function formatDisplayValue(colConfig, school) {
                 }
                 return mainStudents !== null ? mainStudents.toLocaleString() : 'N/A';
             }
+            // START ADDED CODE
+            case 'overall_indicator_rating': {
+               const rating = parseInt(value, 10);
+
+               // Handle missing or invalid rating value before mapping
+               if (value === null || value === undefined || isNaN(rating) || rating < 1 || rating > 5) {
+                   return 'N/A'; 
+               }
+
+               const ratingMap = {
+                   1: { color: 'red', text: 'Red (Overall Performance Rating: 1)' },
+                   2: { color: 'orange', text: 'Orange (Overall Performance Rating: 2)' },
+                   3: { color: 'yellow', text: 'Yellow (Overall Performance Rating: 3)' },
+                   4: { color: 'green', text: 'Green (Overall Performance Rating: 4)' },
+                   5: { color: 'blue', text: 'Blue (Overall Performance Rating: 5)' },
+               };
+
+               const ratingInfo = ratingMap[rating];
+               // This check is mostly redundant due to the earlier validation but good for safety
+               if (!ratingInfo) return 'N/A'; 
+
+               const imagePath = `/images/indicator_${ratingInfo.color}.png`;
+               const altText = `KY School Rating: ${ratingInfo.text}`;
+
+               return (
+                    <div className={tableStyles.kyRatingCell}>
+                       <img
+                           src={imagePath}
+                           alt={altText}
+                           title={altText} // Adds a browser tooltip on hover
+                           className={tableStyles.kyRatingImage}
+                       />
+                       {/* You can optionally add the text label if it's not part of the image,
+                           or if you want it to be screen-reader friendly text alongside the image.
+                           Since your image includes the text, this might be redundant visually.
+                       <span style={{ fontSize: '0.85em', color: '#333', marginTop: '0.25rem' }}>
+                           {ratingMap[rating].text.split('(')[0].trim()} 
+                       </span>
+                       */}
+                   </div>
+               );
+           }
+           // END ADDED CODE
             // Default case for simple text display
             default:
                 return String(value); // Convert other values to string

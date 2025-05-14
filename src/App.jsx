@@ -9,7 +9,6 @@ import { ResultsDisplay } from './components/ResultsDisplay';
 const API_ENDPOINT = 'https://1248-2603-6010-6202-ce13-78bb-dfe0-99f2-7526.ngrok-free.app/school-details-by-address'; // <<< UPDATE THIS
 
 function App() {
-  console.log("App: Rendering");
   // --- State Variables ---
   // Removed address, schoolLevel state from App, they live in SearchForm now
   const [searchResults, setSearchResults] = useState(null);

@@ -54,7 +54,9 @@ export const SchoolCard = ({ school, columns }) => {
               className={`${styles.standardListItem} list-group-item d-flex justify-content-between align-items-center py-3`}
             >
               <span className={`${styles.standardListItemLabel} me-2 fw-bold small`}>{col.header || col.key}:</span>
-              <span className={`${styles.standardListItemValue} text-end small`}>{formatDisplayValue(col, school)}</span>
+              <span className={`${styles.standardListItemValue} text-end small`}>
+                {formatDisplayValue(col, school, 'card')}
+            </span>
             </li>
           ))}
 
@@ -66,7 +68,7 @@ export const SchoolCard = ({ school, columns }) => {
                 {/* Top Row: Title and Chart */}
                 <div className="row g-1 align-items-center mb-1"> {/* Smaller gutter and margin */}
                   <div className="col">
-                    <span className={`${styles.diversityTitle} mb-0 fw-bold small`}>{diversityColConfig.header || 'Student Diversity'}</span>
+                    <span className={`${styles.diversityTitle} mb-0 fw-bold small`}>{(diversityColConfig.header || 'Student Diversity') + ':'}</span>
                   </div>
                   <div className={`${styles.diversityChartContainer} col-auto`}> 
                     <DiversityChart school={school} />
@@ -83,7 +85,7 @@ export const SchoolCard = ({ school, columns }) => {
             ) : (
               // Display if diversity_chart is selected but no data
               <div>
-                <h6 className="mb-1 fw-bold small">{diversityColConfig.header || 'Student Diversity'}</h6>
+                <h6 className="mb-1 fw-bold small">{(diversityColConfig.header || 'Student Diversity') + ':'} </h6>
                 <p className="text-muted small mb-0">No diversity data available.</p>
               </div>
             )}

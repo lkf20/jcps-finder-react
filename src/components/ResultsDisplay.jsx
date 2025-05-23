@@ -12,20 +12,20 @@ const allPossibleColumns = [
     // General
     { key: 'distance_mi', header: 'Distance (mi)', default: true, sortable: true, sortLabel: 'Distance', sortDescDefault: false },
     { key: 'membership', header: 'Students', default: true, sortable: true, sortLabel: 'Students', sortDescDefault: true },
-    { key: 'start_end_time', header: 'Start - End Time', default: false, sortable: true, sortLabel: 'Start Time', sortDescDefault: false },
+    { key: 'start_end_time', header: 'Start - End Time', default: true, sortable: true, sortLabel: 'Start Time', sortDescDefault: false },
     // Performance
-    { key: 'great_schools_rating', header: 'GreatSchools Rating', default: true, sortable: true, sortLabel: 'GreatSchools Rating', sortDescDefault: true },
+    { key: 'great_schools_rating', header: 'GreatSchools Rating', default: false, sortable: true, sortLabel: 'GreatSchools Rating', sortDescDefault: true },
     { key: 'overall_indicator_rating', header: 'KY Rating', default: true, sortable: true, sortLabel: 'KY Rating', sortDescDefault: true },
-    { key: 'reading_math_proficiency', header: 'Reading / Math Proficiency', default: false, sortable: false },
+    { key: 'reading_math_proficiency', header: 'Reading / Math Proficiency', default: true, sortable: false },
     { key: 'gifted_talented_percent', header: 'Gifted & Talented', default: false, sortable: true, sortLabel: 'Gifted & Talented', sortDescDefault: true },
     // Demographics
     { key: 'economically_disadvantaged_percent', header: 'Economically Disadvantaged', default: false, sortable: false },
     { key: 'diversity_chart', header: 'Student Diversity', default: false, sortable: false },
     // Teachers
     { key: 'teacher_avg_years_experience', header: 'Avg Yrs Teacher Experience', default: false, sortable: true, sortLabel: 'Avg Teacher Experience', sortDescDefault: true },
-    { key: 'percent_teachers_3_years_or_less_experience', header: 'Teachers with < 3 Yrs Experience', default: false, sortable: false },
+    { key: 'percent_teachers_3_years_or_less_experience', header: ' Teachers with < 3 Yrs Experience', default: false, sortable: false },
     // Parent/Community
-    { key: 'parent_satisfaction', header: 'Parent Satisfaction', default: false, sortable: true, sortLabel: 'Parent Satisfaction', sortDescDefault: true },
+    { key: 'parent_satisfaction', header: 'Parent Satisfaction', default: true, sortable: true, sortLabel: 'Parent Satisfaction', sortDescDefault: true },
     { key: 'pta_membership_percent', header: 'PTA Membership', default: false, sortable: true, sortLabel: 'PTA Membership', sortDescDefault: true },
 
 ];
@@ -238,7 +238,7 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
             <div>
                 {`Showing results for address: ${searchResults.query_address || 'N/A'} (Lat: ${searchResults.query_lat?.toFixed(5) || 'N/A'}, Lon: ${searchResults.query_lon?.toFixed(5) || 'N/A'})`}
             </div>
-            <div style={{ marginTop: '0.25rem' }}> {/* Add a little space between lines */}
+            <div className={styles.zoneInfoLine}> 
               Your zone is: <strong>{String(userResideZoneDisplayName).toUpperCase()}</strong>
               {/* Using String() for safety in case 'zone' is not a string, then toUpperCase() */}
             </div>

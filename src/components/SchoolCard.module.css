@@ -8,6 +8,7 @@
   
   /* Styles for the card header/body containing the school name */
   .cardNameBody {
+    padding-left: 0.5rem !important;
     /* pb-3 is a Bootstrap utility, keep in JSX */
   }
   
@@ -45,6 +46,8 @@
     background-color: transparent; /* Override if needed */
     border-bottom: 1px solid #f0f0f0; /* Explicit border */
     font-size: 0.9rem; /* Overall font size for the item */
+    padding-left: 0.5rem !important; 
+    padding-right: 0.5rem !important;
   }
   .standardListItem:last-child { /* From your CSS for removing border */
     border-bottom: none;
@@ -57,6 +60,9 @@
     padding-right: 1rem; /* Specific padding */
     flex-shrink: 0;    /* Keep from shrinking */
     line-height: 1.4;
+    max-width: 40%;
+    /* font-size: 0.75em !important; */
+    padding-right: 0 !important;
   }
   
   .standardListItemValue { /* For the second span (e.g., "2.6") */
@@ -64,6 +70,26 @@
     text-align: right; /* Ensure it if text-end utility is removed */
     flex-grow: 1;
     min-height: 30px;
+    display: flex; /* Use flex to control alignment of its direct children */
+    flex-direction: column; /* Stack children vertically if multiple (like start/end time) */
+    align-items: flex-end; /* <<<< THIS WILL ALIGN CHILDREN TO THE RIGHT */
+  }
+
+  .standardListItemValue > div { 
+    width: auto; /* Allow the div to be as wide as its content */
+    text-align: right; /* Ensure text within this div is also right aligned */
+  }
+
+  .standardListItemValue .kyRatingCell { /* Targets the div wrapper from formatDisplayValue */
+    margin-left: auto; /* Push it to the right if its parent is flex */
+    /* Or, if the parent .standardListItemValue is already display:flex and align-items:flex-end,
+       this might not be strictly needed, but doesn't hurt. */
+    display: inline-block; /* Or block, depending on how you want it to sit */
+    padding: 0; /* Override any padding from tableStyles if needed for card view */
+  }
+  .standardListItemValue .kyRatingImage { /* Targets the image itself */
+    height: 40px; /* << Smaller height for card view, adjust as needed */
+    width: auto;
   }
   
   /* Styles for buttons within standard list items */
@@ -113,6 +139,8 @@
     /* py-4 is a Bootstrap utility, keep in JSX */
     /* list-group-item is a Bootstrap class */
     border-bottom: 1px solid #f0f0f0; /* Explicit border */
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
   }
   .diversityListItem:last-of-type { /* Or use :last-child if it's always the last */
       border-bottom: none;
@@ -120,7 +148,14 @@
   
   .diversityTitle { /* For the span "Student Diversity" */
     /* mb-0, fw-bold, small are Bootstrap utilities, keep in JSX */
+    display: inline-block;
     color: #555;
+    /* font-size: 0.75em !important;  */
+    font-weight: 500;
+    white-space: nowrap; 
+    line-height: 1.3; 
+    margin-right: 0.5rem !important; 
+    flex-shrink: 0;
     /* margin-bottom: 0 !important; -- handled by mb-0 */
   }
   
@@ -139,3 +174,24 @@
   .diversityLegendContainer ul { ... }
   .diversityLegendContainer li { ... }
   */
+
+  /* --- STYLES SPECIFIC TO CARD/MOBILE VIEW (screens < 768px) --- */
+@media (max-width: 767.98px) {
+  .standardListItemLabel, 
+  .diversityTitle { /* Group selector for common styles */
+    font-size: 0.7rem !important; /* << SET FIXED FONT SIZE (e.g., 0.7rem = ~11.2px, 0.75rem = 12px, 0.8rem = ~12.8px) */
+                                  /* Adjust this value until it matches your desired 13.5px or is consistent */
+                                  /* If 13.5px is desired, try ~0.84rem */
+    font-weight: 500; /* Ensure consistent weight */
+  }
+
+  .standardListItemLabel {
+    margin-right: 0.2rem !important; 
+    padding-right: 0 !important;     
+    /* ... any other specific styles for standardListItemLabel on mobile ... */
+  }
+
+  .diversityTitle {
+    margin-right: 0.5rem; /* Keep or adjust its specific right margin */
+  }
+} 

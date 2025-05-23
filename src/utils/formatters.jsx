@@ -4,10 +4,11 @@ import ProficiencyBarChart from '../components/ProficiencyBarChart';
 import SingleMetricPieChart from '../components/SingleMetricPieChart';
 
 
-export function formatDisplayValue(colConfig, school) {
+export function formatDisplayValue(colConfig, school, viewMode = 'table') {
     // Get the raw value for the current column key
     const value = school[colConfig.key];
     console.log("school", school);
+    console.log("Formatting for viewMode:", viewMode, "Key:", colConfig.key); 
 
     // Handle null/undefined consistently at the start
     // Allow 0 to pass through for cases like ratings or percentages
@@ -59,16 +60,41 @@ export function formatDisplayValue(colConfig, school) {
                 return null;
             }
             case 'start_end_time': {
-                const start = school.start_time || 'N/A';
-                const end = school.end_time || 'N/A';
-                return <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-                  <div style={{ textAlign: 'left', width: 'max-content' }}>{start}<br />{end}</div>
-                </div>;
-            }
+               const start = school.start_time || 'N/A';
+               const end = school.end_time || 'N/A';
+               
+               let innerDivTextAlign = 'left'; // Default for table view
+               // The outer div's alignment within .standardListItemValue (which is flex-end)
+               // will be handled by .standardListItemValue itself if this outer div is not width: 100%.
+               // If this outer div IS width: 100%, then its own alignItems matters for its children.
+
+               if (viewMode === 'card') {
+                   innerDivTextAlign = 'right'; 
+               }
+
+               return (
+                   <div style={{ 
+                       display: 'flex', 
+                       flexDirection: 'column', 
+                       // For card view, if we want this block itself to be pushed right by parent,
+                       // and its content (inner div) also right aligned.
+                       alignItems: viewMode === 'card' ? 'flex-end' : 'center', // << YOUR CORRECTION
+                       width: viewMode === 'card' ? 'auto' : '100%' // For card, let width be auto so parent can align it
+                   }}>
+                     <div style={{ 
+                         textAlign: innerDivTextAlign, 
+                         width: 'auto' // Let inner div size to its content
+                     }}>
+                       {start}<br />{end}
+                     </div>
+                   </div>
+               );
+           }
             case 'teacher_avg_years_experience':
                 return !isNaN(value) ? Math.round(value) : 'N/A';
             case 'reading_math_proficiency': {
-                return <ProficiencyBarChart school={school} variant="table" />;
+               const chartVariant = viewMode === 'card' ? 'card' : 'table'; 
+               return <ProficiencyBarChart school={school} variant={chartVariant} />;
             }
             case 'gifted_talented_percent': {
                const giftedPercent = school.gifted_talented_percent;

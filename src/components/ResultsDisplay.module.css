@@ -32,3 +32,23 @@
   border-radius: 0.5rem;
   color: #333;
 } 
+
+/* Style for the zone information line - This is for DESKTOP/LARGER SCREENS */
+.zoneInfoLine { /* If you added the class styles.zoneInfoLine in your JSX */
+  margin-top: 0.6rem; /* Default top margin for larger screens */
+}
+
+@media (max-width: 767.98px) {
+  .resultsInfoBar {
+    font-size: 0.85rem !important; 
+    padding: 0.4rem 0.8rem !important; 
+    margin-bottom: 1.5rem !important; 
+  }
+
+  /* Target the zone information line specifically for mobile */
+  .zoneInfoLine { /* If you are using the .zoneInfoLine class */
+    font-size: 0.8rem !important; /* Your existing smaller font size for zone on mobile */
+    margin-top: 0.5rem !important; /* <<<< INCREASE THIS VALUE (e.g., to 0.5rem or desired) */
+                                  /* Ensure this overrides the previous 0.2rem */
+  }
+}

@@ -103,3 +103,29 @@ body {
   /* height: auto !important; */ /* If it has a fixed height */
   /* max-height: none !important; */ /* If it has a max-height */
 }
+
+/* Styles for smaller screens (when CardView is shown) */
+@media (max-width: 767.98px) { 
+  .main-heading {
+    font-size: 1.6rem; /* Example: slightly larger than your previous 1.4rem for small screens */
+                       /* Adjust as needed */
+  }
+
+  header > p.lead {
+    font-size: 1.0rem; /* <<<< REDUCED FONT SIZE for smaller screens (when CardView is shown) */
+                         /* Adjust this value to your preference */
+    /* You can also adjust other properties like line-height or margin for smaller screens if needed */
+    /* line-height: 1.4; */
+  }
+}
+
+/* Media query for even smaller screens (like your existing 600px one) */
+/* This will further override the 767.98px styles if the screen is <= 600px */
+@media (max-width: 600px) {
+  .main-heading {
+    font-size: 1.4rem; /* Your original smaller size for very small screens */
+  }
+  header > p.lead {
+    font-size: 1.0rem;  /* Potentially even smaller for very small screens */
+  }
+}

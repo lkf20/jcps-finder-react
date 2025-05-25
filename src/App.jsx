@@ -6,7 +6,7 @@ import { ResultsDisplay } from './components/ResultsDisplay';
 
 
 
-const API_ENDPOINT = 'https://505f-2603-6010-6202-ce13-f497-4c57-63cf-21d0.ngrok-free.app/school-details-by-address'; // <<< UPDATE THIS
+const API_ENDPOINT = 'https://jcps-zone-api.onrender.com/school-details-by-address'; // <<< UPDATE THIS
 
 function App() {
   // --- State Variables ---

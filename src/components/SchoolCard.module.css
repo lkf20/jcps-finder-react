@@ -45,7 +45,7 @@
     /* list-group-item is a Bootstrap class, provides base padding and borders */
     background-color: transparent; /* Override if needed */
     border-bottom: 1px solid #f0f0f0; /* Explicit border */
-    font-size: 0.9rem; /* Overall font size for the item */
+    font-size: 0.9 rem; /* Overall font size for the item */
     padding-left: 0.5rem !important; 
     padding-right: 0.5rem !important;
   }
@@ -188,7 +188,7 @@
 @media (max-width: 767.98px) {
   .standardListItemLabel, 
   .diversityTitle { /* Group selector for common styles */
-    font-size: 0.8rem !important; /* << SET FIXED FONT SIZE (e.g., 0.7rem = ~11.2px, 0.75rem = 12px, 0.8rem = ~12.8px) */
+    font-size: 1.0rem !important; /* << SET FIXED FONT SIZE (e.g., 0.7rem = ~11.2px, 0.75rem = 12px, 0.8rem = ~12.8px) */
                                   /* Adjust this value until it matches your desired 13.5px or is consistent */
                                   /* If 13.5px is desired, try ~0.84rem */
     font-weight: 500; /* Ensure consistent weight */
@@ -203,4 +203,7 @@
   .diversityTitle {
     margin-right: 0.5rem; /* Keep or adjust its specific right margin */
   }
+  .standardListItemValue {
+    font-size: 1.1em !important; /* Example for mobile values */
+ }
 } 

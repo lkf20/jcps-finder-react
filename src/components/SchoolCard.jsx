@@ -48,7 +48,16 @@ export const SchoolCard = ({ school, columns }) => {
       <ul className="list-group list-group-flush">
         {columns
           .filter(col => col.key !== 'display_name' && col.key !== 'diversity_chart') // Exclude name and diversity_chart (handled separately)
-          .map(col => (
+          .map(col => {
+            let labelSpanBaseClasses = `${styles.standardListItemLabel} fw-bold small`;
+            let labelSpanClasses = labelSpanBaseClasses;
+            if (col.key === 'start_end_time') {
+              labelSpanClasses += ` ${styles.timeLabel}`;
+              labelSpanClasses += ' me-2'; 
+            } else {
+              labelSpanClasses += ' me-2'; // Default margin for other labels
+            }
+            return (
             <li
               key={col.key}
               className={`${styles.standardListItem} list-group-item d-flex justify-content-between align-items-center py-3`}
@@ -58,7 +67,8 @@ export const SchoolCard = ({ school, columns }) => {
                 {formatDisplayValue(col, school, 'card')}
             </span>
             </li>
-          ))}
+            );
+          })}
 
         {/* --- New Dedicated Diversity Section --- */}
         {diversityColConfig && ( // Render this list item if diversity_chart is a selected column

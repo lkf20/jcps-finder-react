@@ -6,6 +6,20 @@
   gap: 0.5rem;
 }
 
+/* Optional: Styles for the "Sort by:" label if needed */
+.sortByLabel {
+  margin-bottom: 0; /* Override default form-label margin-bottom if it's too much with align-items-center */
+  font-weight: 500; /* Example: make it slightly bold */
+  /* font-size: 0.9rem; */ /* Example: adjust font size */
+  white-space: nowrap;
+}
+
+.sortDropdown {
+  min-width: 180px; /* << ADJUST THIS starting min-width as needed */
+  /* You can also use a fixed width if preferred: */
+  /* width: 250px; */ 
+}
+
 .tableWrapper {
   margin-top: 1.5rem;
   overflow-x: auto !important; 

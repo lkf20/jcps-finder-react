@@ -132,6 +132,15 @@
     font-weight: normal;
     font-size: 0.75rem; /* Note: this font-size is smaller than .rating-circle */
   }
+
+  /* Specific style for the "Start - End Time" label in card view */
+.timeLabel {
+  flex-basis: 50% !important; /* << Give it 50% of the flex container's main axis space */
+  max-width: 50% !important;
+  flex-shrink: 0; /* Ensure it doesn't shrink if value is very long */
+  white-space: normal !important; /* << Allow "Start - End Time" to wrap if needed */
+  margin-right: 0.2rem !important; /* Reduce space between this label and its value */
+}
   
   
   /* Styles for the diversity section's list item */
@@ -179,7 +188,7 @@
 @media (max-width: 767.98px) {
   .standardListItemLabel, 
   .diversityTitle { /* Group selector for common styles */
-    font-size: 0.7rem !important; /* << SET FIXED FONT SIZE (e.g., 0.7rem = ~11.2px, 0.75rem = 12px, 0.8rem = ~12.8px) */
+    font-size: 0.8rem !important; /* << SET FIXED FONT SIZE (e.g., 0.7rem = ~11.2px, 0.75rem = 12px, 0.8rem = ~12.8px) */
                                   /* Adjust this value until it matches your desired 13.5px or is consistent */
                                   /* If 13.5px is desired, try ~0.84rem */
     font-weight: 500; /* Ensure consistent weight */

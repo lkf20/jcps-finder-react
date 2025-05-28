@@ -130,13 +130,21 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
   const sortOptions = useMemo(() => {
     // Filter the desired order to only include keys that are currently selected/visible
     const availableSortKeys = desiredSortKeysInOrder.filter(key =>
-        selectedColumns.includes(key)
+      selectedColumns.includes(key) && allPossibleColumns.find(col => col.key === key)?.sortable
     );
+    if (availableSortKeys.length === 0) {
+      return [<option key="no-sort" value="" disabled>No sort options available</option>];
+    }
+    const currentSortKeyIsValid = availableSortKeys.includes(sortConfig.key);
 
     return availableSortKeys.map(key => {
       const colConfig = allPossibleColumns.find(col => col.key === key);
       // We can assume colConfig exists and is sortable because desiredSortKeysInOrder only contains sortable keys
       if (!colConfig) return null; // Safety check
+
+      // Determine the display label for the option
+      const displayLabel = colConfig.sortLabel || colConfig.header || colConfig.key;
+      const optionText = displayLabel;
 
       return (
         <option
@@ -144,7 +152,7 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
           value={colConfig.key}
           data-sort-desc={colConfig.sortDescDefault === true}
         >
-          {colConfig.sortLabel || colConfig.header || colConfig.key}
+           {optionText}
         </option>
       );
     }).filter(Boolean); // Remove any nulls from safety check
@@ -245,14 +253,17 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
         </div>
       )}
       <div className={styles.displayControlsContainer} id="display-controls-container">
-        <div>
-          <label htmlFor="displaySortBy" className="form-label visually-hidden">Sort results by:</label>
+        {/* <div> */}
+          {/* Container for label and select to group them for flexbox */}
+        <div className="d-flex align-items-center"> {/* Bootstrap class for flex alignment */}
+          <label htmlFor="displaySortBy" className={`form-label me-2 ${styles.sortByLabel}`}>Sort by:</label> 
+          {/* <label htmlFor="displaySortBy" className="form-label visually-hidden">Sort results by:</label> */}
           <select
-            className="form-select form-select-sm"
+            className={`form-select form-select-sm ${styles.sortDropdown}`} 
             id="displaySortBy"
             onChange={handleSortChange}
             value={sortConfig.key || ''} // Handle potential null key if no options available
-            aria-label="Sort results"
+            aria-label="Sort results by"
             disabled={sortOptions.length === 0} // Disable dropdown if no options
           >
             {/* Render the dynamically generated sort options */}

@@ -65,6 +65,7 @@ body {
   font-weight: 700;
   color: #004D40;
   margin-bottom: 0.5rem;
+  margin-top: 10px !important;
 }
 
 @media (max-width: 600px) {
@@ -91,6 +92,7 @@ body {
   padding-right: 24px;
   background: #fff;
   border-radius: 16px;
+  padding-top: 4rem;
 }
 
 #results-output.table-responsive {

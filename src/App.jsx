@@ -6,7 +6,7 @@ import { ResultsDisplay } from './components/ResultsDisplay';
 
 
 
-const API_ENDPOINT = 'https://jcps-zone-api.onrender.com/school-details-by-address'; // <<< UPDATE THIS
+const API_ENDPOINT = import.meta.env.VITE_API_URL 
 
 function App() {
   // --- State Variables ---
@@ -116,7 +116,7 @@ function App() {
           </section>
   
           {/* Footer Section */}
-          <footer className="text-center mt-5 mb-3 text-muted">
+          <footer className="text-center mt-5 mb-3 pb-5 text-muted">
               <small>Data provided for informational purposes. Verify all information with JCPS directly.</small>
           </footer>
   

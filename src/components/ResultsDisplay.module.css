@@ -61,7 +61,7 @@
 
   /* Target the zone information line specifically for mobile */
   .zoneInfoLine { /* If you are using the .zoneInfoLine class */
-    font-size: 0.8rem !important; /* Your existing smaller font size for zone on mobile */
+    font-size: 1.1rem !important; /* Your existing smaller font size for zone on mobile */
     margin-top: 0.5rem !important; /* <<<< INCREASE THIS VALUE (e.g., to 0.5rem or desired) */
                                   /* Ensure this overrides the previous 0.2rem */
   }

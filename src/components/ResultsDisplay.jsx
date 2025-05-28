@@ -23,7 +23,7 @@ const allPossibleColumns = [
     { key: 'diversity_chart', header: 'Student Diversity', default: false, sortable: false },
     // Teachers
     { key: 'teacher_avg_years_experience', header: 'Avg Yrs Teacher Experience', default: false, sortable: true, sortLabel: 'Avg Teacher Experience', sortDescDefault: true },
-    { key: 'percent_teachers_3_years_or_less_experience', header: ' Teachers with < 3 Yrs Experience', default: false, sortable: false },
+    { key: 'percent_teachers_3_years_or_less_experience', header: 'Teachers with <\u00A03\u00A0Yrs Experience', default: false, sortable: false },
     // Parent/Community
     { key: 'parent_satisfaction', header: 'Parent Satisfaction', default: true, sortable: true, sortLabel: 'Parent Satisfaction', sortDescDefault: true },
     { key: 'pta_membership_percent', header: 'PTA Membership', default: false, sortable: true, sortLabel: 'PTA Membership', sortDescDefault: true },

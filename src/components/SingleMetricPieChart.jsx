@@ -101,7 +101,7 @@ export const SingleMetricPieChart = ({
             display: false, // Disable Chart.js default legend
           },
           tooltip: {
-            enabled: true, // Keep tooltips on the doughnut segments if desired
+            enabled: false, // Keep tooltips on the doughnut segments if desired
             callbacks: {
               label: function(context) {
                 // Only show tooltip for the actual metric segment

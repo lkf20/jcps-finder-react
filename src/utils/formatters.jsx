@@ -7,8 +7,6 @@ import SingleMetricPieChart from '../components/SingleMetricPieChart';
 export function formatDisplayValue(colConfig, school, viewMode = 'table') {
     // Get the raw value for the current column key
     const value = school[colConfig.key];
-    console.log("school", school);
-    console.log("Formatting for viewMode:", viewMode, "Key:", colConfig.key); 
 
     // Handle null/undefined consistently at the start
     // Allow 0 to pass through for cases like ratings or percentages
@@ -44,7 +42,11 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                  const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
                  let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
                  let detailsText = '';
-                 if (school.type) { detailsText = school.type; }
+                if (school.reside === 'Yes') {
+                    detailsText = 'Reside School';
+                } else if (school.reside === 'No') {
+                    detailsText = 'Magnet/Choice Program';
+                }
                  let mapLink = null;
                  // Check for all necessary address components
                  if (school.address && school.city && school.state && school.zipcode) {

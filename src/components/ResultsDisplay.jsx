@@ -214,8 +214,7 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
             // Find the "Reside High School" within this zone's schools array
             const foundSchool = currentZone.schools.find(school => 
               school && 
-              typeof school.type === 'string' && 
-              school.type.toLowerCase() === 'reside' && // As per your data: type: "Reside"
+              school.reside === 'Yes' && // Check the 'reside' property for the value 'Yes'
               typeof school.school_level === 'string' &&
               school.school_level.toLowerCase() === 'high school' // As per your data: school_level: "High School"
             );
@@ -230,8 +229,8 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
         if (resideHighSchoolObject) {
           // Now, directly use the 'zone' property from the resideHighSchoolObject
           // As per your data: zone: "Ballard Zone"
-          if (resideHighSchoolObject.zone && typeof resideHighSchoolObject.zone === 'string') {
-            return resideHighSchoolObject.zone; // This should be "Ballard Zone"
+          if (resideHighSchoolObject.school_zone && typeof resideHighSchoolObject.school_zone === 'string') {
+            return resideHighSchoolObject.school_zone; // This should be "Ballard Zone"
           }
         }
         

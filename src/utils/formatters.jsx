@@ -38,14 +38,15 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
             case 'great_schools_rating':
                 return !isNaN(value) ? <span className="rating-circle">{value}</span> : 'N/A'; // Assumes CSS handles the circle
             case 'display_name': {
-                 // Ensure value is a string for the name link
-                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
-                 let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
-                 let detailsText = '';
-                if (school.reside === 'Yes') {
-                    detailsText = 'Reside School';
-                } else if (school.reside === 'No') {
-                    detailsText = 'Magnet/Choice Program';
+                const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
+                let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
+            
+                let detailsText = school.display_type || ''; // Start with the base type (e.g., "Magnet/Choice Program")
+
+                // If it's a choice school AND we have a specific program name, format it.
+                if (detailsText === 'Magnet/Choice Program' && school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
+                    // THIS IS THE ONLY LINE THAT HAS CHANGED
+                    detailsText = `Magnet: ${school.magnet_programs}`; 
                 }
                  let mapLink = null;
                  // Check for all necessary address components

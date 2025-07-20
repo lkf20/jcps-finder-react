@@ -1,37 +1,27 @@
 // src/components/ResultsDisplay.jsx
-import React, { useState, useMemo, useEffect } from 'react'; // Added useEffect
+import React, { useState, useMemo, useEffect } from 'react';
 import styles from './ResultsDisplay.module.css';
 import { TableView } from './TableView';
 import { CardView } from './CardView';
 import { ColumnSelector } from './ColumnSelector';
 
-// --- Define allPossibleColumns with updated sort properties ---
-// (Keep this definition exactly as provided in the previous step)
 const allPossibleColumns = [
     { key: 'display_name', header: '', default: true, sortable: true, sortLabel: 'A-Z', sortDescDefault: false },
-    // General
     { key: 'distance_mi', header: 'Distance (mi)', default: true, sortable: true, sortLabel: 'Distance', sortDescDefault: false },
     { key: 'membership', header: 'Students', default: true, sortable: true, sortLabel: 'Students', sortDescDefault: true },
     { key: 'start_end_time', header: 'Start - End Time', default: true, sortable: true, sortLabel: 'Start Time', sortDescDefault: false },
-    // Performance
     { key: 'great_schools_rating', header: 'GreatSchools Rating', default: false, sortable: true, sortLabel: 'GreatSchools Rating', sortDescDefault: true },
     { key: 'overall_indicator_rating', header: 'KY Rating', default: true, sortable: true, sortLabel: 'KY Rating', sortDescDefault: true },
     { key: 'reading_math_proficiency', header: 'Reading / Math Proficiency', default: true, sortable: false },
     { key: 'gifted_talented_percent', header: 'Gifted & Talented', default: false, sortable: true, sortLabel: 'Gifted & Talented', sortDescDefault: true },
-    // Demographics
     { key: 'economically_disadvantaged_percent', header: 'Economically Disadvantaged', default: false, sortable: false },
     { key: 'diversity_chart', header: 'Student Diversity', default: false, sortable: false },
-    // Teachers
     { key: 'teacher_avg_years_experience', header: 'Avg Yrs Teacher Experience', default: false, sortable: true, sortLabel: 'Avg Teacher Experience', sortDescDefault: true },
     { key: 'percent_teachers_3_years_or_less_experience', header: 'Teachers with <\u00A03\u00A0Yrs Experience', default: false, sortable: false },
-    // Parent/Community
     { key: 'parent_satisfaction', header: 'Parent Satisfaction', default: true, sortable: true, sortLabel: 'Parent Satisfaction', sortDescDefault: true },
     { key: 'pta_membership_percent', header: 'PTA Membership', default: false, sortable: true, sortLabel: 'PTA Membership', sortDescDefault: true },
-
 ];
 
-// --- Define the desired order and keys for the sort dropdown ---
-// (Keep this definition exactly as provided in the previous step)
 const desiredSortKeysInOrder = [
     'distance_mi',
     'display_name',
@@ -45,73 +35,131 @@ const desiredSortKeysInOrder = [
     'pta_membership_percent',
 ];
 
-
 export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
   console.log("ResultsDisplay received props:", { searchResults, schoolLevel });
 
-  const [sortConfig, setSortConfig] = useState({ key: 'distance_mi', descending: false }); // Default to Distance
+  const [sortConfig, setSortConfig] = useState({ key: 'distance_mi', descending: false });
   const [selectedColumns, setSelectedColumns] = useState(() => {
     const initialCols = ['display_name', ...allPossibleColumns.filter(col => col.default).map(col => col.key)];
     return [...new Set(initialCols.filter(key => key !== 'diversity_chart'))];
   });
 
-  // --- Memoized Calculation: Filter and Sort Schools ---
-  // (Keep this useMemo hook exactly as provided in the previous step)
+  // --- THIS MUST BE DECLARED BEFORE `schoolsToDisplay` ---
+  const userResideZoneDisplayName = useMemo(() => {
+    if (!searchResults || !searchResults.results_by_zone || searchResults.results_by_zone.length === 0) {
+      return null;
+    }
+    let resideHighSchoolObject = null;
+    for (const currentZone of searchResults.results_by_zone) {
+      if (currentZone.schools && Array.isArray(currentZone.schools)) {
+        const foundSchool = currentZone.schools.find(school =>
+          school &&
+          school.reside === 'Yes' &&
+          typeof school.school_level === 'string' &&
+          school.school_level.toLowerCase() === 'high school'
+        );
+        if (foundSchool) {
+          resideHighSchoolObject = foundSchool;
+          break;
+        }
+      }
+    }
+    if (resideHighSchoolObject) {
+      if (resideHighSchoolObject.school_zone && typeof resideHighSchoolObject.school_zone === 'string') {
+        return resideHighSchoolObject.school_zone;
+      }
+    }
+    return null;
+  }, [searchResults]);
+
+  // --- THIS MUST BE DECLARED AFTER `userResideZoneDisplayName` ---
   const schoolsToDisplay = useMemo(() => {
     console.log("Recalculating schoolsToDisplay...");
     if (!searchResults || !searchResults.results_by_zone) {
-      console.log(" -> No searchResults or results_by_zone found.");
-      return [];
+        console.log(" -> No searchResults or results_by_zone found.");
+        return [];
     }
-    console.log(` -> Filtering for level: ${schoolLevel}`);
+
     const levelToZoneTypeMap = {
-        'Elementary': ['Elementary', 'Reside Elementary', 'Trad/Mag Elem', 'Choice Elem'],
-        'Middle': ['Middle', 'Reside Middle', 'Trad/Mag Middle', 'Choice Middle'],
-        'High': ['High', 'Reside High', 'Trad/Mag High', 'Choice High']
+        'Elementary': ['Elementary', 'Reside Elementary', 'Trad/Mag Elem', 'Choice Elem', 'Traditional/Magnet Elementary'],
+        'Middle': ['Middle', 'Reside Middle', 'Trad/Mag Middle', 'Choice Middle', 'Traditional/Magnet Middle'],
+        'High': ['High', 'Reside High', 'Trad/Mag High', 'Choice High', 'Traditional/Magnet High']
     };
+
     const relevantZoneKeywords = levelToZoneTypeMap[schoolLevel] || [schoolLevel];
-    console.log(` -> Using keywords: ${relevantZoneKeywords.join(', ')}`);
     const filteredZones = searchResults.results_by_zone.filter(zone =>
         relevantZoneKeywords.some(keyword => zone.zone_type.includes(keyword))
     );
-    console.log(` -> Found ${filteredZones.length} matching zones:`, filteredZones);
-    let schools = filteredZones.flatMap(zone => zone.schools || []);
-    console.log(` -> Flattened ${schools.length} schools BEFORE sort:`, schools.slice(0, 5));
 
-    const { key: sortKey, descending: sortDesc } = sortConfig;
-    schools = [...schools].sort((a, b) => {
-      let vA = a[sortKey]; let vB = b[sortKey];
-      const nA = vA == null; const nB = vB == null;
-      if (nA && nB) return 0; if (nA) return sortDesc ? -1 : 1; if (nB) return sortDesc ? 1 : -1;
+    // --- START: NEW LOGIC USING `zone_type` ---
 
-      if (sortKey === 'start_end_time') {
-          vA = a['start_time'];
-          vB = b['start_time'];
-      }
+    // 1. Flatten all schools, but add the display_type based on the zone it came from.
+    const schoolsWithDisplayType = filteredZones.flatMap(zone => {
+        // Determine the displayType for all schools in this zone.
+        // Resides zones are simple names like "Elementary", "Middle", "High".
+        // Choice zones have "Magnet" in their name.
+        const isResideZone = !zone.zone_type.includes('Magnet');
+        const displayType = isResideZone ? 'Reside School' : 'Magnet/Choice Program';
 
-      const numA = parseFloat(vA); const numB = parseFloat(vB); let comp = 0;
-      if (!isNaN(numA) && !isNaN(numB)) {
-        if (numA > numB) comp = 1; else if (numA < numB) comp = -1;
-      } else {
-        const sA = String(vA).toLowerCase(); const sB = String(vB).toLowerCase();
-        if (sA > sB) comp = 1; else if (sA < sB) comp = -1;
-      }
-      return sortDesc ? (comp * -1) : comp;
+        // If the zone has no schools, flatMap needs an empty array.
+        if (!zone.schools) {
+            return [];
+        }
+
+        // Tag each school in this zone with the correct displayType.
+        return zone.schools.map(school => ({
+            ...school,
+            display_type: displayType
+        }));
     });
-    console.log(` -> Found ${schools.length} schools AFTER sort.`);
-    return schools;
+    
+    // 2. De-duplicate the list, giving priority to the "Reside School" designation.
+    const uniqueSchoolsMap = new Map();
+    schoolsWithDisplayType.forEach(school => {
+        const existing = uniqueSchoolsMap.get(school.school_code_adjusted);
+        // If we haven't seen this school yet, or if the new entry is a "Reside School"
+        // (overwriting a potential "Magnet/Choice" entry), then add/update it.
+        if (!existing || school.display_type === 'Reside School') {
+            uniqueSchoolsMap.set(school.school_code_adjusted, school);
+        }
+    });
+    let processedSchools = Array.from(uniqueSchoolsMap.values());
+    console.log(` -> Flattened and de-duplicated to ${processedSchools.length} schools.`);
+
+    // 3. Sort the final, unique list of schools.
+    const { key: sortKey, descending: sortDesc } = sortConfig;
+    processedSchools.sort((a, b) => {
+        let vA = a[sortKey]; let vB = b[sortKey];
+        const nA = vA == null; const nB = vB == null;
+        if (nA && nB) return 0; if (nA) return sortDesc ? -1 : 1; if (nB) return sortDesc ? 1 : -1;
+
+        if (sortKey === 'start_end_time') {
+            vA = a['start_time'];
+            vB = b['start_time'];
+        }
+
+        const numA = parseFloat(vA); const numB = parseFloat(vB); let comp = 0;
+        if (!isNaN(numA) && !isNaN(numB)) {
+            if (numA > numB) comp = 1; else if (numA < numB) comp = -1;
+        } else {
+            const sA = String(vA).toLowerCase(); const sB = String(vB).toLowerCase();
+            if (sA > sB) comp = 1; else if (sA < sB) comp = -1;
+        }
+        return sortDesc ? (comp * -1) : comp;
+    });
+    // --- END: NEW LOGIC ---
+
+    console.log(` -> Processed ${processedSchools.length} schools AFTER sorting.`);
+    return processedSchools;
+
   }, [searchResults, schoolLevel, sortConfig]);
 
-  // --- Memoized Calculation: Determine Columns to Display ---
-  // (Keep this useMemo hook as is)
   const columnsToDisplay = useMemo(() => {
     return allPossibleColumns
       .filter(col => selectedColumns.includes(col.key))
       .sort((a, b) => allPossibleColumns.findIndex(c => c.key === a.key) - allPossibleColumns.findIndex(c => c.key === b.key));
   }, [selectedColumns]);
 
-  // --- Event Handlers (for Sort and Columns) ---
-  // (Keep these handlers as is)
   const handleSortChange = (event) => {
     const selectedOption = event.target.options[event.target.selectedIndex];
     const newKey = selectedOption.value;
@@ -122,122 +170,54 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
 
   const handleApplySelectedColumns = (newlySelectedKeys) => {
     console.log("Applying new columns from ColumnSelector:", newlySelectedKeys);
-    // Ensure newlySelectedKeys is an array before setting state
     setSelectedColumns(Array.isArray(newlySelectedKeys) ? newlySelectedKeys : []);
   };
 
-  // --- Generate Sort Options Dynamically based on VISIBLE columns ---
   const sortOptions = useMemo(() => {
-    // Filter the desired order to only include keys that are currently selected/visible
     const availableSortKeys = desiredSortKeysInOrder.filter(key =>
       selectedColumns.includes(key) && allPossibleColumns.find(col => col.key === key)?.sortable
     );
     if (availableSortKeys.length === 0) {
       return [<option key="no-sort" value="" disabled>No sort options available</option>];
     }
-    const currentSortKeyIsValid = availableSortKeys.includes(sortConfig.key);
-
     return availableSortKeys.map(key => {
       const colConfig = allPossibleColumns.find(col => col.key === key);
-      // We can assume colConfig exists and is sortable because desiredSortKeysInOrder only contains sortable keys
-      if (!colConfig) return null; // Safety check
-
-      // Determine the display label for the option
+      if (!colConfig) return null;
       const displayLabel = colConfig.sortLabel || colConfig.header || colConfig.key;
-      const optionText = displayLabel;
-
       return (
-        <option
-          key={colConfig.key}
-          value={colConfig.key}
-          data-sort-desc={colConfig.sortDescDefault === true}
-        >
-           {optionText}
+        <option key={colConfig.key} value={colConfig.key} data-sort-desc={colConfig.sortDescDefault === true}>
+           {displayLabel}
         </option>
       );
-    }).filter(Boolean); // Remove any nulls from safety check
-  }, [selectedColumns]); // <<<<< DEPENDENCY UPDATED: Re-run when selectedColumns changes
+    }).filter(Boolean);
+  }, [selectedColumns, sortConfig.key]); // sortConfig.key added to dependency array
 
-  // --- Effect to Reset Sort Config if Current Sort Column is Hidden ---
   useEffect(() => {
     const currentSortKey = sortConfig.key;
     const isCurrentSortKeyVisible = selectedColumns.includes(currentSortKey);
-
-    // Find the config for the current sort key to check if it's supposed to be sortable
-    // (This guards against scenarios where 'sortable' might change dynamically, though unlikely here)
     const currentSortColConfig = allPossibleColumns.find(col => col.key === currentSortKey);
     const isCurrentSortKeySortable = currentSortColConfig?.sortable === true;
 
-    // If the current sort key is no longer visible OR no longer designated as sortable
     if (!isCurrentSortKeyVisible || !isCurrentSortKeySortable) {
-      // Find the first key from our desired list that IS visible and IS sortable
       const newValidSortKey = desiredSortKeysInOrder.find(key => {
         const colConfig = allPossibleColumns.find(col => col.key === key);
-        // Check both visibility (in selectedColumns) and inherent sortability (in allPossibleColumns)
         return selectedColumns.includes(key) && colConfig?.sortable;
       });
-
       if (newValidSortKey) {
-        // If we found a valid replacement key
         const newColConfig = allPossibleColumns.find(col => col.key === newValidSortKey);
-        if (newColConfig) { // Ensure config exists
+        if (newColConfig) {
             console.log(`Sort key '${currentSortKey}' is no longer valid/visible. Switching to '${newValidSortKey}'.`);
-            // Update the sortConfig state to the new valid key and its default direction
             setSortConfig({
                 key: newValidSortKey,
                 descending: newColConfig.sortDescDefault
             });
         }
       } else {
-        // Edge case: No sortable columns are currently visible.
-        // The sort dropdown will be empty. We could optionally reset sortConfig
-        // to a default non-sorting state, but leaving it might be acceptable.
         console.warn("No visible sortable columns available to set as default sort.");
-        // Example reset (optional): setSortConfig({ key: null, descending: false });
       }
     }
-    // This effect should run when the selected columns change, or if the sort key itself changes
-    // (though changing the key via dropdown triggers handleSortChange which sets it anyway).
-  }, [selectedColumns, sortConfig.key]); // <<<<< DEPENDENCIES DEFINED
+  }, [selectedColumns, sortConfig.key]);
 
-    // --- Determine the User's Reside Zone Name based on a Reside High School ---
-    const userResideZoneDisplayName = useMemo(() => {
-        if (!searchResults || !searchResults.results_by_zone || searchResults.results_by_zone.length === 0) {
-          return null;
-        }
-    
-        let resideHighSchoolObject = null;
-    
-        // Iterate through each zone object in the results_by_zone array
-        for (const currentZone of searchResults.results_by_zone) {
-          if (currentZone.schools && Array.isArray(currentZone.schools)) {
-            // Find the "Reside High School" within this zone's schools array
-            const foundSchool = currentZone.schools.find(school => 
-              school && 
-              school.reside === 'Yes' && // Check the 'reside' property for the value 'Yes'
-              typeof school.school_level === 'string' &&
-              school.school_level.toLowerCase() === 'high school' // As per your data: school_level: "High School"
-            );
-    
-            if (foundSchool) {
-              resideHighSchoolObject = foundSchool; // We found the specific school object
-              break; 
-            }
-          }
-        }
-    
-        if (resideHighSchoolObject) {
-          // Now, directly use the 'zone' property from the resideHighSchoolObject
-          // As per your data: zone: "Ballard Zone"
-          if (resideHighSchoolObject.school_zone && typeof resideHighSchoolObject.school_zone === 'string') {
-            return resideHighSchoolObject.school_zone; // This should be "Ballard Zone"
-          }
-        }
-        
-        return null; // Or 'Reside zone information not available'
-      }, [searchResults]);
-
-  // --- JSX Rendering ---
   return (
     <>
       {searchResults && (
@@ -245,29 +225,23 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
             <div>
                 {`Showing results for address: ${searchResults.query_address || 'N/A'} (Lat: ${searchResults.query_lat?.toFixed(5) || 'N/A'}, Lon: ${searchResults.query_lon?.toFixed(5) || 'N/A'})`}
             </div>
-            <div className={styles.zoneInfoLine}> 
+            <div className={styles.zoneInfoLine}>
               Your zone is: <strong>{String(userResideZoneDisplayName).toUpperCase()}</strong>
-              {/* Using String() for safety in case 'zone' is not a string, then toUpperCase() */}
             </div>
         </div>
       )}
       <div className={styles.displayControlsContainer} id="display-controls-container">
-        {/* <div> */}
-          {/* Container for label and select to group them for flexbox */}
-        <div className="d-flex align-items-center"> {/* Bootstrap class for flex alignment */}
-          <label htmlFor="displaySortBy" className={`form-label me-2 ${styles.sortByLabel}`}>Sort by:</label> 
-          {/* <label htmlFor="displaySortBy" className="form-label visually-hidden">Sort results by:</label> */}
+        <div className="d-flex align-items-center">
+          <label htmlFor="displaySortBy" className={`form-label me-2 ${styles.sortByLabel}`}>Sort by:</label>
           <select
-            className={`form-select form-select-sm ${styles.sortDropdown}`} 
+            className={`form-select form-select-sm ${styles.sortDropdown}`}
             id="displaySortBy"
             onChange={handleSortChange}
-            value={sortConfig.key || ''} // Handle potential null key if no options available
+            value={sortConfig.key || ''}
             aria-label="Sort results by"
-            disabled={sortOptions.length === 0} // Disable dropdown if no options
+            disabled={sortOptions.length === 0}
           >
-            {/* Render the dynamically generated sort options */}
             {sortOptions}
-            {/* Optional: Add a message if no options are available */}
             {sortOptions.length === 0 && <option value="" disabled>No sort options for visible columns</option>}
           </select>
         </div>
@@ -278,8 +252,6 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
         </div>
       </div>
 
-      {/* Results Table/Cards */}
-      {/* (Keep the table/card rendering logic as is) */}
       <div id="results-output" className={`d-none d-md-block ${styles.tableWrapper}`}>
         {schoolsToDisplay.length > 0 ? (
           <TableView schools={schoolsToDisplay} columns={columnsToDisplay} />
@@ -296,8 +268,6 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
         )}
       </div>
 
-      {/* Column Selector Offcanvas */}
-      {/* (Keep the ColumnSelector component usage as is) */}
       <ColumnSelector
         id="customizeColumnsOffcanvas"
         title="Customize Displayed Columns"

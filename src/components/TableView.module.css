@@ -179,3 +179,28 @@ table td a.schoolNameTable:hover {
   display: inline-block; /* Or block, helps with width and text overflow if applied to link */
   /* max-width: 100%; */ /* Ensure link doesn't expand cell if using ellipsis on link itself */
 }
+
+/* Update the existing schoolDetailsText to be bold for headings */
+.schoolDetailsText {
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 600; /* Bolder for labels like "Magnet:" and "Academies:" */
+  margin-left: 0.25rem;
+  display: block; /* Ensures it takes its own line */
+}
+
+/* New class for the bulleted lists */
+.programList {
+  list-style-type: disc;
+  padding-left: 1.2rem; /* Indent the bullets */
+  margin-top: 2px;
+  margin-bottom: 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #333;
+}
+
+/* New class to add space between the Magnet and Academies sections */
+.academiesSection {
+  margin-top: 0.5rem;
+}

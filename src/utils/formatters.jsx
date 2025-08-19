@@ -37,28 +37,74 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 return !isNaN(value) ? `${Math.round(value)}:1` : 'N/A';
             case 'great_schools_rating':
                 return !isNaN(value) ? <span className="rating-circle">{value}</span> : 'N/A'; // Assumes CSS handles the circle
+
+
             case 'display_name': {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
                 let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
-            
-                let detailsText = school.display_type || ''; // Start with the base type (e.g., "Magnet/Choice Program")
 
-                // If it's a choice school AND we have a specific program name, format it.
-                if (detailsText === 'Magnet/Choice Program' && school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
-                    // THIS IS THE ONLY LINE THAT HAS CHANGED
-                    detailsText = `Magnet: ${school.magnet_programs}`; 
+                // --- START: NEW DISPLAY LOGIC ---
+                let resideOrMagnetElement = null;
+                let academiesElement = null;
+
+                // Part 1: Handle the Reside or Magnet Program display
+                if (school.display_type) {
+                    // If it's a magnet with specific programs listed...
+                    if (school.display_type === 'Magnet/Choice Program' && school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
+                        const magnetList = school.magnet_programs.split(';').map(p => p.trim());
+                        resideOrMagnetElement = (
+                            <div>
+                                <span className={tableStyles.schoolDetailsText}>Magnet:</span>
+                                <ul className={tableStyles.programList}>
+                                    {magnetList.map((program, index) => <li key={index}>{program}</li>)}
+                                </ul>
+                            </div>
+                        );
+                    } else {
+                        // Otherwise, just display the basic type (e.g., "Reside")
+                        resideOrMagnetElement = <span className={tableStyles.schoolDetailsText}>{school.display_type}</span>;
+                    }
                 }
-                 let mapLink = null;
-                 // Check for all necessary address components
-                 if (school.address && school.city && school.state && school.zipcode) {
-                     const fullAddress = `${school.address}, ${school.city}, ${school.state} ${school.zipcode}`;
-                     const encodedAddress = encodeURIComponent(fullAddress);
-                     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                     mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="me-1 text-secondary" title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
-                 }
-                 // Return JSX conditionally including the details div
-                 return <>{nameLink} {(detailsText || mapLink) && <div className="mt-2 d-flex align-items-center mt-1">{mapLink}<span className={tableStyles.schoolDetailsText}>{detailsText}</span></div>}</>;
-             }
+
+                // Part 2: Handle the Academies of Louisville display
+                if (school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a') {
+                    const academyList = school.the_academies_of_louisville_programs.split(';').map(p => p.trim());
+                    academiesElement = (
+                        <div className={tableStyles.academiesSection}>
+                            <span className={tableStyles.schoolDetailsText}>Academies:</span>
+                            <ul className={tableStyles.programList}>
+                                {academyList.map((program, index) => <li key={index}>{program}</li>)}
+                            </ul>
+                        </div>
+                    );
+                }
+
+                // Part 3: Handle the Map Link
+                let mapLink = null;
+                if (school.address && school.city && school.state && school.zipcode) {
+                    const fullAddress = `${school.address}, ${school.city}, ${school.state} ${school.zipcode}`;
+                    const encodedAddress = encodeURIComponent(fullAddress);
+                    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
+                    mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="me-1 text-secondary" title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
+                }
+                
+                // Part 4: Assemble the final JSX
+                return (
+                    <>
+                        {nameLink}
+                        {(resideOrMagnetElement || academiesElement || mapLink) && (
+                            <div className="mt-2 d-flex align-items-start mt-1">
+                                {mapLink}
+                                <div>
+                                    {resideOrMagnetElement}
+                                    {academiesElement}
+                                </div>
+                            </div>
+                        )}
+                    </>
+                );
+            }
+
             case 'diversity_chart': {
                 return null;
             }

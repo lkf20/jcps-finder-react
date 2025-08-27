@@ -39,70 +39,78 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 return !isNaN(value) ? <span className="rating-circle">{value}</span> : 'N/A'; // Assumes CSS handles the circle
 
 
+
             case 'display_name': {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
                 let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
 
-                // --- START: NEW DISPLAY LOGIC ---
                 let resideOrMagnetElement = null;
                 let academiesElement = null;
 
-                // Part 1: Handle the Reside or Magnet Program display
-                if (school.display_type) {
-                    // If it's a magnet with specific programs listed...
-                    if (school.display_type === 'Magnet/Choice Program' && school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
-                        const magnetList = school.magnet_programs.split(';').map(p => p.trim());
+                if (school.display_type && school.display_type !== 'Academy Choice') {
+                    if (school.display_type === 'Magnet/Choice Program') {
+                        let magnetHeaderText = "Magnet:";
+                        if (school.geographical_magnet_traditional === 'Yes') {
+                            magnetHeaderText = "Magnet: Traditional";
+                        }
+                        let magnetProgramsList = null;
+                        if (school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
+                            const programs = school.magnet_programs.split(';').map(p => p.trim());
+                            const isOnlyTraditional = programs.length === 1 && programs[0].toLowerCase() === 'traditional';
+                            if (!isOnlyTraditional) {
+                                magnetProgramsList = (
+                                    <ul className={tableStyles.programList}>
+                                        {programs.map((program, index) => <li key={index}>{program}</li>)}
+                                    </ul>
+                                );
+                            }
+                        }
                         resideOrMagnetElement = (
                             <div>
-                                <span className={tableStyles.schoolDetailsText}>Magnet:</span>
-                                <ul className={tableStyles.programList}>
-                                    {magnetList.map((program, index) => <li key={index}>{program}</li>)}
-                                </ul>
+                                <span className={tableStyles.schoolDetailsText}>{magnetHeaderText}</span>
+                                {magnetProgramsList}
                             </div>
                         );
                     } else {
-                        // Otherwise, just display the basic type (e.g., "Reside")
                         resideOrMagnetElement = <span className={tableStyles.schoolDetailsText}>{school.display_type}</span>;
                     }
                 }
 
-                // Part 2: Handle the Academies of Louisville display
                 if (school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a') {
                     const academyList = school.the_academies_of_louisville_programs.split(';').map(p => p.trim());
                     academiesElement = (
                         <div className={tableStyles.academiesSection}>
-                            <span className={tableStyles.schoolDetailsText}>Academies:</span>
+                            <span className={tableStyles.schoolDetailsText}>Academies of Louisville Programs:</span>
                             <ul className={tableStyles.programList}>
                                 {academyList.map((program, index) => <li key={index}>{program}</li>)}
                             </ul>
                         </div>
                     );
                 }
+                
+                // Assemble the final JSX *without the map link*
+                return (
+                    <>
+                        {nameLink}
+                        {resideOrMagnetElement}
+                        {academiesElement}
+                    </>
+                );
+            }
 
-                // Part 3: Handle the Map Link
-                let mapLink = null;
+            // ADD THIS NEW CASE right after the display_name case
+            case 'map_icon': {
                 if (school.address && school.city && school.state && school.zipcode) {
                     const fullAddress = `${school.address}, ${school.city}, ${school.state} ${school.zipcode}`;
                     const encodedAddress = encodeURIComponent(fullAddress);
                     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                    mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="me-1 text-secondary" title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
+                    return (
+                        <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="text-secondary" title="View address">
+                            <i className="bi bi-geo-alt-fill" style={{ fontSize: '1.5rem' }}></i>
+                        </a>
+                    );
                 }
-                
-                // Part 4: Assemble the final JSX
-                return (
-                    <>
-                        {nameLink}
-                        {(resideOrMagnetElement || academiesElement || mapLink) && (
-                            <div className="mt-2 d-flex align-items-start mt-1">
-                                {mapLink}
-                                <div>
-                                    {resideOrMagnetElement}
-                                    {academiesElement}
-                                </div>
-                            </div>
-                        )}
-                    </>
-                );
+                return null; // Return nothing if there's no address
             }
 
             case 'diversity_chart': {

@@ -24,6 +24,8 @@ export const SchoolTableRow = ({ school, columns }) => {
 
         if (col.key === 'display_name') {
             cellClassName = tableStyles.displayNameCell;
+        } else if (col.key === 'map_icon') {
+          cellClassName = tableStyles.mapIconCell; 
         } else if (isDiversityChartCol) {
           // Diversity chart might have its own specific cell styling from DiversityChart.module.css
           // or you can use the common pieChartCell plus its specific one.

@@ -6,6 +6,7 @@ import { CardView } from './CardView';
 import { ColumnSelector } from './ColumnSelector';
 
 const allPossibleColumns = [
+    { key: 'map_icon', header: '', fixed: true }, // 'fixed' prevents it from showing in the selector
     { key: 'display_name', header: '', default: true, sortable: true, sortLabel: 'A-Z', sortDescDefault: false },
     { key: 'distance_mi', header: 'Distance (mi)', default: true, sortable: true, sortLabel: 'Distance', sortDescDefault: false },
     { key: 'membership', header: 'Students', default: true, sortable: true, sortLabel: 'Students', sortDescDefault: true },
@@ -91,53 +92,17 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
         relevantZoneKeywords.some(keyword => zone.zone_type.includes(keyword))
     );
 
-    // --- START: NEW LOGIC USING `zone_type` ---
+    let processedSchools = filteredZones.flatMap(zone => zone.schools || []);
+    console.log(` -> Flattened ${processedSchools.length} schools BEFORE processing.`);
 
-    // 1. Flatten all schools, but add the display_type based on the zone it came from.
-    const schoolsWithDisplayType = filteredZones.flatMap(zone => {
-        // Determine the displayType for all schools in this zone.
-        // Resides zones are simple names like "Elementary", "Middle", "High".
-        // Choice zones have "Magnet" in their name.
-        const isResideZone = !zone.zone_type.includes('Magnet');
-        const displayType = isResideZone ? 'Reside School' : 'Magnet/Choice Program';
-
-        // If the zone has no schools, flatMap needs an empty array.
-        if (!zone.schools) {
-            return [];
-        }
-
-        // Tag each school in this zone with the correct displayType.
-        return zone.schools.map(school => ({
-            ...school,
-            display_type: displayType
-        }));
-    });
-    
-    // 2. De-duplicate the list, giving priority to the "Reside School" designation.
-    const uniqueSchoolsMap = new Map();
-    schoolsWithDisplayType.forEach(school => {
-        const existing = uniqueSchoolsMap.get(school.school_code_adjusted);
-        // If we haven't seen this school yet, or if the new entry is a "Reside School"
-        // (overwriting a potential "Magnet/Choice" entry), then add/update it.
-        if (!existing || school.display_type === 'Reside School') {
-            uniqueSchoolsMap.set(school.school_code_adjusted, school);
-        }
-    });
-    let processedSchools = Array.from(uniqueSchoolsMap.values());
-    console.log(` -> Flattened and de-duplicated to ${processedSchools.length} schools.`);
-
-    // 3. Sort the final, unique list of schools.
     const { key: sortKey, descending: sortDesc } = sortConfig;
     processedSchools.sort((a, b) => {
         let vA = a[sortKey]; let vB = b[sortKey];
         const nA = vA == null; const nB = vB == null;
         if (nA && nB) return 0; if (nA) return sortDesc ? -1 : 1; if (nB) return sortDesc ? 1 : -1;
-
         if (sortKey === 'start_end_time') {
-            vA = a['start_time'];
-            vB = b['start_time'];
+            vA = a['start_time']; vB = b['start_time'];
         }
-
         const numA = parseFloat(vA); const numB = parseFloat(vB); let comp = 0;
         if (!isNaN(numA) && !isNaN(numB)) {
             if (numA > numB) comp = 1; else if (numA < numB) comp = -1;
@@ -147,12 +112,31 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
         }
         return sortDesc ? (comp * -1) : comp;
     });
-    // --- END: NEW LOGIC ---
 
-    console.log(` -> Processed ${processedSchools.length} schools AFTER sorting.`);
+    // --- START: MODIFIED LOGIC TO ADD MORE SPECIFIC DISPLAY TYPE ---
+    processedSchools = processedSchools.map(school => {
+        let displayType = 'Magnet/Choice Program'; // Default for non-reside schools
+
+        if (school.reside === 'Yes' && school.school_zone === userResideZoneDisplayName) {
+            displayType = 'Reside';
+        } else {
+            // This is the new logic for the Seneca High example
+            const hasMagnetPrograms = school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a';
+            const hasAcademyPrograms = school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a';
+
+            if (school.school_level === 'High School' && !hasMagnetPrograms && hasAcademyPrograms) {
+                // If it's a High School choice *only* because of its academy, use a special type
+                displayType = 'Academy Choice';
+            }
+        }
+        return { ...school, display_type: displayType };
+    });
+    // --- END: MODIFIED LOGIC ---
+
+    console.log(` -> Processed ${processedSchools.length} schools AFTER sorting and adding display_type.`);
     return processedSchools;
 
-  }, [searchResults, schoolLevel, sortConfig]);
+    }, [searchResults, schoolLevel, sortConfig, userResideZoneDisplayName]);
 
   const columnsToDisplay = useMemo(() => {
     return allPossibleColumns

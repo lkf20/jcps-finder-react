@@ -195,12 +195,22 @@ table td a.schoolNameTable:hover {
   padding-left: 1.2rem; /* Indent the bullets */
   margin-top: 2px;
   margin-bottom: 0;
-  font-size: 0.85rem;
-  font-style: italic;
+  font-size: 0.8rem;
+  /* font-style: italic; */
   color: #333;
 }
 
 /* New class to add space between the Magnet and Academies sections */
 .academiesSection {
   margin-top: 0.5rem;
+}
+
+.mapIconCell {
+  width: 40px; /* Give it a small, fixed width */
+  min-width: 40px;
+  padding-left: 0.5rem !important;
+  padding-right: 0 !important;
+  text-align: center;
+  vertical-align: top; /* This is the key: aligns the icon to the top */
+  padding-top: 1.25rem !important; /* Push the icon down to align with the first line of text */
 }

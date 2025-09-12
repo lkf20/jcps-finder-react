@@ -150,6 +150,7 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
     // --- END: NEW LOGIC ---
 
     console.log(` -> Processed ${processedSchools.length} schools AFTER sorting.`);
+    console.log("Final list of schools being sent to the table:", processedSchools);
     return processedSchools;
 
   }, [searchResults, schoolLevel, sortConfig]);

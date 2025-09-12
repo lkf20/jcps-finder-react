@@ -181,12 +181,12 @@ table td a.schoolNameTable:hover {
 }
 
 /* Update the existing schoolDetailsText to be bold for headings */
+
 .schoolDetailsText {
   font-size: 0.85rem;
   color: #555;
-  font-weight: 600; /* Bolder for labels like "Magnet:" and "Academies:" */
-  margin-left: 0.25rem;
-  display: block; /* Ensures it takes its own line */
+  font-weight: 600;
+  display: block;
 }
 
 /* New class for the bulleted lists */

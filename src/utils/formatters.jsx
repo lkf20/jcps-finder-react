@@ -42,44 +42,58 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
             case 'display_name': {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
                 let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
-
-                // --- START: NEW DISPLAY LOGIC ---
+            
                 let resideOrMagnetElement = null;
                 let academiesElement = null;
-
-                // Part 1: Handle the Reside or Magnet Program display
-                if (school.display_type) {
-                    // If it's a magnet with specific programs listed...
-                    if (school.display_type === 'Magnet/Choice Program' && school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
-                        const magnetList = school.magnet_programs.split(';').map(p => p.trim());
+            
+                const displayStatus = school.display_status;
+                
+                if (displayStatus && displayStatus !== 'Academies of Louisville') {
+                    if (displayStatus === 'Magnet/Choice Program') {
+                        let magnetHeaderText = "Magnet:";
+                        if (school.geographical_magnet_traditional === 'Yes') {
+                            magnetHeaderText = "Magnet: Traditional";
+                        }
+                        let magnetProgramsList = null;
+                        if (school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
+                            const programs = school.magnet_programs.split(';').map(p => p.trim());
+                            const isOnlyTraditional = programs.length === 1 && programs[0].toLowerCase() === 'traditional';
+                            if (!isOnlyTraditional) {
+                                magnetProgramsList = (
+                                    <ul className={tableStyles.programList}>
+                                        {programs.map((program, index) => <li key={index}>{program}</li>)}
+                                    </ul>
+                                );
+                            }
+                        }
                         resideOrMagnetElement = (
                             <div>
-                                <span className={tableStyles.schoolDetailsText}>Magnet:</span>
-                                <ul className={tableStyles.programList}>
-                                    {magnetList.map((program, index) => <li key={index}>{program}</li>)}
-                                </ul>
+                                <span className={tableStyles.schoolDetailsText}>{magnetHeaderText}</span>
+                                {magnetProgramsList}
                             </div>
                         );
-                    } else {
-                        // Otherwise, just display the basic type (e.g., "Reside")
-                        resideOrMagnetElement = <span className={tableStyles.schoolDetailsText}>{school.display_type}</span>;
+                    } else { 
+                        resideOrMagnetElement = <span className={tableStyles.schoolDetailsText}>{displayStatus}</span>;
                     }
                 }
-
-                // Part 2: Handle the Academies of Louisville display
+            
                 if (school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a') {
                     const academyList = school.the_academies_of_louisville_programs.split(';').map(p => p.trim());
+                    
+                    // --- THIS IS THE KEY CHANGE ---
+                    // Conditionally apply the class that adds top margin
+                    const academiesClassName = resideOrMagnetElement ? tableStyles.academiesSection : '';
+            
                     academiesElement = (
-                        <div className={tableStyles.academiesSection}>
-                            <span className={tableStyles.schoolDetailsText}>Academies:</span>
+                        <div className={academiesClassName}>
+                            <span className={tableStyles.schoolDetailsText}>Academies of Louisville Programs:</span>
                             <ul className={tableStyles.programList}>
                                 {academyList.map((program, index) => <li key={index}>{program}</li>)}
                             </ul>
                         </div>
                     );
                 }
-
-                // Part 3: Handle the Map Link
+                
                 let mapLink = null;
                 if (school.address && school.city && school.state && school.zipcode) {
                     const fullAddress = `${school.address}, ${school.city}, ${school.state} ${school.zipcode}`;
@@ -88,7 +102,6 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="me-1 text-secondary" title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
                 }
                 
-                // Part 4: Assemble the final JSX
                 return (
                     <>
                         {nameLink}

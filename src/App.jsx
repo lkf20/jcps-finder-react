@@ -5,8 +5,9 @@ import { SearchForm } from './components/SearchForm.jsx'; // Import the new comp
 import { ResultsDisplay } from './components/ResultsDisplay';
 
 
-
 const API_ENDPOINT = import.meta.env.VITE_API_URL 
+
+
 
 function App() {
   // --- State Variables ---

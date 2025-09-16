@@ -50,22 +50,21 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 
                 if (displayStatus && displayStatus !== 'Academies of Louisville') {
                     if (displayStatus === 'Magnet/Choice Program') {
-                        let magnetHeaderText = "Magnet:";
-                        if (school.geographical_magnet_traditional === 'Yes') {
-                            magnetHeaderText = "Magnet: Traditional";
-                        }
+                        // <<< START: MODIFIED CODE >>>
+                        // This is the final, simplified logic.
+                        const magnetHeaderText = "Magnet:";
+                        
                         let magnetProgramsList = null;
+                        // If magnet_programs has a value, list it. This now includes "Traditional".
                         if (school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
                             const programs = school.magnet_programs.split(';').map(p => p.trim());
-                            const isOnlyTraditional = programs.length === 1 && programs[0].toLowerCase() === 'traditional';
-                            if (!isOnlyTraditional) {
-                                magnetProgramsList = (
-                                    <ul className={tableStyles.programList}>
-                                        {programs.map((program, index) => <li key={index}>{program}</li>)}
-                                    </ul>
-                                );
-                            }
+                            magnetProgramsList = (
+                                <ul className={tableStyles.programList}>
+                                    {programs.map((program, index) => <li key={index}>{program}</li>)}
+                                </ul>
+                            );
                         }
+                        // <<< END: MODIFIED CODE >>>
                         resideOrMagnetElement = (
                             <div>
                                 <span className={tableStyles.schoolDetailsText}>{magnetHeaderText}</span>
@@ -80,8 +79,6 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 if (school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a') {
                     const academyList = school.the_academies_of_louisville_programs.split(';').map(p => p.trim());
                     
-                    // --- THIS IS THE KEY CHANGE ---
-                    // Conditionally apply the class that adds top margin
                     const academiesClassName = resideOrMagnetElement ? tableStyles.academiesSection : '';
             
                     academiesElement = (

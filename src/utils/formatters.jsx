@@ -42,52 +42,29 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
                 let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
             
-                let resideOrMagnetElement = null;
-                let academiesElement = null;
+                let programElement = null; // A single element for all program types
             
-                const displayStatus = school.display_status;
-                
-                if (displayStatus && displayStatus !== 'Academies of Louisville') {
-                    if (displayStatus === 'Magnet/Choice Program') {
-                        const magnetHeaderText = "Magnet:";
-                        let magnetProgramsList = null;
+                // <<< START: MODIFIED CODE >>>
+                // Simplified logic: Just check for the new display fields from the API
+                if (school.display_program_type && school.display_programs) {
+                    const programs = school.display_programs.split(';').map(p => p.trim());
+                    // Add a space to the header if it doesn't end in one
+                    const headerText = `${school.display_program_type}:`; 
 
-                        // This logic now correctly uses the magnet_programs field for all cases.
-                        if (school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
-                            const programs = school.magnet_programs.split(';').map(p => p.trim());
-                            magnetProgramsList = (
-                                <ul className={tableStyles.programList}>
-                                    {programs.map((program, index) => <li key={index}>{program}</li>)}
-                                </ul>
-                            );
-                        }
-
-                        resideOrMagnetElement = (
-                            <div>
-                                <span className={tableStyles.schoolDetailsText}>{magnetHeaderText}</span>
-                                {magnetProgramsList}
-                            </div>
-                        );
-                    } else { 
-                        resideOrMagnetElement = <span className={tableStyles.schoolDetailsText}>{displayStatus}</span>;
-                    }
-                }
-            
-                // ONLY show the Academies section if the API has assigned this specific status.
-                if (school.display_status === 'Academies of Louisville' && school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a') {
-                    const academyList = school.the_academies_of_louisville_programs.split(';').map(p => p.trim());
-                    const academiesClassName = resideOrMagnetElement ? tableStyles.academiesSection : '';
-            
-                    academiesElement = (
-                        <div className={academiesClassName}>
-                            <span className={tableStyles.schoolDetailsText}>Academies of Louisville Programs:</span>
+                    programElement = (
+                        <div>
+                            <span className={tableStyles.schoolDetailsText}>{headerText}</span>
                             <ul className={tableStyles.programList}>
-                                {academyList.map((program, index) => <li key={index}>{program}</li>)}
+                                {programs.map((program, index) => <li key={index}>{program}</li>)}
                             </ul>
                         </div>
                     );
+                } else if (school.display_status) {
+                    // Fallback for simple statuses like "Reside" or "Satellite School"
+                    programElement = <span className={tableStyles.schoolDetailsText}>{school.display_status}</span>;
                 }
-                
+                // <<< END: MODIFIED CODE >>>
+
                 let mapLink = null;
                 if (school.address && school.city && school.state && school.zipcode) {
                     const fullAddress = `${school.address}, ${school.city}, ${school.state} ${school.zipcode}`;
@@ -99,12 +76,11 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 return (
                     <>
                         {nameLink}
-                        {(resideOrMagnetElement || academiesElement || mapLink) && (
+                        {(programElement || mapLink) && (
                             <div className="mt-2 d-flex align-items-start mt-1">
                                 {mapLink}
                                 <div>
-                                    {resideOrMagnetElement}
-                                    {academiesElement}
+                                    {programElement}
                                 </div>
                             </div>
                         )}

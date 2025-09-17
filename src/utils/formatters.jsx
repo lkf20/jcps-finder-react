@@ -38,7 +38,6 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
             case 'great_schools_rating':
                 return !isNaN(value) ? <span className="rating-circle">{value}</span> : 'N/A'; // Assumes CSS handles the circle
 
-
             case 'display_name': {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
                 let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
@@ -50,12 +49,10 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 
                 if (displayStatus && displayStatus !== 'Academies of Louisville') {
                     if (displayStatus === 'Magnet/Choice Program') {
-                        // <<< START: MODIFIED CODE >>>
-                        // This is the final, simplified logic.
                         const magnetHeaderText = "Magnet:";
-                        
                         let magnetProgramsList = null;
-                        // If magnet_programs has a value, list it. This now includes "Traditional".
+
+                        // This logic now correctly uses the magnet_programs field for all cases.
                         if (school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
                             const programs = school.magnet_programs.split(';').map(p => p.trim());
                             magnetProgramsList = (
@@ -64,7 +61,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                                 </ul>
                             );
                         }
-                        // <<< END: MODIFIED CODE >>>
+
                         resideOrMagnetElement = (
                             <div>
                                 <span className={tableStyles.schoolDetailsText}>{magnetHeaderText}</span>
@@ -76,9 +73,9 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     }
                 }
             
-                if (school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a') {
+                // ONLY show the Academies section if the API has assigned this specific status.
+                if (school.display_status === 'Academies of Louisville' && school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a') {
                     const academyList = school.the_academies_of_louisville_programs.split(';').map(p => p.trim());
-                    
                     const academiesClassName = resideOrMagnetElement ? tableStyles.academiesSection : '';
             
                     academiesElement = (
@@ -114,7 +111,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     </>
                 );
             }
-
+            
             case 'diversity_chart': {
                 return null;
             }

@@ -91,7 +91,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 if (programDisplayElements.length === 0 && school.display_status) {
                     programDisplayElements.push(
                         <div key="status">
-                            <span className={tableStyles.schoolDetailsText}>{school.display_status}</span>
+                            <span className={`${tableStyles.schoolDetailsText} ${tableStyles.singleStatus}`}>{school.display_status}</span>
                         </div>
                     );
                 }
@@ -108,7 +108,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     <>
                         {nameLink}
                         { (programDisplayElements.length > 0 || mapLink) && (
-                            <div className="mt-2 d-flex align-items-center mt-1">
+                            <div className="mt-2 d-flex align-items-start mt-1">
                                 {mapLink}
                                 {programDisplayElements.length > 0 && <div>{programDisplayElements}</div>}
                             </div>

@@ -206,7 +206,7 @@ table td a.schoolNameTable:hover {
 }
 
 .programSection {
-  margin-top: 1.2rem;
+  margin-top: 0rem;
   /* This is the override. It tells a multi-line block to ignore the parent's centering
      and align itself to the top of the flex container. */
   /* align-self: flex-start; */
@@ -217,12 +217,19 @@ table td a.schoolNameTable:hover {
 }
 
 .mapIconLink {
-  margin-top: 0.05rem;
+  margin-top: 0rem;
   margin-right: 0.5rem; /* Creates space between the icon and the text */
   font-size: 1rem;
   color: #6c757d;
   flex-shrink: 0; /* Prevents the icon from shrinking if text is long */
-  align-self: center; 
+  align-self: flex-start;
 }
 
 /* Ensure the text container flows correctly next to the floated icon */
+
+.singleStatus {
+  /* This small top margin pushes the "Reside" text down just enough
+     to align its center with the icon's center. */
+  display: inline-block; /* Margin-top works best on block or inline-block elements */
+  margin-top: 0.15em; 
+}

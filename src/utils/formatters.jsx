@@ -42,46 +42,75 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
                 let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
             
-                let programElement = null; // A single element for all program types
-            
-                // <<< START: MODIFIED CODE >>>
-                // Simplified logic: Just check for the new display fields from the API
-                if (school.display_program_type && school.display_programs) {
-                    const programs = school.display_programs.split(';').map(p => p.trim());
-                    // Add a space to the header if it doesn't end in one
-                    const headerText = `${school.display_program_type}:`; 
+                let programDisplayElements = []; // Use an array to collect all display elements
 
-                    programElement = (
-                        <div>
-                            <span className={tableStyles.schoolDetailsText}>{headerText}</span>
+                // 1. Show Magnet Programs if they exist
+                if (school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
+                    const programs = school.magnet_programs.split(';').map(p => p.trim());
+                    programDisplayElements.push(
+                        <div key="magnet" className={tableStyles.programSection}>
+                            <span className={tableStyles.schoolDetailsText}>Magnet Program:</span>
                             <ul className={tableStyles.programList}>
                                 {programs.map((program, index) => <li key={index}>{program}</li>)}
                             </ul>
                         </div>
                     );
-                } else if (school.display_status) {
-                    // Fallback for simple statuses like "Reside" or "Satellite School"
-                    programElement = <span className={tableStyles.schoolDetailsText}>{school.display_status}</span>;
                 }
-                // <<< END: MODIFIED CODE >>>
 
+                // 2. Show Districtwide Pathways if they exist
+                if (school.districtwide_pathways_programs && school.districtwide_pathways_programs.trim().toLowerCase() !== '#n/a') {
+                    const programs = school.districtwide_pathways_programs.split(';').map(p => p.trim());
+                    programDisplayElements.push(
+                        <div key="pathway" className={tableStyles.programSection}>
+                            <span className={tableStyles.schoolDetailsText}>Districtwide Pathway:</span>
+                            <ul className={tableStyles.programList}>
+                                {programs.map((program, index) => <li key={index}>{program}</li>)}
+                            </ul>
+                        </div>
+                    );
+                }
+            
+                // 3. Show Academies of Louisville if applicable
+                const shouldShowAcademies = (
+                    school.display_status === 'Academies of Louisville' || 
+                    school.display_status === 'Reside'
+                );
+                if (shouldShowAcademies && school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a') {
+                    const academyList = school.the_academies_of_louisville_programs.split(';').map(p => p.trim());
+                    programDisplayElements.push(
+                        <div key="academies" className={tableStyles.programSection}>
+                            <span className={tableStyles.schoolDetailsText}>Academies of Louisville Programs:</span>
+                            <ul className={tableStyles.programList}>
+                                {academyList.map((program, index) => <li key={index}>{program}</li>)}
+                            </ul>
+                        </div>
+                    );
+                }
+
+                // 4. If NO program lists were added, fall back to the simple display_status
+                if (programDisplayElements.length === 0 && school.display_status) {
+                    programDisplayElements.push(
+                        <div key="status">
+                            <span className={tableStyles.schoolDetailsText}>{school.display_status}</span>
+                        </div>
+                    );
+                }
+                
                 let mapLink = null;
                 if (school.address && school.city && school.state && school.zipcode) {
                     const fullAddress = `${school.address}, ${school.city}, ${school.state} ${school.zipcode}`;
                     const encodedAddress = encodeURIComponent(fullAddress);
                     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                    mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="me-1 text-secondary" title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
+                    mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className={tableStyles.mapIconLink} title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
                 }
                 
                 return (
                     <>
                         {nameLink}
-                        {(programElement || mapLink) && (
-                            <div className="mt-2 d-flex align-items-start mt-1">
+                        { (programDisplayElements.length > 0 || mapLink) && (
+                            <div className="mt-2 d-flex align-items-center mt-1">
                                 {mapLink}
-                                <div>
-                                    {programElement}
-                                </div>
+                                {programDisplayElements.length > 0 && <div>{programDisplayElements}</div>}
                             </div>
                         )}
                     </>

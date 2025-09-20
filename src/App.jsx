@@ -26,7 +26,6 @@ function App() {
   // --- API Call Function ---
   // Renamed from handleSearchSubmit to make its purpose clearer
   async function fetchSchoolData({ address, schoolLevel }) { // Receives search criteria
-    console.log("App: fetchSchoolData called with:", { address, schoolLevel });
     setIsLoading(true);
     setError(null);
     setSearchResults(null);
@@ -42,16 +41,10 @@ function App() {
       });
       const data = await response.json();
 
-      // --- START: Added Code to Log API Output ---
-      console.log("--- RAW API OUTPUT ---");
-      console.log(JSON.stringify(data, null, 2));
-      console.log("You can right-click on the object above in the console and select 'Copy object' to get the full API response.");
-      // --- END: Added Code ---
       
       if (!response.ok) {
         throw new Error(data.error || `HTTP error! Status: ${response.status}`);
       }
-      console.log("App: API Response:", data);
       setSearchResults(data);
     } catch (fetchError) {
       console.error("App: API Fetch Error:", fetchError);

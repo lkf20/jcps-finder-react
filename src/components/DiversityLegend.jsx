@@ -4,7 +4,7 @@ import styles from './DiversityLegend.module.css';
 import { DIVERSITY_LABELS, DIVERSITY_COLORS, DIVERSITY_KNOWN_KEYS } from '../utils/diversityConfig';  
 
 
-export const DiversityLegend = ({ school, legendItemClass }) => {
+export const DiversityLegend = ({ school, variant = 'card' }) => { // Add variant prop
     if (!school) {
         return <p className="text-muted small mb-0">Diversity data not available.</p>;
     }
@@ -42,23 +42,27 @@ export const DiversityLegend = ({ school, legendItemClass }) => {
         if (value > 0) { // Only show legend items for categories with data
             legendItems.push({
                 label: DIVERSITY_LABELS[index],
-                value: parseFloat(value.toFixed(1)), // Round to one decimal for legend
+                // <<< START: MODIFIED CODE >>>
+                value: Math.round(value), // Round to the nearest whole number
+                // <<< END: MODIFIED CODE >>>
                 color: DIVERSITY_COLORS[index % DIVERSITY_COLORS.length]
             });
         }
     });
 
     if (!dataAvailable || legendItems.length === 0) {
-        // This case might be redundant if the parent component (SchoolCard) already checks,
-        // but good for robustness if DiversityLegend is used elsewhere.
-        return <p className="text-muted small mb-0">No diversity data to display in legend.</p>;
+        return <p className="text-muted small mb-0">No diversity data to display.</p>;
     }
+    
+    // --- 3. Render Legend with Variant ---
+    const listClassName = variant === 'table' 
+        ? styles.legendListTable 
+        : `d-flex flex-wrap justify-content-end ${styles.legendListCard}`;
 
-    // --- 3. Render Legend ---
     return (
-        <ul className={`d-flex flex-wrap justify-content-end ${styles.diversityLegendList}`}>
+        <ul className={listClassName}>
             {legendItems.map(item => (
-                <li key={item.label} className={`d-flex align-items-baseline ${styles.legendItem}${legendItemClass ? ` ${legendItemClass}` : ''}`}>
+                <li key={item.label} className={`d-flex align-items-baseline ${styles.legendItem}`}>
                     <span
                         className={styles.legendColorBox}
                         style={{ backgroundColor: item.color }}

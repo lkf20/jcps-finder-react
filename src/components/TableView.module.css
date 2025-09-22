@@ -275,3 +275,17 @@ table td a.schoolNameTable:hover {
   margin-top: 0.25rem;
   padding-left: 1.5rem; /* Indent more than the summary marker */
 }
+
+.diversityCell {
+  vertical-align: middle;
+  min-width: 280px; /* Give it enough space */
+  padding: 0.5rem 1rem !important;
+}
+
+.diversityContainerTable {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}

@@ -42,59 +42,84 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
                 let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
             
-                let programDisplayElements = []; // Use an array to collect all display elements
+                let programDisplayElements = [];
+                const isHighSchool = school.school_level === 'High School';
 
-                // 1. Show Magnet Programs if they exist
-                if (school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
-                    const programs = school.magnet_programs.split(';').map(p => p.trim());
-                    programDisplayElements.push(
-                        <div key="magnet" className={tableStyles.programSection}>
-                            <span className={tableStyles.schoolDetailsText}>Magnet Program:</span>
+                // Helper function to create the program list JSX
+                const createProgramSection = (key, title, programString) => {
+                    if (!programString || programString.trim().toLowerCase() === '#n/a') return null;
+
+                    const programs = programString.split(';').map(p => p.trim());
+                    
+                    if (isHighSchool && programs.length > 0) {
+                        return (
+                            <details key={key} className={tableStyles.programDetails}>
+                                <summary className={tableStyles.programSummary}>
+                                    {title}:
+                                </summary>
+                                <ul className={tableStyles.programList}>
+                                    {programs.map((program, index) => <li key={index}>{program}</li>)}
+                                </ul>
+                            </details>
+                        );
+                    }
+                    
+                    return (
+                        <div key={key} className={tableStyles.programSection}>
+                            <span className={tableStyles.schoolDetailsText}>{title}:</span>
                             <ul className={tableStyles.programList}>
                                 {programs.map((program, index) => <li key={index}>{program}</li>)}
                             </ul>
                         </div>
                     );
-                }
+                };
 
-                // 2. Show Districtwide Pathways if they exist
-                if (school.districtwide_pathways_programs && school.districtwide_pathways_programs.trim().toLowerCase() !== '#n/a') {
-                    const programs = school.districtwide_pathways_programs.split(';').map(p => p.trim());
-                    programDisplayElements.push(
-                        <div key="pathway" className={tableStyles.programSection}>
-                            <span className={tableStyles.schoolDetailsText}>Districtwide Pathway:</span>
-                            <ul className={tableStyles.programList}>
-                                {programs.map((program, index) => <li key={index}>{program}</li>)}
-                            </ul>
-                        </div>
-                    );
-                }
-            
-                // 3. Show Academies of Louisville if applicable
-                const shouldShowAcademies = (
-                    school.display_status === 'Academies of Louisville' || 
-                    school.display_status === 'Reside'
-                );
-                if (shouldShowAcademies && school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a') {
-                    const academyList = school.the_academies_of_louisville_programs.split(';').map(p => p.trim());
-                    programDisplayElements.push(
-                        <div key="academies" className={tableStyles.programSection}>
-                            <span className={tableStyles.schoolDetailsText}>Academies of Louisville Programs:</span>
-                            <ul className={tableStyles.programList}>
-                                {academyList.map((program, index) => <li key={index}>{program}</li>)}
-                            </ul>
-                        </div>
-                    );
-                }
-
-                // 4. If NO program lists were added, fall back to the simple display_status
-                if (programDisplayElements.length === 0 && school.display_status) {
+                // <<< START: FINAL CORRECTED LOGIC >>>
+                // Step 1: Add the primary status ONLY if it's not a program-type that will have a more specific title.
+                const statusesToExclude = ['Magnet/Choice Program', 'Academies of Louisville'];
+                if (school.display_status && !statusesToExclude.includes(school.display_status)) {
                     programDisplayElements.push(
                         <div key="status">
                             <span className={`${tableStyles.schoolDetailsText} ${tableStyles.singleStatus}`}>{school.display_status}</span>
                         </div>
                     );
                 }
+
+                // Step 2: Conditionally add program lists.
+                const shouldShowMagnetOrPathway = (school.display_status === 'Reside' || school.display_status === 'Magnet/Choice Program');
+
+                if (shouldShowMagnetOrPathway && school.magnet_programs) {
+                    const title = 'Magnet Program';
+                    const magnetSection = createProgramSection('magnet', title, school.magnet_programs);
+                    if (magnetSection) programDisplayElements.push(magnetSection);
+                }
+
+                if (shouldShowMagnetOrPathway && school.districtwide_pathways_programs) {
+                    const title = 'Districtwide Pathway';
+                    const pathwaySection = createProgramSection('pathway', title, school.districtwide_pathways_programs);
+                    if (pathwaySection) programDisplayElements.push(pathwaySection);
+                }
+
+                const shouldShowAcademiesList = (
+                    school.display_status === 'Academies of Louisville' || 
+                    (school.display_status === 'Reside' && isHighSchool)
+                );
+
+                if (shouldShowAcademiesList && school.the_academies_of_louisville_programs) {
+                    const title = 'Academies of Louisville';
+                    const academySection = createProgramSection('academies', title, school.the_academies_of_louisville_programs);
+                    if (academySection) programDisplayElements.push(academySection);
+                }
+
+                // Fallback for program-types that have no program list in the data.
+                if (programDisplayElements.length === 0 && school.display_status) {
+                    programDisplayElements.push(
+                        <div key="status-fallback">
+                            <span className={`${tableStyles.schoolDetailsText} ${tableStyles.singleStatus}`}>{school.display_status}</span>
+                        </div>
+                    );
+                }
+                // <<< END: FINAL CORRECTED LOGIC >>>
                 
                 let mapLink = null;
                 if (school.address && school.city && school.state && school.zipcode) {
@@ -115,7 +140,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                         )}
                     </>
                 );
-            }
+            } 
             
             case 'diversity_chart': {
                 return null;

@@ -233,3 +233,45 @@ table td a.schoolNameTable:hover {
   display: inline-block; /* Margin-top works best on block or inline-block elements */
   margin-top: 0.15em; 
 }
+
+/* --- New Styles for Collapsible Program Lists --- */
+.programDetails {
+  margin-top: 0.25rem;
+}
+
+.programSummary {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #555;
+  cursor: pointer;
+  list-style: none; /* Remove default marker */
+  position: relative;
+  padding-left: 1.2rem; /* Space for custom marker */
+}
+
+/* Custom marker using ::before */
+.programSummary::before {
+  content: '►'; /* Collapsed state */
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%) rotate(0deg);
+  font-size: 0.7rem;
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Custom marker for the expanded state */
+.programDetails[open] > .programSummary::before {
+  transform: translateY(-50%) rotate(90deg); /* Expanded state */
+}
+
+/* Hide the default browser arrow on Webkit browsers (Chrome, Safari) */
+.programSummary::-webkit-details-marker {
+  display: none;
+}
+
+/* Indent the program list when expanded */
+.programDetails .programList {
+  margin-top: 0.25rem;
+  padding-left: 1.5rem; /* Indent more than the summary marker */
+}

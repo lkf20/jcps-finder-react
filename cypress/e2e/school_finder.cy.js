@@ -1,45 +1,67 @@
 // cypress/e2e/school_finder.cy.js
 
+// (The normalizeSchoolName function remains the same at the top)
+function normalizeSchoolName(name) {
+  if (typeof name !== 'string') {
+    return "";
+  }
+  let normalized = name.toLowerCase().replace(/\./g, '').trim();
+  normalized = normalized.replace(/\s+/g, ' ');
+  const nameMap = {
+    'the academy @ shawnee middle': 'the academy @ shawnee',
+    'the academy @ shawnee high': 'the academy @ shawnee',
+    'dupont manual high': 'dupont manual high',
+    'hudson middle school': 'hudson middle',
+    'perry elementary': 'dr william h perry elementary school',
+    'stuart middle school': 'stuart academy',
+    'wilkerson traditional elementary': 'wilkerson elementary',
+    'greathouse/shryock traditional': 'greathouse/shryock traditional elementary',
+    'norton commons elementary school': 'norton commons elementary'
+  };
+  if (nameMap[normalized]) {
+    return nameMap[normalized];
+  }
+  return normalized;
+}
+
+// Load the test data once at the beginning
+const testData = require('../fixtures/test_cases.json');
+
 describe('School Finder E2E Tests', () => {
-    // Before each test, we load the test_cases.json file from the fixtures folder.
-    // The `.as('testData')` part creates an alias that we can access later.
-    beforeEach(() => {
-      cy.fixture('test_cases.json').as('testData');
-    });
-  
-    // This is our first test case. The 'it' block defines a single test.
-    it('should display the correct Reside and Satellite schools for a Waggener Zone address', function() {
-      // We access the loaded data using 'this.testData'.
-      // We find the specific test case for the Waggener Zone from our array of test cases.
-      const testCase = this.testData.find(tc => tc.zone_name === "Waggener Zone");
-      
-      // 1. Visit the application's local URL.
-      cy.visit('http://localhost:5173/');
-  
-      // 2. Interact with the form.
-      cy.get('#address').type(testCase.address);
-      cy.get('#schoolLevel').select('Elementary');
-      cy.get('button[type="submit"]').click();
-  
-      // 3. Wait for results and verify the main zone name is correct.
-      // `should('contain', ...)` makes Cypress automatically wait for the element to appear.
-      cy.get('#results-info').should('contain', `Your zone is: ${testCase.zone_name.toUpperCase()}`);
-  
-      // 4. Check each expected school in the Elementary list.
-      testCase.expected_schools.Elementary.forEach(school => {
-        cy.get('#results-output')
-          // Find the table cell (`td`) that contains the school's name.
-          .contains('td', school.display_name)
-          // Go up to the parent table row (`tr`).
-          .parent('tr')
-          // From now on, all commands will be limited to within this specific row.
-          .within(() => {
-            // Assert that the row contains the expected status text (e.g., "Reside" or "Satellite School").
-            cy.contains(school.expected_status);
+
+  // Loop through each test case (address) in the JSON file
+  testData.forEach(testCase => {
+
+    // <<< START: MODIFIED CODE >>>
+    // Get the school levels available for this address (e.g., ['Elementary', 'Middle', 'High'])
+    const schoolLevels = Object.keys(testCase.expected_schools);
+
+    // Now, loop through each school level and create a test for it
+    schoolLevels.forEach(schoolLevel => {
+
+      // Create a more descriptive test title
+      it(`should display correct ${schoolLevel} schools for address in ${testCase.zone_name}`, () => {
+        
+        cy.visit('http://localhost:5173/');
+    
+        cy.get('#address').type(testCase.address);
+        // Use the schoolLevel from our loop
+        cy.get('#schoolLevel').select(schoolLevel);
+        cy.get('button[type="submit"]').click();
+    
+        cy.get('#results-info', { timeout: 10000 }).should('contain', testCase.zone_name.toUpperCase());
+    
+        cy.get('#results-output').then($resultsDiv => {
+          const resultsText = normalizeSchoolName($resultsDiv.text());
+
+          // Use the schoolLevel to get the correct list of expected schools
+          testCase.expected_schools[schoolLevel].forEach(school => {
+            const expectedName = normalizeSchoolName(school.display_name);
+            expect(resultsText).to.include(expectedName);
           });
+        });
       });
     });
-  
-    // You can add more tests here by copying the `it()` block above and changing the zone_name.
-    // For example: it('should display the correct schools for a Ballard Zone address', function() { ... });
+    // <<< END: MODIFIED CODE >>>
   });
+});

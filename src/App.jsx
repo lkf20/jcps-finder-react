@@ -1,3 +1,5 @@
+// src/App.jsx
+
 import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { SearchForm } from './components/SearchForm.jsx';
@@ -14,7 +16,6 @@ function App() {
   const chartInstancesRef = useRef({});
 
   async function fetchSchoolData({ address, schoolLevel }) {
-    // ... (fetchSchoolData function remains the same)
     console.log("App: fetchSchoolData called with:", { address, schoolLevel });
     setIsLoading(true);
     setError(null);
@@ -45,7 +46,6 @@ function App() {
 
   return (
     <>
-      {/* <<< START: ADDED CODE >>> */}
       <div className="disclaimer-banner alert alert-warning mb-0" role="alert">
         <div className="container text-center">
           <i className="bi bi-exclamation-triangle-fill me-2"></i>
@@ -53,7 +53,6 @@ function App() {
           <a href="https://apps.jefferson.kyschools.us/demographics/schoolfinder.aspx" target="_blank" rel="noopener noreferrer" className="alert-link"> JCPS School Finder</a> or by calling the Office of School Choice at <strong>(502) 485-6250</strong>.
         </div>
       </div>
-      {/* <<< END: ADDED CODE >>> */}
 
       <div className="main-container mt-4">
         <header className="text-center mb-4">
@@ -72,7 +71,14 @@ function App() {
 
         <section id="results-section" className="mt-4">
            {isLoading && (
-                <div id="loader" className="loader" style={{display:'block'}}></div>
+                // <<< START: MODIFIED CODE >>>
+                <>
+                  <div id="loader" className="loader" style={{display:'block'}}></div>
+                  <p className="text-center text-muted fst-italic">
+                    Please allow up to 1 minute for data to load.
+                  </p>
+                </>
+                // <<< END: MODIFIED CODE >>>
             )}
            {error && !isLoading && (
                <div id="error-message" className="alert alert-danger" role="alert">

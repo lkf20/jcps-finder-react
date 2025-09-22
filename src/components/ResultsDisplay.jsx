@@ -13,10 +13,10 @@ const allPossibleColumns = [
     { key: 'great_schools_rating', header: 'GreatSchools Rating', default: false, sortable: true, sortLabel: 'GreatSchools Rating', sortDescDefault: true },
     { key: 'overall_indicator_rating', header: 'KY Rating', default: true, sortable: true, sortLabel: 'KY Rating', sortDescDefault: true },
     { key: 'reading_math_proficiency', header: 'Reading / Math Proficiency', default: true, sortable: false },
-    { key: 'gifted_talented_percent', header: 'Gifted & Talented', default: false, sortable: true, sortLabel: 'Gifted & Talented', sortDescDefault: true },
-    { key: 'economically_disadvantaged_percent', header: 'Economically Disadvantaged', default: false, sortable: false },
-    { key: 'diversity_chart', header: 'Student Diversity', default: false, sortable: false },
-    { key: 'teacher_avg_years_experience', header: 'Avg Yrs Teacher Experience', default: false, sortable: true, sortLabel: 'Avg Teacher Experience', sortDescDefault: true },
+    { key: 'gifted_talented_percent', header: 'Gifted & Talented', default: true, sortable: true, sortLabel: 'Gifted & Talented', sortDescDefault: true },
+    { key: 'economically_disadvantaged_percent', header: 'Economically Disadvantaged', default: true, sortable: false },
+    { key: 'diversity_chart', header: 'Student Diversity', default: true, sortable: false },
+    { key: 'teacher_avg_years_experience', header: 'Avg Yrs Teacher Experience', default: true, sortable: true, sortLabel: 'Avg Teacher Experience', sortDescDefault: true },
     { key: 'percent_teachers_3_years_or_less_experience', header: 'Teachers with <\u00A03\u00A0Yrs Experience', default: false, sortable: false },
     { key: 'parent_satisfaction', header: 'Parent Satisfaction', default: true, sortable: true, sortLabel: 'Parent Satisfaction', sortDescDefault: true },
     { key: 'pta_membership_percent', header: 'PTA Membership', default: false, sortable: true, sortLabel: 'PTA Membership', sortDescDefault: true },
@@ -39,7 +39,7 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
   const [sortConfig, setSortConfig] = useState({ key: 'distance_mi', descending: false });
   const [selectedColumns, setSelectedColumns] = useState(() => {
     const initialCols = ['display_name', ...allPossibleColumns.filter(col => col.default).map(col => col.key)];
-    return [...new Set(initialCols.filter(key => key !== 'diversity_chart'))];
+    return [...new Set(initialCols)];
   });
 
   const userResideZoneDisplayName = useMemo(() => {

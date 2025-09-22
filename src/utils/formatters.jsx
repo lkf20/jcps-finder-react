@@ -38,110 +38,86 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
             case 'great_schools_rating':
                 return !isNaN(value) ? <span className="rating-circle">{value}</span> : 'N/A'; // Assumes CSS handles the circle
 
+
             case 'display_name': {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
                 let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
             
-                let programDisplayElements = [];
-                const isHighSchool = school.school_level === 'High School';
-
-                // Helper function to create the program list JSX
-                const createProgramSection = (key, title, programString) => {
-                    if (!programString || programString.trim().toLowerCase() === '#n/a') return null;
-
-                    const programs = programString.split(';').map(p => p.trim());
-                    
-                    if (isHighSchool && programs.length > 0) {
-                        return (
-                            <details key={key} className={tableStyles.programDetails}>
-                                <summary className={tableStyles.programSummary}>
-                                    {title}:
-                                </summary>
-                                <ul className={tableStyles.programList}>
-                                    {programs.map((program, index) => <li key={index}>{program}</li>)}
-                                </ul>
-                            </details>
+                let resideOrMagnetElement = null;
+                let academiesElement = null;
+            
+                const displayStatus = school.display_status;
+                
+                if (displayStatus && displayStatus !== 'Academies of Louisville') {
+                    if (displayStatus === 'Magnet/Choice Program') {
+                        let magnetHeaderText = "Magnet:";
+                        if (school.geographical_magnet_traditional === 'Yes') {
+                            magnetHeaderText = "Magnet: Traditional";
+                        }
+                        let magnetProgramsList = null;
+                        if (school.magnet_programs && school.magnet_programs.trim().toLowerCase() !== '#n/a') {
+                            const programs = school.magnet_programs.split(';').map(p => p.trim());
+                            const isOnlyTraditional = programs.length === 1 && programs[0].toLowerCase() === 'traditional';
+                            if (!isOnlyTraditional) {
+                                magnetProgramsList = (
+                                    <ul className={tableStyles.programList}>
+                                        {programs.map((program, index) => <li key={index}>{program}</li>)}
+                                    </ul>
+                                );
+                            }
+                        }
+                        resideOrMagnetElement = (
+                            <div>
+                                <span className={tableStyles.schoolDetailsText}>{magnetHeaderText}</span>
+                                {magnetProgramsList}
+                            </div>
                         );
+                    } else { 
+                        resideOrMagnetElement = <span className={tableStyles.schoolDetailsText}>{displayStatus}</span>;
                     }
+                }
+            
+                if (school.the_academies_of_louisville_programs && school.the_academies_of_louisville_programs.trim().toLowerCase() !== '#n/a') {
+                    const academyList = school.the_academies_of_louisville_programs.split(';').map(p => p.trim());
                     
-                    return (
-                        <div key={key} className={tableStyles.programSection}>
-                            <span className={tableStyles.schoolDetailsText}>{title}:</span>
+                    // --- THIS IS THE KEY CHANGE ---
+                    // Conditionally apply the class that adds top margin
+                    const academiesClassName = resideOrMagnetElement ? tableStyles.academiesSection : '';
+            
+                    academiesElement = (
+                        <div className={academiesClassName}>
+                            <span className={tableStyles.schoolDetailsText}>Academies of Louisville Programs:</span>
                             <ul className={tableStyles.programList}>
-                                {programs.map((program, index) => <li key={index}>{program}</li>)}
+                                {academyList.map((program, index) => <li key={index}>{program}</li>)}
                             </ul>
                         </div>
                     );
-                };
-
-                // <<< START: FINAL CORRECTED LOGIC >>>
-                // Step 1: Add the primary status ONLY if it's not a program-type that will have a more specific title.
-                const statusesToExclude = ['Magnet/Choice Program', 'Academies of Louisville'];
-                if (school.display_status && !statusesToExclude.includes(school.display_status)) {
-                    programDisplayElements.push(
-                        <div key="status">
-                            <span className={`${tableStyles.schoolDetailsText} ${tableStyles.singleStatus}`}>{school.display_status}</span>
-                        </div>
-                    );
                 }
-
-                // Step 2: Conditionally add program lists.
-                const shouldShowMagnetOrPathway = (school.display_status === 'Reside' || school.display_status === 'Magnet/Choice Program');
-
-                if (shouldShowMagnetOrPathway && school.magnet_programs) {
-                    const title = 'Magnet Program';
-                    const magnetSection = createProgramSection('magnet', title, school.magnet_programs);
-                    if (magnetSection) programDisplayElements.push(magnetSection);
-                }
-
-                if (shouldShowMagnetOrPathway && school.districtwide_pathways_programs) {
-                    const title = 'Districtwide Pathway';
-                    const pathwaySection = createProgramSection('pathway', title, school.districtwide_pathways_programs);
-                    if (pathwaySection) programDisplayElements.push(pathwaySection);
-                }
-
-                const shouldShowAcademiesList = (
-                    school.display_status === 'Academies of Louisville' || 
-                    (school.display_status === 'Reside' && isHighSchool)
-                );
-
-                if (shouldShowAcademiesList && school.the_academies_of_louisville_programs) {
-                    const title = 'Academies of Louisville';
-                    const academySection = createProgramSection('academies', title, school.the_academies_of_louisville_programs);
-                    if (academySection) programDisplayElements.push(academySection);
-                }
-
-                // Fallback for program-types that have no program list in the data.
-                if (programDisplayElements.length === 0 && school.display_status) {
-                    programDisplayElements.push(
-                        <div key="status-fallback">
-                            <span className={`${tableStyles.schoolDetailsText} ${tableStyles.singleStatus}`}>{school.display_status}</span>
-                        </div>
-                    );
-                }
-                // <<< END: FINAL CORRECTED LOGIC >>>
                 
                 let mapLink = null;
                 if (school.address && school.city && school.state && school.zipcode) {
                     const fullAddress = `${school.address}, ${school.city}, ${school.state} ${school.zipcode}`;
                     const encodedAddress = encodeURIComponent(fullAddress);
                     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                    mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className={tableStyles.mapIconLink} title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
+                    mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="me-1 text-secondary" title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
                 }
                 
                 return (
                     <>
                         {nameLink}
-                        { (programDisplayElements.length > 0 || mapLink) && (
+                        {(resideOrMagnetElement || academiesElement || mapLink) && (
                             <div className="mt-2 d-flex align-items-start mt-1">
                                 {mapLink}
-                                {programDisplayElements.length > 0 && <div>{programDisplayElements}</div>}
+                                <div>
+                                    {resideOrMagnetElement}
+                                    {academiesElement}
+                                </div>
                             </div>
                         )}
                     </>
                 );
-            } 
-            
+            }
+
             case 'diversity_chart': {
                 return null;
             }

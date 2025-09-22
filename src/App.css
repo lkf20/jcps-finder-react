@@ -131,26 +131,3 @@ body {
     font-size: 1.0rem;  /* Potentially even smaller for very small screens */
   }
 }
-
-/* --- Disclaimer Banner Styles --- */
-.disclaimer-banner {
-  padding: 0.75rem 0;
-  border-radius: 0; /* Makes it a sharp-edged ribbon */
-  border-left: 0;
-  border-right: 0;
-  border-top: 0;
-  font-size: 0.9rem; /* Slightly smaller font to not be distracting */
-  background-color: #fff3cd; /* Bootstrap's warning background */
-  color: #664d03; /* Bootstrap's warning text color */
-}
-
-.disclaimer-banner .alert-link {
-  font-weight: 600; /* Make the link stand out */
-}
-
-@media (max-width: 767.98px) {
-  .disclaimer-banner {
-    font-size: 0.8rem;
-    padding: 0.5rem;
-  }
-}

@@ -47,3 +47,53 @@
 .legendItemTable {
   margin-bottom: 6px;
 }
+
+/* --- Card View Legend --- */
+.legendListCard {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* --- Table View Legend (New) --- */
+.legendListTable {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0 1rem; /* Margin to the left of the legend */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* --- Common Item Styles --- */
+.legendItem {
+  white-space: nowrap;
+  line-height: 1.4; /* Slightly more space for table view */
+  margin-bottom: 4px; /* Space between items */
+}
+
+.legendColorBox {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
+  border-radius: 2px;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.legendLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 0.5rem;
+  font-size: 0.8rem;
+  color: #555;
+  text-align: left;
+}
+
+.legendValue {
+  white-space: nowrap;
+  font-size: 0.8rem;
+  color: #333;
+}

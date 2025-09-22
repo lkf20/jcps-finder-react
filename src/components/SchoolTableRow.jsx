@@ -1,17 +1,48 @@
-// src/components/SchoolTableRow.jsx
 import React from 'react';
 import { formatDisplayValue } from '../utils/formatters';
-import DiversityChart from './DiversityChart'; // Only if DiversityChart isn't formatted via formatDisplayValue
-import DiversityLegend from './DiversityLegend'; // Only if DiversityLegend isn't formatted via formatDisplayValue
-import chartStyles from './DiversityChart.module.css'; // For DiversityChart specific container if needed
-import legendStyles from './DiversityLegend.module.css'; // For DiversityLegend specific container if needed
-import tableStyles from './TableView.module.css'; // Import this to use .pieChartCell etc.
+import DiversityChart from './DiversityChart';
+import DiversityLegend from './DiversityLegend';
+import chartStyles from './DiversityChart.module.css';
+import tableStyles from './TableView.module.css';
+import styles from './TableView.module.css'; 
 
 export const SchoolTableRow = ({ school, columns }) => {
+  // Helper to check for actual diversity data
+  const hasActualDiversityData = () => {
+    if (!school) return false;
+    const keysToCheck = ['white_percent', 'african_american_percent', 'hispanic_percent', 'asian_percent', 'two_or_more_races_percent'];
+    let hasData = keysToCheck.some(key => school[key] != null && parseFloat(school[key]) > 0.01);
+    if (hasData) return true;
+
+    const knownTotal = keysToCheck.reduce((sum, key) => sum + (parseFloat(school[key]) || 0), 0);
+    const otherPercent = 100 - knownTotal;
+    return otherPercent > 0.01;
+  };
+
   return (
     <tr>
       {columns.map(col => {
+        // ... (logic for other cell types remains the same)
         const isDiversityChartCol = col.key === 'diversity_chart';
+        
+        // <<< START: MODIFIED CODE >>>
+        if (isDiversityChartCol) {
+          return (
+            <td key={col.key} className={tableStyles.diversityCell}>
+              {hasActualDiversityData() ? (
+                <div className={styles.diversityContainerTable}>
+                  <DiversityChart school={school} variant="table" />
+                  <DiversityLegend school={school} variant="table" />
+                </div>
+              ) : (
+                "N/A"
+              )}
+            </td>
+          );
+        }
+        // <<< END: MODIFIED CODE >>>
+
+        // Existing logic for other cells
         const isSingleMetricPieCol = [
           'gifted_talented_percent',
           'economically_disadvantaged_percent',
@@ -20,18 +51,10 @@ export const SchoolTableRow = ({ school, columns }) => {
           'pta_membership_percent'
         ].includes(col.key);
 
-        let cellClassName = tableStyles.tableCellCustom; // Default
+        let cellClassName = tableStyles.tableCellCustom;
 
         if (col.key === 'display_name') {
             cellClassName = tableStyles.displayNameCell;
-        } else if (isDiversityChartCol) {
-          // Diversity chart might have its own specific cell styling from DiversityChart.module.css
-          // or you can use the common pieChartCell plus its specific one.
-          // For now, let's assume DiversityChart.module.css handles its cell or use .pieChartCell
-          cellClassName = `${tableStyles.pieChartCell} ${chartStyles.diversityChartTableCell || ''}`; 
-          // Note: chartStyles.diversityChartTableCell had a large min-width (320px), 
-          // you might want to adjust that if you use a common .pieChartCell.
-          // Or just use tableStyles.pieChartCell if DiversityChart itself doesn't need huge cell width.
         } else if (isSingleMetricPieCol) {
           cellClassName = tableStyles.pieChartCell;
         } else if (col.key === 'start_end_time') {
@@ -43,20 +66,10 @@ export const SchoolTableRow = ({ school, columns }) => {
         } else if (col.key === 'teacher_avg_years_experience') {
           cellClassName = tableStyles.numericCellSmall;
         }
-        // Add other specific column styles here if needed
-
+        
         return (
           <td key={col.key} className={cellClassName.trim()}>
-            {col.key === 'diversity_chart' ? (
-              // Keep existing DiversityChart rendering if it's special
-              <div className={chartStyles.diversityChartContainerTable}>
-                <DiversityChart school={school} variant="table" />
-                <DiversityLegend school={school} legendItemClass={legendStyles.legendItemTable} />
-              </div>
-            ) : (
-              // All other columns, including SingleMetricPieChart ones, go through formatDisplayValue
-              formatDisplayValue(col, school)
-            )}
+            {formatDisplayValue(col, school)}
           </td>
         );
       })}

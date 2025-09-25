@@ -172,7 +172,6 @@ a.school-name-link:hover {
   font-size: 1rem;
   color: #6c757d;
   flex-shrink: 0;
-  align-self: flex-start;
 }
 .map-icon-link:hover {
     color: #00796B;
@@ -194,8 +193,14 @@ a.school-name-link:hover {
 /* --- Accordion (Collapsible List) Styles --- */
 
 .program-details {
+  margin-top: 0; /* Set default to 0 */
+}
+
+/* Apply margin-top only when a details element is NOT the first child, creating space between elements. */
+.program-details:not(:first-child) {
   margin-top: 0.5rem;
 }
+
 
 .program-summary {
   font-weight: 600;

@@ -149,7 +149,7 @@ table td a.schoolNameTable:hover {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 
-  min-width: 200px;   /* Set a reasonable minimum width */
+  min-width: 340px;   /* Set a reasonable minimum width */
   max-width: 400px;   /* <<<< SET YOUR DESIRED MAX WIDTH HERE */
   width: 35%;         /* <<<< EXAMPLE: Or use a percentage, browser will pick smaller of this and max-width */
                       /* Using both width (as a %) and max-width gives some flexibility */

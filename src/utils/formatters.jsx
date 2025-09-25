@@ -45,17 +45,24 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 let programDisplayElements = [];
                 const isHighSchool = school.school_level === 'High School';
 
-                // Helper function to create the program list JSX
-                const createProgramSection = (key, title, programString) => {
+                // <<< START: MODIFIED CODE #1 >>>
+                // The function now accepts 'viewMode' as its last argument
+                const createProgramSection = (key, title, programString, viewMode) => {
+                // <<< END: MODIFIED CODE #1 >>>
+
                     if (!programString || programString.trim().toLowerCase() === '#n/a') return null;
 
                     const programs = programString.split(';').map(p => p.trim());
+                    const listClassName = viewMode === 'card' ? tableStyles.programListCard : tableStyles.programList;
                     
                     if (isHighSchool && programs.length > 0) {
                         return (
                             <details key={key} className={tableStyles.programDetails}>
-                                <summary className={tableStyles.programSummary}>{title}:</summary>
-                                <ul className={tableStyles.programList}>
+                                <summary className={tableStyles.programSummary}>
+                                    <span className={tableStyles.summaryTitle}>{title}:</span>
+                                    <span className={tableStyles.summaryIcon}></span>
+                                </summary>
+                                <ul className={listClassName}>
                                     {programs.map((program, index) => <li key={index}>{program}</li>)}
                                 </ul>
                             </details>
@@ -65,14 +72,13 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     return (
                         <div key={key} className={tableStyles.programSection}>
                             <span className={tableStyles.schoolDetailsText}>{title}:</span>
-                            <ul className={tableStyles.programList}>
+                            <ul className={listClassName}>
                                 {programs.map((program, index) => <li key={index}>{program}</li>)}
                             </ul>
                         </div>
                     );
                 };
 
-                // Add the primary display status ONLY if it's not a program-type
                 const statusesToExclude = ['Magnet/Choice Program', 'Academies of Louisville'];
                 if (school.display_status && !statusesToExclude.includes(school.display_status)) {
                     programDisplayElements.push(
@@ -82,25 +88,26 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     );
                 }
 
-                // Conditionally add program lists
+                // <<< START: MODIFIED CODE #2 >>>
+                // Now, pass 'viewMode' when calling the helper function in all three places
                 const shouldShowMagnetOrPathway = (school.display_status === 'Reside' || school.display_status === 'Magnet/Choice Program');
                 if (shouldShowMagnetOrPathway && school.magnet_programs) {
-                    const magnetSection = createProgramSection('magnet', 'Magnet Program', school.magnet_programs);
+                    const magnetSection = createProgramSection('magnet', 'Magnet Program', school.magnet_programs, viewMode);
                     if (magnetSection) programDisplayElements.push(magnetSection);
                 }
 
                 if (shouldShowMagnetOrPathway && school.districtwide_pathways_programs) {
-                    const pathwaySection = createProgramSection('pathway', 'Districtwide Pathway', school.districtwide_pathways_programs);
+                    const pathwaySection = createProgramSection('pathway', 'Districtwide Pathway', school.districtwide_pathways_programs, viewMode);
                     if (pathwaySection) programDisplayElements.push(pathwaySection);
                 }
 
                 const shouldShowAcademiesList = (school.display_status === 'Academies of Louisville' || (school.display_status === 'Reside' && isHighSchool));
                 if (shouldShowAcademiesList && school.the_academies_of_louisville_programs) {
-                    const academySection = createProgramSection('academies', 'Academies of Louisville', school.the_academies_of_louisville_programs);
+                    const academySection = createProgramSection('academies', 'Academies of Louisville', school.the_academies_of_louisville_programs, viewMode);
                     if (academySection) programDisplayElements.push(academySection);
                 }
+                // <<< END: MODIFIED CODE #2 >>>
 
-                // Fallback for program-types that have no program list in the data
                 if (programDisplayElements.length === 0 && school.display_status) {
                     programDisplayElements.push(
                         <div key="status-fallback">

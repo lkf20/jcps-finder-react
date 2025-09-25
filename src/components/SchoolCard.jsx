@@ -8,7 +8,6 @@ import { TourButton } from './TourButton';
 import { TourModal } from './TourModal';
 
 export const SchoolCard = ({ school, columns }) => {
-  // State for the modal is managed by the card
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const nameColConfig = columns.find(c => c.key === 'display_name');
@@ -41,10 +40,11 @@ export const SchoolCard = ({ school, columns }) => {
         {nameColConfig && (
           <div className={`${styles.cardNameBody} card-body pb-3`}>
             <div className={`${styles.schoolNameTitle} card-title mb-0`}>
-              {/* The formatter now only handles the name, map link, and program lists */}
-              {formatDisplayValue(nameColConfig, school)}
+              {/* <<< START: THE DEFINITIVE FIX >>> */}
+              {/* Pass the 'card' viewMode to the formatter here */}
+              {formatDisplayValue(nameColConfig, school, 'card')}
+              {/* <<< END: THE DEFINITIVE FIX >>> */}
             </div>
-            {/* The TourButton is now rendered here, directly in the card's header */}
             <div className={styles.tourButtonContainer}>
                <TourButton school={school} onClick={() => setIsModalOpen(true)} />
             </div>
@@ -53,7 +53,6 @@ export const SchoolCard = ({ school, columns }) => {
 
         <ul className="list-group list-group-flush">
           {columns
-            // Filter out the specially handled sections
             .filter(col => col.key !== 'display_name' && col.key !== 'diversity_chart')
             .map(col => {
               return (
@@ -69,37 +68,35 @@ export const SchoolCard = ({ school, columns }) => {
               );
             })}
 
-          {/* Dedicated Diversity Section */}
           {shouldShowDiversitySection && (
             <li className={`${styles.diversityListItem} list-group-item py-4`}>
-              {hasActualDiversityData() ? (
-                <div className="container-fluid px-0">
-                  <div className="row g-1 align-items-center mb-1">
-                    <div className="col">
-                      <span className={`${styles.diversityTitle} mb-0 fw-bold small`}>{(diversityColConfig.header || 'Student Diversity') + ':'}</span>
+                {hasActualDiversityData() ? (
+                    <div className="container-fluid px-0">
+                        <div className="row g-1 align-items-center mb-1">
+                            <div className="col">
+                                <span className={`${styles.diversityTitle} mb-0 fw-bold small`}>{(diversityColConfig.header || 'Student Diversity') + ':'}</span>
+                            </div>
+                            <div className={`${styles.diversityChartContainer} col-auto`}> 
+                                <DiversityChart school={school} />
+                            </div>
+                        </div>
+                        <div className="row mt-3">
+                            <div className="col-12">
+                                <DiversityLegend school={school} />
+                            </div>
+                        </div>
                     </div>
-                    <div className={`${styles.diversityChartContainer} col-auto`}> 
-                      <DiversityChart school={school} />
+                ) : (
+                    <div>
+                        <h6 className="mb-1 fw-bold small">{(diversityColConfig.header || 'Student Diversity') + ':'} </h6>
+                        <p className="text-muted small mb-0">No diversity data available.</p>
                     </div>
-                  </div>
-                  <div className="row mt-3">
-                    <div className="col-12">
-                      <DiversityLegend school={school} />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <h6 className="mb-1 fw-bold small">{(diversityColConfig.header || 'Student Diversity') + ':'} </h6>
-                  <p className="text-muted small mb-0">No diversity data available.</p>
-                </div>
-              )}
+                )}
             </li>
           )}
         </ul>
       </div>
       
-      {/* The Modal is rendered here, outside the card's visual structure */}
       <TourModal
         school={school}
         show={isModalOpen}

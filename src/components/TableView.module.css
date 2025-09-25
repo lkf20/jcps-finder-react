@@ -292,3 +292,63 @@ table td a.schoolNameTable:hover {
 .tourButtonContainer {
   margin-top: 0.75rem;
 }
+
+/* --- New Styles for Collapsible Program Lists --- */
+.programDetails {
+  margin-top: 0.5rem;
+}
+
+/* This is the key: Hide the default marker with a pseudo-element override */
+.programSummary::before {
+  display: none !important;
+}
+
+/* Now, style the summary itself as a simple flex container */
+.programSummary {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #555;
+  cursor: pointer;
+  list-style: none; /* Fallback for Firefox */
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0;
+}
+
+/* Hide the default marker in Webkit browsers */
+.programSummary::-webkit-details-marker {
+  display: none;
+}
+
+.summaryTitle {
+  /* The text part of the summary */
+}
+
+/* Style our custom icon container */
+.summaryIcon::before {
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #004D40; /* Brand green */
+  margin-left: 0.5rem;
+  content: '+';
+  line-height: 1;
+}
+
+/* When the <details> element is open, change the icon */
+.programDetails[open] > .programSummary > .summaryIcon::before {
+  content: '−'; /* Unicode minus sign */
+}
+
+/* Indent the program list when expanded */
+.programDetails .programList {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 2rem;
+  border-left: 2px solid #e9ecef;
+}
+
+.programListCard {
+  margin-top: 0.5rem;
+  padding-left: 1.5rem; /* A simple indent is enough */
+  border-left: none; /* Remove the vertical line */
+}

@@ -59,3 +59,21 @@
   .tourButton:focus {
     box-shadow: 0 0 0 0.25rem lightgrey;
   }
+
+  @media (max-width: 576px) {
+    .eventListItem {
+      /* Change the layout from horizontal to vertical */
+      flex-direction: column;
+      
+      /* Align items to the start (left) of the container */
+      align-items: flex-start;
+      
+      /* Add a bit more padding for vertical spacing */
+      padding: 0.75rem 0.25rem;
+    }
+    
+    .eventListItem .addToCalendarWrapper {
+      /* Add some space above the button when it's stacked */
+      margin-top: 0.5rem;
+    }
+  }

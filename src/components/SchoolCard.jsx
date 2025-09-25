@@ -8,10 +8,8 @@ import { TourButton } from './TourButton';
 import { TourModal } from './TourModal';
 
 export const SchoolCard = ({ school, columns }) => {
-  // <<< START: MODIFIED CODE >>>
-  // State for the modal is now managed directly by the card
+  // State for the modal is managed by the card
   const [isModalOpen, setIsModalOpen] = useState(false);
-  // <<< END: MODIFIED CODE >>>
 
   const nameColConfig = columns.find(c => c.key === 'display_name');
   const diversityColConfig = columns.find(c => c.key === 'diversity_chart');
@@ -38,15 +36,18 @@ export const SchoolCard = ({ school, columns }) => {
   const shouldShowDiversitySection = diversityColConfig && hasActualDiversityData();
 
   return (
-    // <<< START: MODIFIED CODE >>>
-    // Wrap the card and modal in a React Fragment
     <>
       <div className={`${styles.schoolCard} card mb-2 shadow-sm`}>
         {nameColConfig && (
           <div className={`${styles.cardNameBody} card-body pb-3`}>
-            <h5 className={`${styles.schoolNameTitle} card-title mb-0`}>
+            <div className={`${styles.schoolNameTitle} card-title mb-0`}>
+              {/* The formatter now only handles the name, map link, and program lists */}
               {formatDisplayValue(nameColConfig, school)}
-            </h5>
+            </div>
+            {/* The TourButton is now rendered here, directly in the card's header */}
+            <div className={styles.tourButtonContainer}>
+               <TourButton school={school} onClick={() => setIsModalOpen(true)} />
+            </div>
           </div>
         )}
 
@@ -55,7 +56,6 @@ export const SchoolCard = ({ school, columns }) => {
             // Filter out the specially handled sections
             .filter(col => col.key !== 'display_name' && col.key !== 'diversity_chart')
             .map(col => {
-              // This part for rendering standard list items is unchanged
               return (
               <li
                 key={col.key}
@@ -69,10 +69,10 @@ export const SchoolCard = ({ school, columns }) => {
               );
             })}
 
-          {/* Dedicated Diversity Section (Unchanged) */}
-          {diversityColConfig && (
+          {/* Dedicated Diversity Section */}
+          {shouldShowDiversitySection && (
             <li className={`${styles.diversityListItem} list-group-item py-4`}>
-              {shouldShowDiversitySection ? (
+              {hasActualDiversityData() ? (
                 <div className="container-fluid px-0">
                   <div className="row g-1 align-items-center mb-1">
                     <div className="col">
@@ -96,21 +96,15 @@ export const SchoolCard = ({ school, columns }) => {
               )}
             </li>
           )}
-          
-          {/* Dedicated Tour Button Section */}
-          <li className={`${styles.tourButtonCardItem} list-group-item d-flex justify-content-center py-3`}>
-            <TourButton school={school} onClick={() => setIsModalOpen(true)} />
-          </li>
         </ul>
       </div>
       
-      {/* The Modal is now rendered here, controlled by this component's state */}
+      {/* The Modal is rendered here, outside the card's visual structure */}
       <TourModal
         school={school}
         show={isModalOpen}
         onClose={() => setIsModalOpen(false)}
       />
     </>
-    // <<< END: MODIFIED CODE >>>
   );
 };

@@ -289,3 +289,6 @@ table td a.schoolNameTable:hover {
   justify-content: center;
   width: 100%;
 }
+.tourButtonContainer {
+  margin-top: 0.75rem;
+}

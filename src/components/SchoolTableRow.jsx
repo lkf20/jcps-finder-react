@@ -1,19 +1,17 @@
+// src/components/SchoolTableRow.jsx
 import React from 'react';
 import { formatDisplayValue } from '../utils/formatters';
 import DiversityChart from './DiversityChart';
 import DiversityLegend from './DiversityLegend';
-import chartStyles from './DiversityChart.module.css';
-import tableStyles from './TableView.module.css';
-import styles from './TableView.module.css'; 
+import styles from './TableView.module.css';
+import { TourButton } from './TourButton';
 
-export const SchoolTableRow = ({ school, columns }) => {
-  // Helper to check for actual diversity data
+export const SchoolTableRow = ({ school, columns, onOpenModal }) => {
   const hasActualDiversityData = () => {
     if (!school) return false;
     const keysToCheck = ['white_percent', 'african_american_percent', 'hispanic_percent', 'asian_percent', 'two_or_more_races_percent'];
     let hasData = keysToCheck.some(key => school[key] != null && parseFloat(school[key]) > 0.01);
     if (hasData) return true;
-
     const knownTotal = keysToCheck.reduce((sum, key) => sum + (parseFloat(school[key]) || 0), 0);
     const otherPercent = 100 - knownTotal;
     return otherPercent > 0.01;
@@ -22,13 +20,23 @@ export const SchoolTableRow = ({ school, columns }) => {
   return (
     <tr>
       {columns.map(col => {
-        // ... (logic for other cell types remains the same)
+        // Special handling for the display_name column to include the button
+        if (col.key === 'display_name') {
+          return (
+            <td key={col.key} className={styles.displayNameCell}>
+              {formatDisplayValue(col, school)}
+              <div className={styles.tourButtonContainer}>
+                <TourButton school={school} onClick={() => onOpenModal(school)} />
+              </div>
+            </td>
+          );
+        }
+
+        // Special handling for the diversity chart
         const isDiversityChartCol = col.key === 'diversity_chart';
-        
-        // <<< START: MODIFIED CODE >>>
         if (isDiversityChartCol) {
           return (
-            <td key={col.key} className={tableStyles.diversityCell}>
+            <td key={col.key} className={styles.diversityCell}>
               {hasActualDiversityData() ? (
                 <div className={styles.diversityContainerTable}>
                   <DiversityChart school={school} variant="table" />
@@ -40,9 +48,8 @@ export const SchoolTableRow = ({ school, columns }) => {
             </td>
           );
         }
-        // <<< END: MODIFIED CODE >>>
 
-        // Existing logic for other cells
+        // Default rendering for all other columns
         const isSingleMetricPieCol = [
           'gifted_talented_percent',
           'economically_disadvantaged_percent',
@@ -51,20 +58,18 @@ export const SchoolTableRow = ({ school, columns }) => {
           'pta_membership_percent'
         ].includes(col.key);
 
-        let cellClassName = tableStyles.tableCellCustom;
+        let cellClassName = styles.tableCellCustom;
 
-        if (col.key === 'display_name') {
-            cellClassName = tableStyles.displayNameCell;
-        } else if (isSingleMetricPieCol) {
-          cellClassName = tableStyles.pieChartCell;
+        if (isSingleMetricPieCol) {
+          cellClassName = styles.pieChartCell;
         } else if (col.key === 'start_end_time') {
-          cellClassName = tableStyles.startEndTimeCol;
+          cellClassName = styles.startEndTimeCol;
         } else if (col.key === 'reading_math_proficiency') {
-          cellClassName = tableStyles.readingMathCol;
+          cellClassName = styles.readingMathCol;
         } else if (col.key === 'overall_indicator_rating') {
-          cellClassName = tableStyles.kyRatingCell;
+          cellClassName = styles.kyRatingCell;
         } else if (col.key === 'teacher_avg_years_experience') {
-          cellClassName = tableStyles.numericCellSmall;
+          cellClassName = styles.numericCellSmall;
         }
         
         return (
@@ -75,4 +80,4 @@ export const SchoolTableRow = ({ school, columns }) => {
       })}
     </tr>
   );
-}
+};

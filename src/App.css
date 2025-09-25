@@ -154,3 +154,118 @@ body {
     padding: 0.5rem;
   }
 }
+
+/* School Name Link in Table and Card */
+a.school-name-link {
+  color: #004D40;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+a.school-name-link:hover {
+  color: #00796B;
+}
+
+/* Map Icon Link */
+.map-icon-link {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+  color: #6c757d;
+  flex-shrink: 0;
+  position: relative;
+  top: 2px;
+}
+.map-icon-link:hover {
+    color: #00796B;
+}
+
+/* Default Program/Status Title Style */
+.program-title {
+  font-size: 0.85rem;
+  color: #555;
+  font-weight: 600;
+  display: block;
+}
+
+.single-status {
+  margin-top: 0.15em;
+}
+
+
+/* --- Accordion (Collapsible List) Styles --- */
+
+.program-details {
+  margin-top: 0; /* Set default to 0 */
+}
+
+/* Apply margin-top only when a details element is NOT the first child, creating space between elements. */
+.program-details:not(:first-child) {
+  margin-top: 0.5rem;
+}
+
+
+.program-summary {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #555;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem 0;
+  list-style: none; /* Hide default marker in Firefox */
+}
+
+/* Hide default marker in Webkit browsers (Chrome, Safari) */
+.program-summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary-icon::before {
+  display: inline-block;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #004D40; /* Brand green */
+  margin-left: 0.5rem;
+  content: '+';
+  line-height: 1;
+  transition: transform 0.2s ease-in-out;
+}
+
+.program-details[open] > .program-summary > .summary-icon::before {
+  content: '−'; /* Unicode minus sign */
+}
+
+/* Default style for program list (TABLE VIEW) */
+.program-list {
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 2rem;
+  list-style-type: disc;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #333;
+}
+
+/* Special style for program list (CARD VIEW) */
+.program-list-card {
+  margin-top: 0.5rem;
+  padding-left: 1.5rem;
+  border-left: none; /* Remove the vertical line */
+  list-style-type: disc;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: #333;
+}
+
+
+/* --- MOBILE-SPECIFIC OVERRIDES --- */
+/*
+  This targets the program/status/summary titles ONLY when they are inside a .schoolCard container.
+  The .schoolCard class comes from SchoolCard.module.css and is available globally for this selector to work.
+*/
+@media (max-width: 767.98px) {
+  div[class*="_schoolCard"] .program-title,
+  div[class*="_schoolCard"] .summary-title {
+    font-size: 0.95rem !important; /* Match the other mobile label size */
+    font-weight: 500 !important;   /* Match the other mobile label weight */
+  }
+}

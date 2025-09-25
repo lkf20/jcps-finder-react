@@ -40,24 +40,25 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
 
             case 'display_name': {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
-                let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
+                let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className="school-name-link">{nameDisplay}</a>;
             
                 let programDisplayElements = [];
                 const isHighSchool = school.school_level === 'High School';
-
-                // Helper function to create the program list JSX
-                const createProgramSection = (key, title, programString) => {
+    
+                const createProgramSection = (key, title, programString, viewMode) => {
                     if (!programString || programString.trim().toLowerCase() === '#n/a') return null;
-
+    
                     const programs = programString.split(';').map(p => p.trim());
+                    const listClassName = viewMode === 'card' ? "program-list-card" : "program-list";
                     
                     if (isHighSchool && programs.length > 0) {
                         return (
-                            <details key={key} className={tableStyles.programDetails}>
-                                <summary className={tableStyles.programSummary}>
-                                    {title}:
+                            <details key={key} className="program-details">
+                                <summary className="program-summary">
+                                    <span className="summary-title">{title}:</span>
+                                    <span className="summary-icon"></span>
                                 </summary>
-                                <ul className={tableStyles.programList}>
+                                <ul className={listClassName}>
                                     {programs.map((program, index) => <li key={index}>{program}</li>)}
                                 </ul>
                             </details>
@@ -65,68 +66,50 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     }
                     
                     return (
-                        <div key={key} className={tableStyles.programSection}>
-                            <span className={tableStyles.schoolDetailsText}>{title}:</span>
-                            <ul className={tableStyles.programList}>
+                        <div key={key} className="program-section">
+                            <span className="program-title">{title}:</span>
+                            <ul className={listClassName}>
                                 {programs.map((program, index) => <li key={index}>{program}</li>)}
                             </ul>
                         </div>
                     );
                 };
-
-                // <<< START: FINAL CORRECTED LOGIC >>>
-                // Step 1: Add the primary status ONLY if it's not a program-type that will have a more specific title.
+    
                 const statusesToExclude = ['Magnet/Choice Program', 'Academies of Louisville'];
                 if (school.display_status && !statusesToExclude.includes(school.display_status)) {
                     programDisplayElements.push(
                         <div key="status">
-                            <span className={`${tableStyles.schoolDetailsText} ${tableStyles.singleStatus}`}>{school.display_status}</span>
+                            <span className="program-title single-status">{school.display_status}</span>
                         </div>
                     );
                 }
-
-                // Step 2: Conditionally add program lists.
+    
                 const shouldShowMagnetOrPathway = (school.display_status === 'Reside' || school.display_status === 'Magnet/Choice Program');
-
                 if (shouldShowMagnetOrPathway && school.magnet_programs) {
-                    const title = 'Magnet Program';
-                    const magnetSection = createProgramSection('magnet', title, school.magnet_programs);
-                    if (magnetSection) programDisplayElements.push(magnetSection);
+                    programDisplayElements.push(createProgramSection('magnet', 'Magnet Program', school.magnet_programs, viewMode));
                 }
-
                 if (shouldShowMagnetOrPathway && school.districtwide_pathways_programs) {
-                    const title = 'Districtwide Pathway';
-                    const pathwaySection = createProgramSection('pathway', title, school.districtwide_pathways_programs);
-                    if (pathwaySection) programDisplayElements.push(pathwaySection);
+                    programDisplayElements.push(createProgramSection('pathway', 'Districtwide Pathway', school.districtwide_pathways_programs, viewMode));
                 }
-
-                const shouldShowAcademiesList = (
-                    school.display_status === 'Academies of Louisville' || 
-                    (school.display_status === 'Reside' && isHighSchool)
-                );
-
+                const shouldShowAcademiesList = (school.display_status === 'Academies of Louisville' || (school.display_status === 'Reside' && isHighSchool));
                 if (shouldShowAcademiesList && school.the_academies_of_louisville_programs) {
-                    const title = 'Academies of Louisville';
-                    const academySection = createProgramSection('academies', title, school.the_academies_of_louisville_programs);
-                    if (academySection) programDisplayElements.push(academySection);
+                    programDisplayElements.push(createProgramSection('academies', 'Academies of Louisville', school.the_academies_of_louisville_programs, viewMode));
                 }
-
-                // Fallback for program-types that have no program list in the data.
+    
                 if (programDisplayElements.length === 0 && school.display_status) {
                     programDisplayElements.push(
                         <div key="status-fallback">
-                            <span className={`${tableStyles.schoolDetailsText} ${tableStyles.singleStatus}`}>{school.display_status}</span>
+                            <span className="program-title single-status">{school.display_status}</span>
                         </div>
                     );
                 }
-                // <<< END: FINAL CORRECTED LOGIC >>>
                 
                 let mapLink = null;
                 if (school.address && school.city && school.state && school.zipcode) {
                     const fullAddress = `${school.address}, ${school.city}, ${school.state} ${school.zipcode}`;
                     const encodedAddress = encodeURIComponent(fullAddress);
                     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                    mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className={tableStyles.mapIconLink} title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
+                    mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="map-icon-link" title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
                 }
                 
                 return (
@@ -135,12 +118,12 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                         { (programDisplayElements.length > 0 || mapLink) && (
                             <div className="mt-2 d-flex align-items-start mt-1">
                                 {mapLink}
-                                {programDisplayElements.length > 0 && <div>{programDisplayElements}</div>}
+                                {programDisplayElements.length > 0 && <div>{programDisplayElements.filter(Boolean)}</div>}
                             </div>
                         )}
                     </>
                 );
-            } 
+            }
             
             case 'diversity_chart': {
                 return null;
@@ -194,7 +177,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                          metricColor="#4CAF50" // Green
                          baseColor="#E8F5E9"   // Light Green
                          chartIdSuffix={`gifted-${school.school_code_adjusted || school.display_name}`}
-                         variant="table"
+                         variant={viewMode}
                     />
                );
             }
@@ -210,7 +193,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                          metricColor="#673AB7" // Deep Purple
                          baseColor="#EDE7F6"   // Light Purple
                          chartIdSuffix={`econ-${school.school_code_adjusted || school.display_name}`}
-                         variant="table"
+                         variant={viewMode}
                     />
                );
             }
@@ -288,7 +271,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                        metricColor="#00BCD4" // Cyan/Teal
                        baseColor="#B2EBF2"   // Light Cyan/Teal
                        chartIdSuffix={`newteach-${school.school_code_adjusted || school.display_name}`}
-                       variant="table"
+                       variant={viewMode}
                    />
                );
            }
@@ -304,7 +287,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                        metricColor="#FF9800" // Orange
                        baseColor="#FFE0B2"   // Light Orange
                        chartIdSuffix={`parentsat-${school.school_code_adjusted || school.display_name}`}
-                       variant="table"
+                       variant={viewMode}
                    />
                );
            }
@@ -320,7 +303,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                        metricColor="#2196F3" // Blue
                        baseColor="#BBDEFB"   // Light Blue
                        chartIdSuffix={`pta-${school.school_code_adjusted || school.display_name}`}
-                       variant="table"
+                       variant={viewMode}
                    />
                );
            }

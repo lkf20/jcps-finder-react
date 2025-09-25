@@ -1,209 +1,73 @@
 /* src/components/SchoolCard.module.css */
 
+/* src/components/SchoolCard.module.css */
+
 .schoolCard {
-    border: 1px solid #e0e0e0;
-    padding: 0.5rem; /* Overall card padding */
-    /* mb-2 and shadow-sm are Bootstrap utilities, keep in JSX */
-  }
-  
-  /* Styles for the card header/body containing the school name */
-  .cardNameBody {
-    padding-left: 0.5rem !important;
-    /* pb-3 is a Bootstrap utility, keep in JSX */
-  }
-  
-  .schoolNameTitle {
-    /* card-title and mb-0 are Bootstrap utilities, keep in JSX */
-    /* Styles for the <a> tag inside the title, if formatDisplayValue generates it */
-  }
-  .schoolNameTitle a { /* This targets any <a> tag inside elements with .schoolNameTitle */
-    font-size: 1.15rem;
-    font-weight: 600; /* fw-bold Bootstrap utility could also do this */
-    color: #004D40;
-    text-decoration: none;
-    transition: all 0.2s ease-in-out;
-  }
-  .schoolNameTitle a:hover {
-    color: #00796B;
-    text-decoration: underline;
-  }
-  /* Styles for icons within the school name link */
-  .schoolNameTitle .bi-geo-alt-fill { /* Assuming this class is on the icon */
-    font-size: 0.85rem;
-    color: #6c757d;
-    transition: color 0.2s ease-in-out;
-    vertical-align: middle;
-  }
-  .schoolNameTitle a:hover .bi-geo-alt-fill {
-    color: #00796B;
-  }
-  
-  
-  /* Styles for standard list items (e.g., Distance, Students) */
-  .standardListItem {
-    /* d-flex, justify-content-between, align-items-center, py-3 are Bootstrap utilities, keep in JSX */
-    /* list-group-item is a Bootstrap class, provides base padding and borders */
-    background-color: transparent; /* Override if needed */
-    border-bottom: 1px solid #f0f0f0; /* Explicit border */
-    font-size: 0.9 rem; /* Overall font size for the item */
-    padding-left: 0.5rem !important; 
-    padding-right: 0.5rem !important;
-  }
-  .standardListItem:last-child { /* From your CSS for removing border */
-    border-bottom: none;
-  }
-  
-  .standardListItemLabel { /* For the first span (e.g., "Distance (mi):") */
-    /* me-2, fw-bold, small are Bootstrap utilities, keep in JSX */
-    font-weight: 500; /* Override if Bootstrap's fw-bold isn't exactly 500 or if you remove fw-bold */
-    color: #555;
-    padding-right: 1rem; /* Specific padding */
-    flex-shrink: 0;    /* Keep from shrinking */
-    line-height: 1.4;
-    max-width: 40%;
-    /* font-size: 0.75em !important; */
-    padding-right: 0 !important;
-  }
-  
-  .standardListItemValue { /* For the second span (e.g., "2.6") */
-    /* text-end, small are Bootstrap utilities, keep in JSX */
-    text-align: right; /* Ensure it if text-end utility is removed */
-    flex-grow: 1;
-    min-height: 30px;
-    display: flex; /* Use flex to control alignment of its direct children */
-    flex-direction: column; /* Stack children vertically if multiple (like start/end time) */
-    align-items: flex-end; /* <<<< THIS WILL ALIGN CHILDREN TO THE RIGHT */
-  }
-
-  .standardListItemValue > div { 
-    width: auto; /* Allow the div to be as wide as its content */
-    text-align: right; /* Ensure text within this div is also right aligned */
-  }
-
-  .standardListItemValue .kyRatingCell { /* Targets the div wrapper from formatDisplayValue */
-    margin-left: auto; /* Push it to the right if its parent is flex */
-    /* Or, if the parent .standardListItemValue is already display:flex and align-items:flex-end,
-       this might not be strictly needed, but doesn't hurt. */
-    display: inline-block; /* Or block, depending on how you want it to sit */
-    padding: 0; /* Override any padding from tableStyles if needed for card view */
-  }
-  .standardListItemValue .kyRatingImage { /* Targets the image itself */
-    height: 40px; /* << Smaller height for card view, adjust as needed */
-    width: auto;
-  }
-  
-  /* Styles for buttons within standard list items */
-  .standardListItemValue .btn { /* Targets .btn class within the value span */
-    padding: 0.1rem 0.4rem;
-    font-size: 0.75rem;
-    color: #004D40;
-    border-color: #004D40;
-    transition: all 0.15s ease-in-out;
-  }
-  .standardListItemValue .btn:hover {
-    color: #ffffff;
-    background-color: #004D40;
-    border-color: #004D40;
-  }
-  .standardListItemValue .btn i { /* Targets <i> within the button */
-    font-size: 0.7rem;
-    vertical-align: baseline;
-  }
-  .standardListItemValue .btn:hover i {
-    color: #ffffff;
-  }
-  
-  /* Styles for rating circles within standard list items */
-  .standardListItemValue .rating-circle,
-  .standardListItemValue .rating-circle-na {
-    width: 30px; /* !important might be needed if base .rating-circle is too specific */
-    height: 30px;
-    font-size: 0.85rem;
-    padding: 0;
-  }
-  .standardListItemValue .rating-circle {
-    background-color: #9CCC65;
-    color: white;
-    font-weight: bold;
-  }
-  .standardListItemValue .rating-circle-na {
-    background-color: #e0e0e0;
-    color: #757575;
-    font-weight: normal;
-    font-size: 0.75rem; /* Note: this font-size is smaller than .rating-circle */
-  }
-
-  /* Specific style for the "Start - End Time" label in card view */
-.timeLabel {
-  flex-basis: 50% !important; /* << Give it 50% of the flex container's main axis space */
-  max-width: 50% !important;
-  flex-shrink: 0; /* Ensure it doesn't shrink if value is very long */
-  white-space: normal !important; /* << Allow "Start - End Time" to wrap if needed */
-  margin-right: 0.2rem !important; /* Reduce space between this label and its value */
+  border: 1px solid #e0e0e0;
 }
   
+.cardNameBody {
+  padding-bottom: 0.5rem !important; /* Reduced padding slightly */
+}
   
-  /* Styles for the diversity section's list item */
-  .diversityListItem {
-    /* py-4 is a Bootstrap utility, keep in JSX */
-    /* list-group-item is a Bootstrap class */
-    border-bottom: 1px solid #f0f0f0; /* Explicit border */
-    padding-left: 0.5rem !important;
-    padding-right: 0.5rem !important;
-  }
-  .diversityListItem:last-of-type { /* Or use :last-child if it's always the last */
-      border-bottom: none;
-  }
-  
-  .diversityTitle { /* For the span "Student Diversity" */
-    /* mb-0, fw-bold, small are Bootstrap utilities, keep in JSX */
-    display: inline-block;
-    color: #555;
-    /* font-size: 0.75em !important;  */
-    font-weight: 500;
-    white-space: nowrap; 
-    line-height: 1.3; 
-    margin-right: 0.5rem !important; 
-    flex-shrink: 0;
-    /* margin-bottom: 0 !important; -- handled by mb-0 */
-  }
-  
-  .diversityChartContainer { /* For the div wrapping the DiversityChart component */
-    width: 80px;  /* Moved from inline style */
-    height: 80px; /* Moved from inline style */
-    /* col-auto is a Bootstrap utility, keep in JSX */
-  }
-  
-  /* Styles for the legend (which is inside DiversityLegend.jsx)
-     These would go into DiversityLegend.module.css if you want to style the ul, li, etc. from there.
-     For now, if existing global styles are sufficient for the legend in card view, we can leave them.
-     The example below is if you were to style them from SchoolCard's perspective (less ideal).
-  */
-  /*
-  .diversityLegendContainer ul { ... }
-  .diversityLegendContainer li { ... }
-  */
+/* Styles for the <a> tag generated for the school name */
+.cardNameBody :global(a.school-name-link) {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #004D40;
+  text-decoration: none;
+}
+.cardNameBody :global(a.school-name-link:hover) {
+  color: #00796B;
+}
 
-  /* --- STYLES SPECIFIC TO CARD/MOBILE VIEW (screens < 768px) --- */
-@media (max-width: 767.98px) {
-  .standardListItemLabel, 
-  .diversityTitle { /* Group selector for common styles */
-    font-size: 1.0rem !important; /* << SET FIXED FONT SIZE (e.g., 0.7rem = ~11.2px, 0.75rem = 12px, 0.8rem = ~12.8px) */
-                                  /* Adjust this value until it matches your desired 13.5px or is consistent */
-                                  /* If 13.5px is desired, try ~0.84rem */
-    font-weight: 500; /* Ensure consistent weight */
-  }
+.tourButtonContainer {
+  margin-top: 0.75rem;
+  text-align: center;
+}
+  
+/* Styles for standard list items (e.g., Distance, Students) */
+.standardListItem {
+  border-bottom: 1px solid #f0f0f0;
+}
+.standardListItem:last-child {
+  border-bottom: none;
+}
+  
+.standardListItemLabel {
+  font-weight: 500;
+  color: #555;
+  flex-shrink: 0;
+  max-width: 45%; /* Allow a bit more space for labels */
+}
+  
+.standardListItemValue {
+  text-align: right;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
 
-  .standardListItemLabel {
-    margin-right: 0.2rem !important; 
-    padding-right: 0 !important;     
-    /* ... any other specific styles for standardListItemLabel on mobile ... */
-  }
-
-  .diversityTitle {
-    margin-right: 0.5rem; /* Keep or adjust its specific right margin */
-  }
-  .standardListItemValue {
-    font-size: 1.1em !important; /* Example for mobile values */
- }
-} 
+/* Styles for the diversity section's list item */
+.diversityListItem {
+  border-bottom: 1px solid #f0f0f0;
+}
+.diversityListItem:last-of-type {
+  border-bottom: none;
+}
+  
+.diversityTitle {
+  display: inline-block;
+  color: #555;
+  font-weight: 500;
+  white-space: nowrap; 
+  margin-right: 0.5rem !important; 
+  flex-shrink: 0;
+}
+  
+.diversityChartContainer {
+  width: 80px;
+  height: 80px;
+}
+  

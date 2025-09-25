@@ -4,12 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --mode development",
+    "dev": "vite --host --mode development",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
+    "add-to-calendar-button-react": "^2.11.5",
     "chart.js": "^4.4.9",
     "chartjs-plugin-annotation": "^3.1.0",
     "react": "^19.1.0",

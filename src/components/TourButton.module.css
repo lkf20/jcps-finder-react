@@ -1,0 +1,80 @@
+/* src/components/TourButton.module.css */
+/* .tourButton {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 5px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #0d6efd;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .tourButton i {
+    font-size: 0.9rem;
+  }
+  
+  .tourButton:hover {
+    background-color: #e2e6ea;
+    border-color: #adb5bd;
+  } */
+
+  .tourButton {
+    /* Use the same dark green as the school name titles */
+    --brand-green: #004D40;
+    --brand-green-light-hover: #e6f3f1;
+  
+    background-color: transparent;
+    border: 0.5px solid lightgray;
+    border-radius: 8px; /* Slightly more rounded corners */
+    padding: 0.5rem 1rem; /* More padding for a better feel */
+    font-size: 0.8rem;
+    font-weight: 500; /* Bolder text */
+    color: var(--brand-green);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .tourButton i {
+    font-size: 1rem; /* Make the icon slightly larger */
+  }
+  
+  .tourButton:hover {
+    /* background-color: var(--brand-green-light-hover); 
+    color: var(--brand-green); */
+    /* box-shadow: 0 0 0 0.25rem lightgray; */
+    background-color: lightgrey;
+    border-color: lightgrey;
+  }
+
+  .tourButton:focus {
+    box-shadow: 0 0 0 0.25rem lightgrey;
+  }
+
+  @media (max-width: 576px) {
+    .eventListItem {
+      /* Change the layout from horizontal to vertical */
+      flex-direction: column;
+      
+      /* Align items to the start (left) of the container */
+      align-items: flex-start;
+      
+      /* Add a bit more padding for vertical spacing */
+      padding: 0.75rem 0.25rem;
+    }
+    
+    .eventListItem .addToCalendarWrapper {
+      /* Add some space above the button when it's stacked */
+      margin-top: 0.5rem;
+    }
+  }

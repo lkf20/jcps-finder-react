@@ -40,27 +40,23 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
 
             case 'display_name': {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
-                let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className={tableStyles.schoolNameTable}>{nameDisplay}</a>;
+                let nameLink = <a href={school.school_website_link || '#'} target="_blank" rel="noopener noreferrer" className="school-name-link">{nameDisplay}</a>;
             
                 let programDisplayElements = [];
                 const isHighSchool = school.school_level === 'High School';
-
-                // <<< START: MODIFIED CODE #1 >>>
-                // The function now accepts 'viewMode' as its last argument
+    
                 const createProgramSection = (key, title, programString, viewMode) => {
-                // <<< END: MODIFIED CODE #1 >>>
-
                     if (!programString || programString.trim().toLowerCase() === '#n/a') return null;
-
+    
                     const programs = programString.split(';').map(p => p.trim());
-                    const listClassName = viewMode === 'card' ? tableStyles.programListCard : tableStyles.programList;
+                    const listClassName = viewMode === 'card' ? "program-list-card" : "program-list";
                     
                     if (isHighSchool && programs.length > 0) {
                         return (
-                            <details key={key} className={tableStyles.programDetails}>
-                                <summary className={tableStyles.programSummary}>
-                                    <span className={tableStyles.summaryTitle}>{title}:</span>
-                                    <span className={tableStyles.summaryIcon}></span>
+                            <details key={key} className="program-details">
+                                <summary className="program-summary">
+                                    <span className="summary-title">{title}:</span>
+                                    <span className="summary-icon"></span>
                                 </summary>
                                 <ul className={listClassName}>
                                     {programs.map((program, index) => <li key={index}>{program}</li>)}
@@ -70,48 +66,40 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     }
                     
                     return (
-                        <div key={key} className={tableStyles.programSection}>
-                            <span className={tableStyles.schoolDetailsText}>{title}:</span>
+                        <div key={key} className="program-section">
+                            <span className="program-title">{title}:</span>
                             <ul className={listClassName}>
                                 {programs.map((program, index) => <li key={index}>{program}</li>)}
                             </ul>
                         </div>
                     );
                 };
-
+    
                 const statusesToExclude = ['Magnet/Choice Program', 'Academies of Louisville'];
                 if (school.display_status && !statusesToExclude.includes(school.display_status)) {
                     programDisplayElements.push(
                         <div key="status">
-                            <span className={`${tableStyles.schoolDetailsText} ${tableStyles.singleStatus}`}>{school.display_status}</span>
+                            <span className="program-title single-status">{school.display_status}</span>
                         </div>
                     );
                 }
-
-                // <<< START: MODIFIED CODE #2 >>>
-                // Now, pass 'viewMode' when calling the helper function in all three places
+    
                 const shouldShowMagnetOrPathway = (school.display_status === 'Reside' || school.display_status === 'Magnet/Choice Program');
                 if (shouldShowMagnetOrPathway && school.magnet_programs) {
-                    const magnetSection = createProgramSection('magnet', 'Magnet Program', school.magnet_programs, viewMode);
-                    if (magnetSection) programDisplayElements.push(magnetSection);
+                    programDisplayElements.push(createProgramSection('magnet', 'Magnet Program', school.magnet_programs, viewMode));
                 }
-
                 if (shouldShowMagnetOrPathway && school.districtwide_pathways_programs) {
-                    const pathwaySection = createProgramSection('pathway', 'Districtwide Pathway', school.districtwide_pathways_programs, viewMode);
-                    if (pathwaySection) programDisplayElements.push(pathwaySection);
+                    programDisplayElements.push(createProgramSection('pathway', 'Districtwide Pathway', school.districtwide_pathways_programs, viewMode));
                 }
-
                 const shouldShowAcademiesList = (school.display_status === 'Academies of Louisville' || (school.display_status === 'Reside' && isHighSchool));
                 if (shouldShowAcademiesList && school.the_academies_of_louisville_programs) {
-                    const academySection = createProgramSection('academies', 'Academies of Louisville', school.the_academies_of_louisville_programs, viewMode);
-                    if (academySection) programDisplayElements.push(academySection);
+                    programDisplayElements.push(createProgramSection('academies', 'Academies of Louisville', school.the_academies_of_louisville_programs, viewMode));
                 }
-                // <<< END: MODIFIED CODE #2 >>>
-
+    
                 if (programDisplayElements.length === 0 && school.display_status) {
                     programDisplayElements.push(
                         <div key="status-fallback">
-                            <span className={`${tableStyles.schoolDetailsText} ${tableStyles.singleStatus}`}>{school.display_status}</span>
+                            <span className="program-title single-status">{school.display_status}</span>
                         </div>
                     );
                 }
@@ -121,7 +109,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     const fullAddress = `${school.address}, ${school.city}, ${school.state} ${school.zipcode}`;
                     const encodedAddress = encodeURIComponent(fullAddress);
                     const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`;
-                    mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className={tableStyles.mapIconLink} title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
+                    mapLink = <a href={mapsUrl} target="_blank" rel="noopener noreferrer" className="map-icon-link" title="View address"><i className="bi bi-geo-alt-fill"></i></a>;
                 }
                 
                 return (

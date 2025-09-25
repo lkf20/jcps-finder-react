@@ -54,9 +54,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     if (isHighSchool && programs.length > 0) {
                         return (
                             <details key={key} className={tableStyles.programDetails}>
-                                <summary className={tableStyles.programSummary}>
-                                    {title}:
-                                </summary>
+                                <summary className={tableStyles.programSummary}>{title}:</summary>
                                 <ul className={tableStyles.programList}>
                                     {programs.map((program, index) => <li key={index}>{program}</li>)}
                                 </ul>
@@ -74,8 +72,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     );
                 };
 
-                // <<< START: FINAL CORRECTED LOGIC >>>
-                // Step 1: Add the primary status ONLY if it's not a program-type that will have a more specific title.
+                // Add the primary display status ONLY if it's not a program-type
                 const statusesToExclude = ['Magnet/Choice Program', 'Academies of Louisville'];
                 if (school.display_status && !statusesToExclude.includes(school.display_status)) {
                     programDisplayElements.push(
@@ -85,33 +82,25 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     );
                 }
 
-                // Step 2: Conditionally add program lists.
+                // Conditionally add program lists
                 const shouldShowMagnetOrPathway = (school.display_status === 'Reside' || school.display_status === 'Magnet/Choice Program');
-
                 if (shouldShowMagnetOrPathway && school.magnet_programs) {
-                    const title = 'Magnet Program';
-                    const magnetSection = createProgramSection('magnet', title, school.magnet_programs);
+                    const magnetSection = createProgramSection('magnet', 'Magnet Program', school.magnet_programs);
                     if (magnetSection) programDisplayElements.push(magnetSection);
                 }
 
                 if (shouldShowMagnetOrPathway && school.districtwide_pathways_programs) {
-                    const title = 'Districtwide Pathway';
-                    const pathwaySection = createProgramSection('pathway', title, school.districtwide_pathways_programs);
+                    const pathwaySection = createProgramSection('pathway', 'Districtwide Pathway', school.districtwide_pathways_programs);
                     if (pathwaySection) programDisplayElements.push(pathwaySection);
                 }
 
-                const shouldShowAcademiesList = (
-                    school.display_status === 'Academies of Louisville' || 
-                    (school.display_status === 'Reside' && isHighSchool)
-                );
-
+                const shouldShowAcademiesList = (school.display_status === 'Academies of Louisville' || (school.display_status === 'Reside' && isHighSchool));
                 if (shouldShowAcademiesList && school.the_academies_of_louisville_programs) {
-                    const title = 'Academies of Louisville';
-                    const academySection = createProgramSection('academies', title, school.the_academies_of_louisville_programs);
+                    const academySection = createProgramSection('academies', 'Academies of Louisville', school.the_academies_of_louisville_programs);
                     if (academySection) programDisplayElements.push(academySection);
                 }
 
-                // Fallback for program-types that have no program list in the data.
+                // Fallback for program-types that have no program list in the data
                 if (programDisplayElements.length === 0 && school.display_status) {
                     programDisplayElements.push(
                         <div key="status-fallback">
@@ -119,7 +108,6 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                         </div>
                     );
                 }
-                // <<< END: FINAL CORRECTED LOGIC >>>
                 
                 let mapLink = null;
                 if (school.address && school.city && school.state && school.zipcode) {
@@ -135,12 +123,12 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                         { (programDisplayElements.length > 0 || mapLink) && (
                             <div className="mt-2 d-flex align-items-start mt-1">
                                 {mapLink}
-                                {programDisplayElements.length > 0 && <div>{programDisplayElements}</div>}
+                                {programDisplayElements.length > 0 && <div>{programDisplayElements.filter(Boolean)}</div>}
                             </div>
                         )}
                     </>
                 );
-            } 
+            }
             
             case 'diversity_chart': {
                 return null;

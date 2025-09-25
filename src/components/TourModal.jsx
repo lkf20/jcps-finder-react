@@ -48,37 +48,63 @@ export const TourModal = ({ school, show, onClose }) => {
       <div className={styles.eventSection}>
         <h6 className={styles.eventTitle}>{type}</h6>
         <ul className={styles.eventList}>
-          {events.map((event, index) => (
-            <li key={index} className={styles.eventListItem}>
-              <span>{formatEventDateTime(event.start, event.end)}</span>
-              
-              <div className={styles.addToCalendarWrapper} title="Add to Calendar">
-                <AddToCalendarButton
-                  name={`${event.type || 'Event'}: ${school.display_name}`}
-                  description={stripMarkdown(tourInfo.notes)}
-                  startDate={event.start.split('T')[0]}
-                  endDate={event.end ? event.end.split('T')[0] : event.start.split('T')[0]}
-                  startTime={event.start.split('T')[1].substring(0, 5)}
-                  endTime={event.end ? event.end.split('T')[1].substring(0, 5) : ''}
-                  timeZone="America/New_York"
-                  location={school.address || 'See school website for details'}
-                  options={['Google', 'Outlook.com', 'Apple']}
-                  
-                  // Use the library's built-in icon feature
-                  buttonStyle="round"
-                  styleLight="--background: #f1f1f1; --background-hover: #e2e6ea; --button-shadow: none;"
-                  styleDark="--background: #2d2d2d; --background-hover: #424242; --button-shadow: none;"
-                  size="1"
-                  listStyle='overlay'
-                  trigger='click'
-                  
-                  // Hide the library's own label
-                  hideText
-                />
-              </div>
+          {events.map((event, index) => {
+            // <<< START: NEW LOGIC >>>
+            // Prepare calendar properties, assuming a 1-hour duration if end time is missing.
+            // This does NOT affect the displayed text, only the data sent to the calendar.
+            let calendarEndDate;
+            let calendarEndTime;
 
-            </li>
-          ))}
+            if (event.end) {
+              // If end time exists, use it directly.
+              calendarEndDate = event.end.split('T')[0];
+              calendarEndTime = event.end.split('T')[1].substring(0, 5);
+            } else {
+              // If end time is missing, calculate a 1-hour duration.
+              const startDate = new Date(event.start);
+              startDate.setHours(startDate.getHours() + 1);
+
+              // Format the new end date back into YYYY-MM-DD and HH:mm strings.
+              const year = startDate.getFullYear();
+              const month = String(startDate.getMonth() + 1).padStart(2, '0');
+              const day = String(startDate.getDate()).padStart(2, '0');
+              const hours = String(startDate.getHours()).padStart(2, '0');
+              const minutes = String(startDate.getMinutes()).padStart(2, '0');
+
+              calendarEndDate = `${year}-${month}-${day}`;
+              calendarEndTime = `${hours}:${minutes}`;
+            }
+            // <<< END: NEW LOGIC >>>
+
+            return (
+              <li key={index} className={styles.eventListItem}>
+                {/* This displayed text remains unchanged, using the original event.end */}
+                <span>{formatEventDateTime(event.start, event.end)}</span>
+                
+                <div className={styles.addToCalendarWrapper} title="Add to Calendar">
+                  <AddToCalendarButton
+                    name={`${event.type || 'Event'}: ${school.display_name}`}
+                    description={stripMarkdown(tourInfo.notes)}
+                    startDate={event.start.split('T')[0]}
+                    startTime={event.start.split('T')[1].substring(0, 5)}
+                    // Use the newly calculated end date and time for the button
+                    endDate={calendarEndDate}
+                    endTime={calendarEndTime}
+                    timeZone="America/New_York"
+                    location={school.address || 'See school website for details'}
+                    options={['Google', 'Outlook.com', 'Apple']}
+                    buttonStyle="round"
+                    styleLight="--background: #f1f1f1; --background-hover: #e2e6ea; --button-shadow: none;"
+                    styleDark="--background: #2d2d2d; --background-hover: #424242; --button-shadow: none;"
+                    size="1"
+                    listStyle='overlay'
+                    trigger='click'
+                    hideText
+                  />
+                </div>
+              </li>
+            );
+          })}
         </ul>
       </div>
     );

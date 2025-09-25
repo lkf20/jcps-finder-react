@@ -1,36 +1,36 @@
 /* src/components/SingleMetricPieChart.module.css */
 .chartContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%; /* Fill cell width */
-    padding: 5px 0; /* Add some vertical padding */
-  }
-  
-  .chartCanvas {
-    display: block !important; /* Override any Chart.js inline styles if necessary */
-    width: 70px !important;   /* Adjust size as needed for table view */
-    height: 70px !important;  /* Adjust size as needed for table view */
-    aspect-ratio: 1 / 1;
-    margin: 0 auto; /* Center canvas if container is wider */
-  }
-  
-  .legend {
-    font-size: 0.7rem; /* Smaller font for the legend */
-    color: #444;      /* Darker grey for better readability */
-    margin-top: 4px; /* Space between chart and legend */
-    text-align: center;
-    white-space: nowrap; /* Prevent wrapping if label is long */
-    font-weight: 500;
-  }
-  
-  /* Optional: Styles if used in a card variant */
-  .cardVariant .chartCanvas {
-    width: 80px !important;
-    height: 80px !important;
-  }
-  .cardVariant .legend {
-    font-size: 0.75rem;
-    margin-top: 6px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: auto; /* Allow container to shrink-to-fit for alignment */
+  padding: 5px 0; /* Add some vertical padding */
+}
+
+.chartCanvas {
+  display: block !important; /* Override any Chart.js inline styles if necessary */
+  width: 70px !important;   /* Adjust size as needed for table view */
+  height: 70px !important;  /* Adjust size as needed for table view */
+  aspect-ratio: 1 / 1;
+  margin: 0 auto; /* Center canvas if container is wider */
+}
+
+.legend {
+  font-size: 0.7rem; /* Smaller font for the legend */
+  color: #444;      /* Darker grey for better readability */
+  margin-top: 4px; /* Space between chart and legend */
+  text-align: center;
+  white-space: nowrap; /* Prevent wrapping if label is long */
+  font-weight: 500;
+}
+
+/* Optional: Styles if used in a card variant */
+.cardVariant .chartCanvas {
+  width: 80px !important;
+  height: 80px !important;
+}
+.cardVariant .legend {
+  font-size: 0.75rem;
+  margin-top: 6px;
+}

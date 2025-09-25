@@ -81,14 +81,6 @@ table td a.schoolNameTable:hover {
 }
 
 
-
-.schoolDetailsText {
-  font-size: 0.85rem;
-  color: #888;
-  font-weight: 400;
-  margin-left: 0.25rem;
-}
-
 .startEndTimeCol {
   min-width: 140px;
   width: 140px;
@@ -157,9 +149,9 @@ table td a.schoolNameTable:hover {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
 
-  min-width: 200px;   /* Set a reasonable minimum width */
-  max-width: 280px;   /* <<<< SET YOUR DESIRED MAX WIDTH HERE */
-  width: 25%;         /* <<<< EXAMPLE: Or use a percentage, browser will pick smaller of this and max-width */
+  min-width: 340px;   /* Set a reasonable minimum width */
+  max-width: 400px;   /* <<<< SET YOUR DESIRED MAX WIDTH HERE */
+  width: 35%;         /* <<<< EXAMPLE: Or use a percentage, browser will pick smaller of this and max-width */
                       /* Using both width (as a %) and max-width gives some flexibility */
 
   /* Optional: Handle long school names that might overflow */
@@ -182,39 +174,12 @@ table td a.schoolNameTable:hover {
 
 /* Update the existing schoolDetailsText to be bold for headings */
 
-.schoolDetailsText {
-  font-size: 0.85rem;
-  color: #555;
-  font-weight: 600;
-  display: block;
-}
-
-/* New class for the bulleted lists */
-.programList {
-  list-style-type: disc;
-  padding-left: 1.2rem; /* Indent the bullets */
-  margin-top: 2px;
-  margin-bottom: 0;
-  font-size: 0.85rem;
-  font-style: italic;
-  color: #333;
-}
 
 /* New class to add space between the Magnet and Academies sections */
 .academiesSection {
   margin-top: 0.5rem;
 }
 
-.programSection {
-  margin-top: 0rem;
-  /* This is the override. It tells a multi-line block to ignore the parent's centering
-     and align itself to the top of the flex container. */
-  /* align-self: flex-start; */
-  /* This tiny padding gives the visual nudge needed to perfectly align the text with the icon's center */
-  /* padding-top: 0.1rem; */
-  position: relative;
-  top: 1px;
-}
 
 .mapIconLink {
   margin-top: 0rem;
@@ -234,47 +199,7 @@ table td a.schoolNameTable:hover {
   margin-top: 0.15em; 
 }
 
-/* --- New Styles for Collapsible Program Lists --- */
-.programDetails {
-  margin-top: 0.25rem;
-}
 
-.programSummary {
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: #555;
-  cursor: pointer;
-  list-style: none; /* Remove default marker */
-  position: relative;
-  padding-left: 1.2rem; /* Space for custom marker */
-}
-
-/* Custom marker using ::before */
-.programSummary::before {
-  content: '►'; /* Collapsed state */
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%) rotate(0deg);
-  font-size: 0.7rem;
-  transition: transform 0.2s ease-in-out;
-}
-
-/* Custom marker for the expanded state */
-.programDetails[open] > .programSummary::before {
-  transform: translateY(-50%) rotate(90deg); /* Expanded state */
-}
-
-/* Hide the default browser arrow on Webkit browsers (Chrome, Safari) */
-.programSummary::-webkit-details-marker {
-  display: none;
-}
-
-/* Indent the program list when expanded */
-.programDetails .programList {
-  margin-top: 0.25rem;
-  padding-left: 1.5rem; /* Indent more than the summary marker */
-}
 
 .diversityCell {
   vertical-align: middle;
@@ -291,64 +216,4 @@ table td a.schoolNameTable:hover {
 }
 .tourButtonContainer {
   margin-top: 0.75rem;
-}
-
-/* --- New Styles for Collapsible Program Lists --- */
-.programDetails {
-  margin-top: 0.5rem;
-}
-
-/* This is the key: Hide the default marker with a pseudo-element override */
-.programSummary::before {
-  display: none !important;
-}
-
-/* Now, style the summary itself as a simple flex container */
-.programSummary {
-  font-weight: 600;
-  font-size: 0.85rem;
-  color: #555;
-  cursor: pointer;
-  list-style: none; /* Fallback for Firefox */
-  display: flex;
-  align-items: center;
-  padding: 0.25rem 0;
-}
-
-/* Hide the default marker in Webkit browsers */
-.programSummary::-webkit-details-marker {
-  display: none;
-}
-
-.summaryTitle {
-  /* The text part of the summary */
-}
-
-/* Style our custom icon container */
-.summaryIcon::before {
-  display: inline-block;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #004D40; /* Brand green */
-  margin-left: 0.5rem;
-  content: '+';
-  line-height: 1;
-}
-
-/* When the <details> element is open, change the icon */
-.programDetails[open] > .programSummary > .summaryIcon::before {
-  content: '−'; /* Unicode minus sign */
-}
-
-/* Indent the program list when expanded */
-.programDetails .programList {
-  margin-top: 0.5rem;
-  padding: 0.5rem 0.5rem 0.5rem 2rem;
-  border-left: 2px solid #e9ecef;
-}
-
-.programListCard {
-  margin-top: 0.5rem;
-  padding-left: 1.5rem; /* A simple indent is enough */
-  border-left: none; /* Remove the vertical line */
 }

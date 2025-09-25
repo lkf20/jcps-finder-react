@@ -177,7 +177,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                          metricColor="#4CAF50" // Green
                          baseColor="#E8F5E9"   // Light Green
                          chartIdSuffix={`gifted-${school.school_code_adjusted || school.display_name}`}
-                         variant="table"
+                         variant={viewMode}
                     />
                );
             }
@@ -193,7 +193,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                          metricColor="#673AB7" // Deep Purple
                          baseColor="#EDE7F6"   // Light Purple
                          chartIdSuffix={`econ-${school.school_code_adjusted || school.display_name}`}
-                         variant="table"
+                         variant={viewMode}
                     />
                );
             }
@@ -271,7 +271,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                        metricColor="#00BCD4" // Cyan/Teal
                        baseColor="#B2EBF2"   // Light Cyan/Teal
                        chartIdSuffix={`newteach-${school.school_code_adjusted || school.display_name}`}
-                       variant="table"
+                       variant={viewMode}
                    />
                );
            }
@@ -287,7 +287,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                        metricColor="#FF9800" // Orange
                        baseColor="#FFE0B2"   // Light Orange
                        chartIdSuffix={`parentsat-${school.school_code_adjusted || school.display_name}`}
-                       variant="table"
+                       variant={viewMode}
                    />
                );
            }
@@ -303,7 +303,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                        metricColor="#2196F3" // Blue
                        baseColor="#BBDEFB"   // Light Blue
                        chartIdSuffix={`pta-${school.school_code_adjusted || school.display_name}`}
-                       variant="table"
+                       variant={viewMode}
                    />
                );
            }

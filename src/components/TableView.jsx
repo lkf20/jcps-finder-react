@@ -14,7 +14,7 @@ export const TableView = ({ schools, columns }) => {
     // <<< START: MODIFIED CODE >>>
     // Wrap everything in a React Fragment
     <>
-      <table className={`table table-hover mt-3 ${styles.tableCustom}`}>
+      <table className={`table mt-3 ${styles.tableCustom}`}>
         <thead className={`table-light ${styles.tableHeaderCustom}`}>
             <tr>
             {columns.map(col => <th key={col.key}>{col.header}</th>)}

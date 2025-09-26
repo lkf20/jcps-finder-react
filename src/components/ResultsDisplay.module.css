@@ -40,7 +40,7 @@
 .resultsInfoBar {
   font-size: 0.95rem !important;
   padding: 0.5rem 1rem !important;
-  margin-bottom: 2rem !important;
+  margin-bottom: 4rem !important;
   background: #f4f6f8;
   border: 1px solid #e0e0e0;
   border-radius: 0.5rem;
@@ -56,7 +56,7 @@
   .resultsInfoBar {
     font-size: 0.85rem !important; 
     padding: 0.4rem 0.8rem !important; 
-    margin-bottom: 1.5rem !important; 
+    margin-bottom: 4rem !important; 
   }
 
   /* Target the zone information line specifically for mobile */

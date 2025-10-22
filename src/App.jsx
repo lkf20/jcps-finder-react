@@ -5,7 +5,7 @@ import './App.css';
 import { SearchForm } from './components/SearchForm.jsx';
 import { ResultsDisplay } from './components/ResultsDisplay';
 
-const API_ENDPOINT = import.meta.env.VITE_API_URL;
+const API_ENDPOINT = import.meta.env.VITE_API_URL || 'http://localhost:5001/school-details-by-address';
 
 function App() {
   const [searchResults, setSearchResults] = useState(null);

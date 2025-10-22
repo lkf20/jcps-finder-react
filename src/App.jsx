@@ -46,7 +46,7 @@ function App() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', width: '100%' }}>
       <div className="disclaimer-banner alert alert-warning mb-0" role="alert">
         <div className="container text-center">
           <i className="bi bi-exclamation-triangle-fill me-2"></i>
@@ -55,7 +55,7 @@ function App() {
         </div>
       </div>
 
-      <div className="main-container mt-4" style={{ flex: 1 }}>
+      <div className="main-container mt-4" style={{ flex: 1, width: '100%' }}>
         <header className="text-center mb-4">
           <h1 className="main-heading">JCPS School Comparison</h1>
           <p className="lead">Find and compare Jefferson County Public Schools in your zone.</p>

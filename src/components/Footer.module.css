@@ -20,6 +20,7 @@
 
 .footerLine:first-child {
   margin-bottom: 1rem;
+  font-weight: bold;
 }
 
 .footerLine:nth-child(2) {

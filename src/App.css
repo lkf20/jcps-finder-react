@@ -166,6 +166,22 @@ a.school-name-link:hover {
   color: #00796B;
 }
 
+/* GreatSchools Rating Link */
+a.great-schools-link {
+  text-decoration: none;
+  transition: transform 0.2s ease-in-out;
+  display: inline-block;
+}
+a.great-schools-link:hover {
+  transform: scale(1.05);
+}
+a.great-schools-link .rating-circle {
+  transition: background-color 0.2s ease-in-out;
+}
+a.great-schools-link:hover .rating-circle {
+  background-color: #00796B;
+}
+
 /* Map Icon Link */
 .map-icon-link {
   margin-right: 0.5rem;

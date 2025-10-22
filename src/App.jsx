@@ -4,8 +4,9 @@ import { useState, useEffect, useRef } from 'react';
 import './App.css';
 import { SearchForm } from './components/SearchForm.jsx';
 import { ResultsDisplay } from './components/ResultsDisplay';
+import Footer from './components/Footer.jsx';
 
-const API_ENDPOINT = import.meta.env.VITE_API_URL || 'http://localhost:5001/school-details-by-address';
+const API_ENDPOINT = import.meta.env.VITE_API_URL;
 
 function App() {
   const [searchResults, setSearchResults] = useState(null);
@@ -45,7 +46,7 @@ function App() {
   }
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <div className="disclaimer-banner alert alert-warning mb-0" role="alert">
         <div className="container text-center">
           <i className="bi bi-exclamation-triangle-fill me-2"></i>
@@ -54,7 +55,7 @@ function App() {
         </div>
       </div>
 
-      <div className="main-container mt-4">
+      <div className="main-container mt-4" style={{ flex: 1 }}>
         <header className="text-center mb-4">
           <h1 className="main-heading">JCPS School Comparison</h1>
           <p className="lead">Find and compare Jefferson County Public Schools in your zone.</p>
@@ -92,12 +93,10 @@ function App() {
              />
            )}
         </section>
-
-        <footer className="text-center mt-5 mb-3 pb-5 text-muted">
-            <small>Data provided for informational purposes. Verify all information with JCPS directly.</small>
-        </footer>
       </div>
-    </>
+
+      <Footer />
+    </div>
   );
 }
 

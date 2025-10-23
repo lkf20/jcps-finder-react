@@ -103,8 +103,14 @@ export const ResultsDisplay = ({ searchResults, schoolLevel }) => {
     const { key: sortKey, descending: sortDesc } = sortConfig;
     processedSchools.sort((a, b) => {
         let vA = a[sortKey]; let vB = b[sortKey];
-        const nA = vA == null; const nB = vB == null;
-        if (nA && nB) return 0; if (nA) return sortDesc ? -1 : 1; if (nB) return sortDesc ? 1 : -1;
+        const nA = vA == null || vA === 'N/A' || vA === ''; 
+        const nB = vB == null || vB === 'N/A' || vB === '';
+        
+        // Always put N/A/null/empty values at the bottom regardless of sort direction
+        if (nA && nB) return 0; 
+        if (nA) return 1;  // N/A values go to bottom
+        if (nB) return -1; // N/A values go to bottom
+        
         if (sortKey === 'start_end_time') { vA = a['start_time']; vB = b['start_time']; }
         const numA = parseFloat(vA); const numB = parseFloat(vB); let comp = 0;
         if (!isNaN(numA) && !isNaN(numB)) {

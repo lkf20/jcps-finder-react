@@ -35,8 +35,24 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 return !isNaN(value) ? Number(value).toFixed(1) : 'N/A';
             case 'student_teacher_ratio_value':
                 return !isNaN(value) ? `${Math.round(value)}:1` : 'N/A';
-            case 'great_schools_rating':
-                return !isNaN(value) ? <span className="rating-circle">{value}</span> : 'N/A'; // Assumes CSS handles the circle
+            case 'great_schools_rating': {
+                if (isNaN(value)) return 'N/A';
+                const greatSchoolsUrl = school.great_schools_url;
+                if (greatSchoolsUrl && greatSchoolsUrl !== 'N/A' && greatSchoolsUrl.trim() !== '') {
+                    return (
+                        <a 
+                            href={greatSchoolsUrl} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="great-schools-link"
+                            title={`View ${school.display_name} on GreatSchools.org`}
+                        >
+                            <span className="rating-circle">{value}</span>
+                        </a>
+                    );
+                }
+                return <span className="rating-circle">{value}</span>;
+            }
 
             case 'display_name': {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';

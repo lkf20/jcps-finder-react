@@ -10,7 +10,7 @@ function Footer() {
     try {
       const decoded = atob(encodedEmail);
       setDecodedEmail(decoded);
-    } catch (error) {
+    } catch {
       // Fallback if decoding fails
       setDecodedEmail('admin@explorejcps.com');
     }

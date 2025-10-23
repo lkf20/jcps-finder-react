@@ -1,6 +1,6 @@
 // src/App.jsx
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import './App.css';
 import { SearchForm } from './components/SearchForm.jsx';
 import { ResultsDisplay } from './components/ResultsDisplay';

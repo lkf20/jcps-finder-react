@@ -35,7 +35,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                 return !isNaN(value) ? Number(value).toFixed(1) : 'N/A';
             case 'student_teacher_ratio_value':
                 return !isNaN(value) ? `${Math.round(value)}:1` : 'N/A';
-            case 'great_schools_rating':
+            case 'great_schools_rating': {
                 if (isNaN(value)) return 'N/A';
                 const greatSchoolsUrl = school.great_schools_url;
                 if (greatSchoolsUrl && greatSchoolsUrl !== 'N/A' && greatSchoolsUrl.trim() !== '') {
@@ -52,6 +52,7 @@ export function formatDisplayValue(colConfig, school, viewMode = 'table') {
                     );
                 }
                 return <span className="rating-circle">{value}</span>;
+            }
 
             case 'display_name': {
                 const nameDisplay = (value !== null && value !== undefined) ? String(value) : 'N/A';
